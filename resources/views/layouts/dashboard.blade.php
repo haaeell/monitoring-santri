@@ -5,16 +5,16 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Monitoring Pondok Pesantren</title>
-    <link rel="stylesheet" href="assets/vendors/feather/feather.css">
-    <link rel="stylesheet" href="assets/vendors/ti-icons/css/themify-icons.css">
-    <link rel="stylesheet" href="assets/vendors/css/vendor.bundle.base.css">
-    <link rel="stylesheet" href="assets/vendors/font-awesome/css/font-awesome.min.css">
-    <link rel="stylesheet" href="assets/vendors/mdi/css/materialdesignicons.min.css">
-    <link rel="stylesheet" href="assets/vendors/datatables.net-bs5/dataTables.bootstrap5.css">
-    <link rel="stylesheet" href="assets/vendors/ti-icons/css/themify-icons.css">
-    <link rel="stylesheet" type="text/css" href="assets/js/select.dataTables.min.css">
-    <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="shortcut icon" href="assets/images/favicon.png" />
+    <link rel="stylesheet" href="{{asset('assets')}}/vendors/feather/feather.css">
+    <link rel="stylesheet" href="{{asset('assets')}}/vendors/ti-icons/css/themify-icons.css">
+    <link rel="stylesheet" href="{{asset('assets')}}/vendors/css/vendor.bundle.base.css">
+    <link rel="stylesheet" href="{{asset('assets')}}/vendors/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="{{asset('assets')}}/vendors/mdi/css/materialdesignicons.min.css">
+    <link rel="stylesheet" href="{{asset('assets')}}/vendors/datatables.net-bs5/dataTables.bootstrap5.css">
+    <link rel="stylesheet" href="{{asset('assets')}}/vendors/ti-icons/css/themify-icons.css">
+    <link rel="stylesheet" type="text/css" href="{{asset('assets')}}/js/select.dataTables.min.css">
+    <link rel="stylesheet" href="{{asset('assets')}}/css/style.css">
+    <link rel="shortcut icon" href="{{asset('assets')}}/images/favicon.png" />
 
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.min.css" rel="stylesheet" />
@@ -24,10 +24,10 @@
     <div class="container-scroller">
         <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
             <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-start">
-                <a class="navbar-brand brand-logo me-5" href="index.html"><img src="assets/images/logo.svg"
+                {{-- <a class="navbar-brand brand-logo me-5" href="index.html"><img src="{{asset('assets')}}/images/logo.svg"
                         class="me-2" alt="logo" /></a>
-                <a class="navbar-brand brand-logo-mini" href="index.html"><img src="assets/images/logo-mini.svg"
-                        alt="logo" /></a>
+                <a class="navbar-brand brand-logo-mini" href="index.html"><img src="{{asset('assets')}}/images/logo-mini.svg"
+                        alt="logo" /></a> --}}
             </div>
             <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
                 <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
@@ -82,14 +82,20 @@
                         <span class="mx-2">{{ Auth::user()->name }}</span>
                         <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown"
                             id="profileDropdown">
-                            <img src="assets/images/faces/face28.jpg" alt="profile" />
+                            <img src="{{asset('assets')}}/images/faces/face28.jpg" alt="profile" />
                         </a>
                         <div class="dropdown-menu dropdown-menu-right navbar-dropdown"
                             aria-labelledby="profileDropdown">
                             <a class="dropdown-item">
                                 <i class="ti-settings text-primary"></i> Settings </a>
-                            <a class="dropdown-item">
+                            <a href="{{ route('logout') }}" class="dropdown-item"
+                                onclick="event.preventDefault();
+                                              document.getElementById('logout-form').submit();">
                                 <i class="ti-power-off text-primary"></i> Logout </a>
+
+                            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                @csrf
+                            </form>
                         </div>
                     </li>
                 </ul>
@@ -104,6 +110,40 @@
                             <span class="menu-title">Dashboard</span>
                         </a>
                     </li>
+                    <hr>
+                    @if (Auth::user()->role == 'admin')
+                    <span>MASTER DATA</span>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/santri">
+                                <i class="icon-paper menu-icon"></i>
+                                <span class="menu-title">Santri</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/guru">
+                                <i class="icon-paper menu-icon"></i>
+                                <span class="menu-title">Guru</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/wali-kelas">
+                                <i class="icon-paper menu-icon"></i>
+                                <span class="menu-title">Wali Kelas</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/kepala-pondok">
+                                <i class="icon-paper menu-icon"></i>
+                                <span class="menu-title">Kepala Pondok</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/wali">
+                                <i class="icon-paper menu-icon"></i>
+                                <span class="menu-title">Wali Santri</span>
+                            </a>
+                        </li>
+                    @endif
                     <li class="nav-item">
                         <a class="nav-link" data-bs-toggle="collapse" href="#error" aria-expanded="false"
                             aria-controls="error">
@@ -120,42 +160,39 @@
                             </ul>
                         </div>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="../../../docs/documentation.html">
-                            <i class="icon-paper menu-icon"></i>
-                            <span class="menu-title">Documentation</span>
-                        </a>
-                    </li>
                 </ul>
             </nav>
             <!-- partial -->
             <div class="main-panel">
                 <div class="content-wrapper">
-                   @yield('content')
+                    @yield('content')
                 </div>
             </div>
         </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="assets/vendors/js/vendor.bundle.base.js"></script>
-    <script src="assets/vendors/chart.js/chart.umd.js"></script>
-    <script src="assets/vendors/dutatatables.net/jquery.dataTables.js"></script>
-    <script src="assets/vendors/datatables.net-bs4/dataTables.bootstrap4.js"></script>
-    <script src="assets/vendors/datatables.net-bs5/dataTables.bootstrap5.js"></script>
-    <script src="assets/js/dataTables.select.min.js"></script>
-    <script src="assets/js/off-canvas.js"></script>
-    <script src="assets/js/template.js"></script>
-    <script src="assets/js/settings.js"></script>
-    <script src="assets/js/todolist.js"></script>
-    <script src="assets/js/jquery.cookie.js" type="text/javascript"></script>
-    <script src="assets/js/dashboard.js"></script>
+    <script src="{{asset('assets')}}/vendors/js/vendor.bundle.base.js"></script>
+    <script src="{{asset('assets')}}/vendors/chart.js/chart.umd.js"></script>
+    <script src="{{asset('assets')}}/vendors/dutatatables.net/jquery.dataTables.js"></script>
+    <script src="{{asset('assets')}}/vendors/datatables.net-bs4/dataTables.bootstrap4.js"></script>
+    <script src="{{asset('assets')}}/vendors/datatables.net-bs5/dataTables.bootstrap5.js"></script>
+    <script src="{{asset('assets')}}/js/dataTables.select.min.js"></script>
+    <script src="{{asset('assets')}}/js/off-canvas.js"></script>
+    <script src="{{asset('assets')}}/js/template.js"></script>
+    <script src="{{asset('assets')}}/js/settings.js"></script>
+    <script src="{{asset('assets')}}/js/todolist.js"></script>
+    <script src="{{asset('assets')}}/js/jquery.cookie.js" type="text/javascript"></script>
+    <script src="{{asset('assets')}}/js/dashboard.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.datatables.net/2.1.8/js/dataTables.min.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    @yield('scripts')
     <script>
         $(document).ready(function() {
             $('#dataTable').DataTable();
+            $('.select2').select2();
         });
     </script>
     @if ($errors->any())
