@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\GuruController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\SantriController;
 use Illuminate\Support\Facades\Auth;
@@ -15,4 +16,5 @@ Auth::routes();
 Route::middleware(['auth'])->group(function () {
     Route::get('/home', [HomeController::class, 'index'])->name('home');
     Route::resource('santri', SantriController::class);
+    Route::resource('guru', GuruController::class);
 });
