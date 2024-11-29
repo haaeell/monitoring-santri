@@ -76,7 +76,7 @@ class SantriController extends Controller
             'nama.required' => 'Nama lengkap harus diisi.',
             'nis.required' => 'NIS harus diisi.',
             'nis.unique' => 'NIS sudah terdaftar.',
-            'nis.numeric' => 'NIS harus berupa angka.',
+            'nis.nupmeric' => 'NIS harus berupa angka.',
             'jenis_kelamin.required' => 'Jenis kelamin harus dipilih.',
             'tanggal_lahir.required' => 'Tanggal lahir harus diisi.',
             'kamar.required' => 'Kamar harus diisi.',

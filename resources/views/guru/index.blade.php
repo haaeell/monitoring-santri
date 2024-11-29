@@ -5,7 +5,7 @@
         <div class="col-md-12 grid-margin stretch-card">
             <div class="card">
                 <div class="card-body">
-                    <p class="card-title">Data Guru</p>
+                    <p class="card-title">Data Guru ni bos</p>
                     <a href="/guru/create" class="btn btn-primary btn-rounded btn-sm mb-3"><i
                             class="ti-plus fw-bold fs-7"></i></a>
                     <div class="row">
