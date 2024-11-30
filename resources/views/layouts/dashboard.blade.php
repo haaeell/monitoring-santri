@@ -143,6 +143,18 @@
                                 <span class="menu-title">Wali Santri</span>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/kelas">
+                                <i class="icon-paper menu-icon"></i>
+                                <span class="menu-title">Kelas</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/hafalan">
+                                <i class="icon-paper menu-icon"></i>
+                                <span class="menu-title">Hafalan</span>
+                            </a>
+                        </li>
                     @endif
                     <li class="nav-item">
                         <a class="nav-link" data-bs-toggle="collapse" href="#error" aria-expanded="false"

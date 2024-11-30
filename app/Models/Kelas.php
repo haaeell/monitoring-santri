@@ -20,6 +20,10 @@ class Kelas extends Model
     {
         return $this->belongsTo(Guru::class, 'wali_kelas_id');
     }
+    public function hafalan()
+    {
+        return $this->belongsTo(Hafalan::class, 'hafalan_id');
+    }
 
     public function tahunAjaran()
     {

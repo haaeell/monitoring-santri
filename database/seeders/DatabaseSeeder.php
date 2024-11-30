@@ -36,7 +36,6 @@ class DatabaseSeeder extends Seeder
             'alamat' => 'Jalan Guru',
             'no_telepon' => '081234567890',
             'pendidikan_terakhir' => 'S1 Pendidikan',
-            'jabatan' => 'guru',
             'created_at' => now(),
             'updated_at' => now(),
         ]);
@@ -51,18 +50,16 @@ class DatabaseSeeder extends Seeder
             'updated_at' => now(),
         ]);
 
-        $tahunAjaranId = DB::table('tahun_ajaran')->insertGetId([
-            'tahun' => '2023/2024',
-            'semester' => 'Ganjil',
-            'aktif' => true,
+        $kelasId = DB::table('kelas')->insertGetId([
+            'nama_kelas' => 'Kelas A',
+            'wali_kelas_id' => $guruId,
             'created_at' => now(),
             'updated_at' => now(),
         ]);
 
-        $kelasId = DB::table('kelas')->insertGetId([
-            'nama_kelas' => 'Kelas A',
-            'wali_kelas_id' => $guruId,
-            'tahun_ajaran_id' => $tahunAjaranId,
+        $hafalanId = DB::table('hafalan')->insertGetId([
+            'nama' => 'Jurumiyah',
+            'kelas_id' => $kelasId,
             'created_at' => now(),
             'updated_at' => now(),
         ]);
@@ -82,7 +79,6 @@ class DatabaseSeeder extends Seeder
         DB::table('santri_kelas')->insert([
             'santri_id' => $santriId,
             'kelas_id' => $kelasId,
-            'tahun_ajaran_id' => $tahunAjaranId,
             'created_at' => now(),
             'updated_at' => now(),
         ]);
@@ -105,7 +101,6 @@ class DatabaseSeeder extends Seeder
         DB::table('mapel_kelas')->insert([
             'mapel_id' => $mapelId,
             'kelas_id' => $kelasId,
-            'tahun_ajaran_id' => $tahunAjaranId,
             'created_at' => now(),
             'updated_at' => now(),
         ]);
