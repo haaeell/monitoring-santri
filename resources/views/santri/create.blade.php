@@ -80,7 +80,32 @@
                             </div>
                         </div>
 
-                        <!-- Kamar, Telp, Alamat Fields and Foto -->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group row align-items-center">
+                                    <label class="col-sm-3 col-form-label">Nama Ayah <span class="text-danger">*</span> <span
+                                            style="float: right">:</span></label>
+                                    <div class="col-sm-9">
+                                        <input type="text" name="nama_ayah" class="form-control form-control-sm" required
+                                            value="{{ old('nama_ayah') }}" />
+                                        @error('nama_ayah')
+                                            <small class="text-danger">{{ $message }}</small>
+                                        @enderror
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group row align-items-center">
+                                    <label class="col-sm-3 col-form-label">Nama Ibu <span
+                                            style="float: right">:</span></label>
+                                    <div class="col-sm-9">
+                                        <input type="text" name="nama_ibu" class="form-control form-control-sm"
+                                            value="{{ old('nama_ibu') }}" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <div class="row">
                             <!-- Kamar Field -->
                             <div class="col-md-6">
@@ -109,6 +134,8 @@
                                 </div>
                             </div>
                         </div>
+
+                        
 
                         <!-- Alamat Field -->
                         <div class="row">

@@ -13,6 +13,7 @@ class Hafalan extends Model
 
     protected $fillable = [
         'nama',
+        'kelas_id'
     ];
 
     public function kelas()

@@ -33,7 +33,7 @@ class CreateMonitoringSantriTables extends Migration
         Schema::create('kelas', function (Blueprint $table) {
             $table->id();
             $table->string('nama_kelas');
-            $table->foreignId('wali_kelas_id')->constrained('guru')->onDelete('cascade');
+            $table->foreignId('wali_kelas_id')->nullable()->constrained('guru');
             $table->timestamps();
         });
         
@@ -53,6 +53,8 @@ class CreateMonitoringSantriTables extends Migration
             $table->string('alamat');
             $table->string('telp');
             $table->string('foto')->nullable();
+            $table->string('nama_ayah')->nullable();
+            $table->string('nama_ibu')->nullable();
             $table->date('tanggal_lahir');
             $table->timestamps();
         });
@@ -67,7 +69,7 @@ class CreateMonitoringSantriTables extends Migration
         Schema::create('mapel', function (Blueprint $table) {
             $table->id();
             $table->string('nama_mapel');
-            $table->foreignId('guru_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('guru_id')->constrained('guru')->onDelete('cascade');
             $table->timestamps();
         });
 
@@ -131,7 +133,6 @@ class CreateMonitoringSantriTables extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('santri_id')->constrained('santri')->onDelete('cascade');
-            $table->string('hubungan');
             $table->timestamps();
         });
 

@@ -57,7 +57,7 @@ class DatabaseSeeder extends Seeder
             'updated_at' => now(),
         ]);
 
-        $hafalanId = DB::table('hafalan')->insertGetId([
+        DB::table('hafalan')->insertGetId([
             'nama' => 'Jurumiyah',
             'kelas_id' => $kelasId,
             'created_at' => now(),
@@ -72,6 +72,8 @@ class DatabaseSeeder extends Seeder
             'alamat' => 'Jalan Santri',
             'telp' => '08123456789',
             'tanggal_lahir' => '2005-05-15',
+            'nama_ayah' => 'Ayah Santri',
+            'nama_ibu' => 'Ibu Santri',
             'created_at' => now(),
             'updated_at' => now(),
         ]);
@@ -86,14 +88,13 @@ class DatabaseSeeder extends Seeder
         DB::table('wali_santri')->insertGetId([
             'user_id' => $adminId,
             'santri_id' => $santriId,
-            'hubungan' => 'Orang Tua',
             'created_at' => now(),
             'updated_at' => now(),
         ]);
 
         $mapelId = DB::table('mapel')->insertGetId([
             'nama_mapel' => 'Matematika',
-            'guru_id' => $guruUserId,
+            'guru_id' => $guruId,
             'created_at' => now(),
             'updated_at' => now(),
         ]);

@@ -1,63 +1,70 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\Hafalan;
+use App\Models\Kelas;
 use Illuminate\Http\Request;
 
 class HafalanController extends Controller
 {
     public function index()
     {
-        $hafalan = Hafalan::all();
+        $hafalan = Hafalan::with('kelas')->get();
         return view('hafalan.index', compact('hafalan'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        $kelas = Kelas::all();
+        return view('hafalan.create', compact('kelas'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'nama' => 'required|string|max:255',
+            'kelas_id' => 'required|exists:kelas,id',
+        ]);
+
+        try {
+            Hafalan::create($request->all());
+            return redirect()->route('hafalan.index')->with('success', 'Hafalan berhasil ditambahkan.');
+        } catch (\Exception $e) {
+            return redirect()->route('hafalan.index')->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function edit($id)
     {
-        //
+        $hafalan = Hafalan::findOrFail($id);
+        $kelas = Kelas::all();
+        return view('hafalan.edit', compact('hafalan', 'kelas'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'nama' => 'required|string|max:255',
+            'kelas_id' => 'required|exists:kelas,id',
+        ]);
+
+        try {
+            $hafalan = Hafalan::findOrFail($id);
+            $hafalan->update($request->all());
+            return redirect()->route('hafalan.index')->with('success', 'Hafalan berhasil diperbarui.');
+        } catch (\Exception $e) {
+            return redirect()->route('hafalan.index')->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function destroy($id)
     {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        try {
+            $hafalan = Hafalan::findOrFail($id);
+            $hafalan->delete();
+            return redirect()->route('hafalan.index')->with('success', 'Hafalan berhasil dihapus.');
+        } catch (\Exception $e) {
+            return redirect()->route('hafalan.index')->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
     }
 }

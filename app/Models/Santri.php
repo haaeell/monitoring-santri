@@ -20,6 +20,8 @@ class Santri extends Model
         'telp',
         'tanggal_lahir',
         'foto',
+        'nama_ayah',
+        'nama_ibu',
     ];
 
     public function user()

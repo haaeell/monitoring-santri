@@ -11,7 +11,7 @@ class WaliSantri extends Model
 
     protected $table = 'wali_santri';
 
-    protected $fillable = ['user_id', 'santri_id', 'hubungan'];
+    protected $fillable = ['user_id', 'santri_id'];
 
     public function santri()
     {

@@ -16,36 +16,31 @@
                                     <thead>
                                         <tr class="text-center">
                                             <th>Nama</th>
+                                            <th>Email</th>
                                             <th>Foto</th>
                                             <th>NIP</th>
                                             <th>Jenis Kelamin</th>
                                             <th>Pendidikan Terakhir</th>
-                                            <th>Jabatan</th>
                                             <th>Alamat</th>
                                             <th>Telepon</th>
                                             <th>Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {{-- @foreach ($guru as $item)
+                                        @foreach ($guru as $item)
                                             <tr>
-                                                <td>{{ $item->nama }}</td>
+                                                <td>{{ $item->user->name }}</td>
+                                                <td>{{ $item->user->email }}</td>
                                                 <td>
-                                                    <img src="{{ $item->foto ? asset('storage/' . $item->foto) : 'https://ui-avatars.com/api/?name=' . $item->nama }}"
+                                                    <img src="{{ $item->user->foto ? asset('storage/' . $item->user->foto) : 'https://ui-avatars.com/api/?name=' . $item->nama }}"
                                                         width="100px" height="100px" class="rounded"
                                                         style="object-fit: cover" alt="Foto guru">
                                                 </td>
-                                                <td>{{ $item->nis }}</td>
+                                                <td>{{ $item->nip }}</td>
                                                 <td>{{ $item->jenis_kelamin }}</td>
-                                                <td>{{ $item->kamar }}</td>
-                                                <td>
-                                                    @if ($item->orangtua)
-                                                        {{ $item->waliguru->user->name }} -
-                                                        {{ $item->waliguru->hubungan }}
-                                                    @endif
-                                                </td>
+                                                <td>{{ $item->pendidikan_terakhir }}</td>
                                                 <td>{{ $item->alamat }}</td>
-                                                <td>{{ $item->telp }}</td>
+                                                <td>{{ $item->no_telepon }}</td>
                                                 <td>
                                                     <div class="d-flex gap-1">
                                                         <a href="/guru/{{ $item->id }}/edit"
@@ -93,7 +88,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                        @endforeach --}}
+                                        @endforeach
                                     </tbody>
                                 </table>
                             </div>

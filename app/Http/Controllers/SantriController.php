@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Santri;
+use App\Models\User;
+use App\Models\WaliSantri;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 
 class SantriController extends Controller
@@ -49,6 +52,8 @@ class SantriController extends Controller
             'telp' => 'nullable|string|max:15',
             'alamat' => 'required|string',
             'foto' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
+            'nama_ayah' => 'nullable|string|max:255',
+            'nama_ibu' => 'nullable|string|max:255',
         ], $messages);
 
 
@@ -56,7 +61,7 @@ class SantriController extends Controller
             $fotoPath = $request->file('foto')->store('santri_photos', 'public');
         }
 
-        Santri::create([
+        $santri = Santri::create([
             'nama' => $data['nama'],
             'nis' => $data['nis'],
             'jenis_kelamin' => $data['jenis_kelamin'],
@@ -65,6 +70,20 @@ class SantriController extends Controller
             'telp' => $data['telp'] ?? null,
             'alamat' => $data['alamat'],
             'foto' => $fotoPath ?? null,
+            'nama_ayah' => $data['nama_ayah'],
+            'nama_ibu' => $data['nama_ibu'],    
+        ]);
+
+        $user = User::create([
+            'name' => $data['nama_ayah'],
+            'email' => $data['nis'] . '@santri.com',
+            'password' => Hash::make('password'),
+            'role' => 'wali_santri',
+        ]);
+
+        WaliSantri::create([
+            'santri_id' => $santri->id,
+            'user_id' => $user->id
         ]);
 
         return redirect()->route('santri.index')->with('success', 'Data santri berhasil disimpan.');

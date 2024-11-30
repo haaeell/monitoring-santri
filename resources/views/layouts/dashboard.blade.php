@@ -126,13 +126,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/wali-kelas">
-                                <i class="icon-paper menu-icon"></i>
-                                <span class="menu-title">Wali Kelas</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/kepala-pondok">
+                            <a class="nav-link" href="/kepala_pondok">
                                 <i class="icon-paper menu-icon"></i>
                                 <span class="menu-title">Kepala Pondok</span>
                             </a>
@@ -153,6 +147,30 @@
                             <a class="nav-link" href="/hafalan">
                                 <i class="icon-paper menu-icon"></i>
                                 <span class="menu-title">Hafalan</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/mapel">
+                                <i class="icon-paper menu-icon"></i>
+                                <span class="menu-title">Mapel</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/setor">
+                                <i class="icon-paper menu-icon"></i>
+                                <span class="menu-title">Setor Hafalan</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/setor">
+                                <i class="icon-paper menu-icon"></i>
+                                <span class="menu-title">Absensi</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/setor">
+                                <i class="icon-paper menu-icon"></i>
+                                <span class="menu-title">Nilai</span>
                             </a>
                         </li>
                     @endif

@@ -3,14 +3,20 @@
 namespace App\Http\Controllers;
 
 use App\Models\Guru;
+use App\Models\User;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 
 class GuruController extends Controller
 {
     public function index()
     {
-        $guru = Guru::all();
+        $guru = Guru::with('user')->whereHas('user', function ($query) {
+            $query->where('role', 'guru');
+        })->get();
         return view('guru.index', compact('guru'));
     }
 
@@ -23,64 +29,78 @@ class GuruController extends Controller
         $guru = Guru::find($id);
         return view('guru.edit', compact('guru'));
     }
-
     public function store(Request $request)
     {
         $messages = [
             'nama.required' => 'Nama lengkap harus diisi.',
-            'nis.required' => 'NIS harus diisi.',
-            'nis.unique' => 'NIS sudah terdaftar.',
-            'nis.numeric' => 'NIS harus berupa angka.',
-            'jenis_kelamin.required' => 'Jenis kelamin harus dipilih.',
-            'tanggal_lahir.required' => 'Tanggal lahir harus diisi.',
-            'kamar.required' => 'Kamar harus diisi.',
+            'nip.required' => 'NIP harus diisi.',
+            'nip.unique' => 'NIP sudah terdaftar.',
+            'nip.numeric' => 'NIP harus berupa angka.',
             'alamat.required' => 'Alamat harus diisi.',
+            'no_telepon.required' => 'No Telepon harus diisi.',
+            'pendidikan_terakhir.required' => 'Pendidikan terakhir harus diisi.',
             'foto.image' => 'File yang diunggah harus berupa gambar.',
             'foto.mimes' => 'Foto harus berupa file dengan ekstensi: jpeg, jpg, png.',
             'foto.max' => 'Foto tidak boleh lebih dari 2MB.',
+            'email.required' => 'Email harus diisi.',
+            'email.unique' => 'Email sudah terdaftar.',
+            'password.required' => 'Password harus diisi.',
         ];
 
         $data = $request->validate([
             'nama' => 'required|string|max:255',
-            'nis' => 'required|unique:guru,nis|numeric',
-            'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
-            'tanggal_lahir' => 'required|date',
-            'kamar' => 'required|string|max:255',
-            'telp' => 'nullable|string|max:15',
+            'nip' => 'required|unique:guru,nip|numeric',
             'alamat' => 'required|string',
+            'no_telepon' => 'required|string|max:15',
+            'pendidikan_terakhir' => 'required|string|max:255',
             'foto' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
+            'email' => 'required|email|unique:users,email',
         ], $messages);
 
+        DB::beginTransaction();
 
-        if ($request->hasFile('foto')) {
-            $fotoPath = $request->file('foto')->store('guru_photos', 'public');
+        try {
+            if ($request->hasFile('foto')) {
+                $fotoPath = $request->file('foto')->store('guru_photos', 'public');
+            } else {
+                $fotoPath = null;
+            }
+            $user = User::create([
+                'name' => $data['nama'],
+                'email' => $data['email'],
+                'password' => Hash::make('password'),
+                'role' => 'guru',
+                'foto' => $fotoPath,
+            ]);
+
+            Guru::create([
+                'user_id' => $user->id,
+                'nip' => $data['nip'],
+                'alamat' => $data['alamat'],
+                'no_telepon' => $data['no_telepon'],
+                'pendidikan_terakhir' => $data['pendidikan_terakhir'],
+            ]);
+
+            DB::commit();
+
+            return redirect()->route('guru.index')->with('success', 'Data guru berhasil disimpan.');
+        } catch (Exception $e) {
+            DB::rollBack();
+
+            return redirect()->route('guru.create')->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
-
-        Guru::create([
-            'nama' => $data['nama'],
-            'nis' => $data['nis'],
-            'jenis_kelamin' => $data['jenis_kelamin'],
-            'tanggal_lahir' => $data['tanggal_lahir'],
-            'kamar' => $data['kamar'],
-            'telp' => $data['telp'] ?? null,
-            'alamat' => $data['alamat'],
-            'foto' => $fotoPath ?? null,
-        ]);
-
-        return redirect()->route('guru.index')->with('success', 'Data guru berhasil disimpan.');
     }
 
     public function update(Request $request, $id)
     {
         $messages = [
             'nama.required' => 'Nama lengkap harus diisi.',
-            'nis.required' => 'NIS harus diisi.',
-            'nis.unique' => 'NIS sudah terdaftar.',
-            'nis.numeric' => 'NIS harus berupa angka.',
-            'jenis_kelamin.required' => 'Jenis kelamin harus dipilih.',
-            'tanggal_lahir.required' => 'Tanggal lahir harus diisi.',
-            'kamar.required' => 'Kamar harus diisi.',
+            'nip.required' => 'NIP harus diisi.',
+            'nip.unique' => 'NIP sudah terdaftar.',
+            'nip.numeric' => 'NIP harus berupa angka.',
             'alamat.required' => 'Alamat harus diisi.',
+            'no_telepon.required' => 'No Telepon harus diisi.',
+            'pendidikan_terakhir.required' => 'Pendidikan terakhir harus diisi.',
             'foto.image' => 'File yang diunggah harus berupa gambar.',
             'foto.mimes' => 'Foto harus berupa file dengan ekstensi: jpeg, jpg, png.',
             'foto.max' => 'Foto tidak boleh lebih dari 2MB.',
@@ -88,50 +108,66 @@ class GuruController extends Controller
 
         $data = $request->validate([
             'nama' => 'required|string|max:255',
-            'nis' => 'required|numeric|unique:guru,nis,' . $id,
-            'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
-            'tanggal_lahir' => 'required|date',
-            'kamar' => 'required|string|max:255',
-            'telp' => 'nullable|string|max:15',
+            'nip' => 'required|numeric|unique:guru,nip,' . $id,
             'alamat' => 'required|string',
+            'no_telepon' => 'required|string|max:15',
+            'pendidikan_terakhir' => 'required|string|max:255',
             'foto' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
         ], $messages);
 
-        $guru = Guru::findOrFail($id);
+        DB::beginTransaction();
+        try {
+            $guru = Guru::findOrFail($id);
+            $user = $guru->user;
 
-        if ($request->hasFile('foto')) {
-            if ($guru->foto && Storage::exists('public/' . $guru->foto)) {
-                Storage::delete('public/' . $guru->foto);
+            if ($request->hasFile('foto')) {
+                if ($guru->foto && Storage::exists('public/' . $guru->foto)) {
+                    Storage::delete('public/' . $guru->foto);
+                }
+
+                $fotoPath = $request->file('foto')->store('guru_photos', 'public');
+            } else {
+                $fotoPath = $guru->foto;
             }
 
-            $fotoPath = $request->file('foto')->store('guru_photos', 'public');
-        } else {
-            $fotoPath = $guru->foto;
+            $user->update([
+                'name' => $data['nama'],
+                'email' => $request->input('email', $user->email),
+                'password' => Hash::make($request->input('password', $user->password) ?: 'password'),
+                'foto' => $fotoPath,
+            ]);
+
+            $guru->update([
+                'nip' => $data['nip'],
+                'alamat' => $data['alamat'],
+                'no_telepon' => $data['no_telepon'],
+                'pendidikan_terakhir' => $data['pendidikan_terakhir'],
+            ]);
+
+            DB::commit();
+
+            return redirect()->route('guru.index')->with('success', 'Data guru berhasil diperbarui.');
+        } catch (Exception $e) {
+            DB::rollBack();
+
+            return redirect()->route('guru.edit', $id)->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
-
-        $guru->update([
-            'nama' => $data['nama'],
-            'nis' => $data['nis'],
-            'jenis_kelamin' => $data['jenis_kelamin'],
-            'tanggal_lahir' => $data['tanggal_lahir'],
-            'kamar' => $data['kamar'],
-            'telp' => $data['telp'] ?? null,
-            'alamat' => $data['alamat'],
-            'foto' => $fotoPath,
-        ]);
-
-        return redirect()->route('guru.index')->with('success', 'Data guru berhasil diperbarui.');
     }
+
+
 
     public function destroy($id)
     {
         $guru = Guru::findOrFail($id);
+        $user = User::find($guru->user_id);
+
         if ($guru->foto && file_exists(storage_path('app/public/' . $guru->foto))) {
-            unlink(storage_path('app/public/' . $guru->foto)); 
+            unlink(storage_path('app/public/' . $guru->foto));
         }
 
         $guru->delete();
-        
+        $user->delete();
+
         return redirect()->route('guru.index')->with('success', 'guru has been deleted successfully!');
     }
 }

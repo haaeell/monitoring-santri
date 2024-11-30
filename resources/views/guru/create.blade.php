@@ -40,12 +40,12 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group row align-items-center">
-                                    <label class="col-sm-3 col-form-label">password <span class="text-danger">*</span> <span
+                                    <label class="col-sm-3 col-form-label">No Telepon <span class="text-danger">*</span> <span
                                             style="float: right">:</span></label>
                                     <div class="col-sm-9">
-                                        <input type="password" name="password" class="form-control form-control-sm" required
-                                            value="{{ old('password') }}" />
-                                        @error('password')
+                                        <input type="number" name="no_telepon" class="form-control form-control-sm" required
+                                            value="{{ old('no_telepon') }}" />
+                                        @error('no_telepon')
                                             <small class="text-danger">{{ $message }}</small>
                                         @enderror
                                     </div>
@@ -90,15 +90,13 @@
                                 </div>
                             </div>
 
-                            <!-- Tanggal Lahir Field -->
                             <div class="col-md-6">
                                 <div class="form-group row align-items-center">
-                                    <label class="col-sm-3 col-form-label">Tanggal Lahir <span class="text-danger">*</span>
-                                        <span style="float: right">:</span></label>
+                                    <label class="col-sm-3 col-form-label">Pendidikan Terakhir <span class="text-danger">*</span> <span
+                                            style="float: right">:</span></label>
                                     <div class="col-sm-9">
-                                        <input type="date" name="tanggal_lahir" class="form-control form-control-sm"
-                                            required value="{{ old('tanggal_lahir') }}" />
-                                        @error('tanggal_lahir')
+                                        <input type="text" name="pendidikan_terakhir" class="form-control form-control-sm" rows="5" required>{{ old('pendidikan_terakhir') }}</input>
+                                        @error('pendidikan_terakhir')
                                             <small class="text-danger">{{ $message }}</small>
                                         @enderror
                                     </div>
@@ -120,37 +118,12 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="form-group row align-items-center">
-                                    <label class="col-sm-3 col-form-label">Pendidikan Terakhir <span class="text-danger">*</span> <span
-                                            style="float: right">:</span></label>
-                                    <div class="col-sm-9">
-                                        <input type="text" name="pendidikan_terakhir" class="form-control form-control-sm" rows="5" required>{{ old('pendidikan_terakhir') }}</input>
-                                        @error('pendidikan_terakhir')
-                                            <small class="text-danger">{{ $message }}</small>
-                                        @enderror
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group row align-items-center">
-                                    <label class="col-sm-3 col-form-label">jabatan <span class="text-danger">*</span> <span
-                                            style="float: right">:</span></label>
-                                    <div class="col-sm-9">
-                                        <input type="text" name="jabatan" class="form-control form-control-sm" required>{{ old('jabatan') }}</input>
-                                        @error('jabatan')
-                                            <small class="text-danger">{{ $message }}</small>
-                                        @enderror
-                                    </div>
-                                </div>
-                            </div>
-
                             <!-- Foto Field -->
                             <div class="col-md-6">
                                 <div class="form-group row align-items-center">
                                     <label class="col-sm-3 col-form-label">Foto <span style="float: right">:</span></label>
                                     <div class="col-sm-9">
-                                        <input type="file" id="foto" class="form-control form-control-sm" />
+                                        <input type="file" name="foto" id="foto" class="form-control form-control-sm" />
                                         @error('foto')
                                             <small class="text-danger">{{ $message }}</small>
                                         @enderror
