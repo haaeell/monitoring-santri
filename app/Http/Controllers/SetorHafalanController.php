@@ -14,9 +14,8 @@ class SetorHafalanController extends Controller
 {
     public function index()
     {
-        $kelasId = session('kelas_id', null);
         $kelas = Kelas::all();
-        return view('setor_hafalan.index', compact('kelas', 'kelasId'));
+        return view('setor_hafalan.index', compact('kelas'));
     }
     public function getMapelAndSantriByKelas(Request $request)
     {
@@ -24,41 +23,56 @@ class SetorHafalanController extends Controller
         $hafalan = Hafalan::where('kelas_id', $kelas->id)->first();
 
         if ($kelas) {
-            session(['kelas_id' => $kelas->id]);
-
             $today = Carbon::today()->toDateString();
-            $santrisWithSetoran = $kelas->santris->map(function ($santri) use ($today) {
+            $kelas->santris->map(function ($santri) use ($today) {
                 $setoranHafalanToday = SetorHafalan::where('santri_id', $santri->id)
                     ->whereDate('tanggal_setor', $today)
                     ->first();
-                $santri->setoran_today = $setoranHafalanToday; 
+                $santri->setoran_today = $setoranHafalanToday;
                 return $santri;
             });
 
             return response()->json([
-                'mapels' => $kelas->mapels,
                 'santris' => $kelas->santris,
                 'nama_hafalan' => $hafalan->nama,
             ]);
         }
         return response()->json(['message' => 'Data tidak ditemukan'], 404);
-    
     }
 
     public function store(Request $request)
     {
-        $data = $request->validate([
-            'santri_id' => 'required|exists:santri,id',
-            'nama_hafalan' => 'required|string|max:255',
-            'mulai' => 'required|integer',
-            'selesai' => 'required|integer',
-            'total' => 'required|integer',
-            'tanggal_setor' => 'required|date',
-            'keterangan' => 'nullable|string',
+        $request->validate([
+            'mulai' => 'required|array',
+            'selesai' => 'required|array',
+            'total' => 'required|array',
         ]);
 
-        SetorHafalan::create($data);
+        $today = Carbon::today()->toDateString(); 
 
-        return redirect()->route('setor.index')->with('success', 'Setor hafalan berhasil disimpan.');
+        foreach ($request->mulai as $santriId => $mulai) {
+            $setoranHafalan = SetorHafalan::where('santri_id', $santriId)
+                ->whereDate('tanggal_setor', $today)
+                ->first();
+
+            if ($setoranHafalan) {
+                $setoranHafalan->update([
+                    'mulai' => $mulai,
+                    'selesai' => $request->selesai[$santriId],
+                    'total' => $request->total[$santriId],
+                ]);
+            } else {
+                SetorHafalan::create([
+                    'santri_id' => $santriId,
+                    'nama_hafalan' => $request->nama_hafalan,
+                    'mulai' => $mulai,
+                    'selesai' => $request->selesai[$santriId],
+                    'total' => $request->total[$santriId],
+                    'tanggal_setor' => now(),
+                ]);
+            }
+        }
+
+        return response()->json(['success' => true]);
     }
 }

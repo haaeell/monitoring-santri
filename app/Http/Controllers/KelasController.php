@@ -72,9 +72,7 @@ class KelasController extends Controller
         $kelas = Kelas::findOrFail($kelasId);
         $santris = $kelas->santris; 
         
-        $allSantris = Santri::whereDoesntHave('kelas', function ($query) use ($kelasId) {
-            $query->where('kelas.id', $kelasId);
-        })->get();
+        $allSantris = Santri::whereDoesntHave('kelas')->get();
 
         return view('kelas.santri', compact('kelas', 'santris', 'allSantris'));
     }

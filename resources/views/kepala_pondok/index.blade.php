@@ -55,7 +55,7 @@
                                                     aria-label="Close"></button>
                                             </div>
                                             <div class="modal-body">
-                                                <div class="fw-semibold my-4 fs-5 uppercase">Apakah Anda yakin ingin menghapus data kepala pondok
+                                                <div class="fw-semibold my-4 fs-5 uppercase">Apakah Anda yakin ingin menghapus data kepala_pondok
                                                     <strong>{{ $item->nama }} </strong>?
                                                 </div>
                                                 <form id="delete-form" method="POST"

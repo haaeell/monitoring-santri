@@ -38,11 +38,7 @@
                                                 <td>{{ $item->nis }}</td>
                                                 <td>{{ $item->jenis_kelamin }}</td>
                                                 <td>{{ $item->kamar }}</td>
-                                                <td>
-                                                    @if ($item->orangtua)
-                                                        {{ $item->waliSantri->user->name }} -
-                                                        {{ $item->waliSantri->hubungan }}
-                                                    @endif
+                                                <td>{{ $item->nama_ayah }} / {{ $item->nama_ibu }}
                                                 </td>
                                                 <td>{{ $item->alamat }}</td>
                                                 <td>{{ $item->telp }}</td>

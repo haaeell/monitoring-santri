@@ -21,140 +21,141 @@
                 </form>
 
                 <div id="kelas-details" style="display: none;">
-                    <div id="mapel-section" class="form-group">
-                        <label for="mapel_id">Pilih Mata Pelajaran</label>
-                        <select name="mapel_id" id="mapel_id" class="form-control">
-                            <option value="">-- Pilih Mata Pelajaran --</option>
-                        </select>
+                    <div id="hafalan-section" class="form-group">
+                        <label for="hafalan_id">Nama Hafalan</label>
+                        <input type="text" id="namaHafalan" name="nama_hafalan" class="form-control" readonly>
                     </div>
 
                     <div id="santri-section" class="my-3">
-                        <h4>Santri</h4>
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>Nama Santri</th>
-                                    <th>Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody id="santri-list"></tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <div class="modal fade" id="modalHafalan" tabindex="-1" aria-labelledby="modalHafalanLabel"
-                    aria-hidden="true">
-                    <div class="modal-dialog modal-centered">
-                        <div class="modal-content">
-                            <form method="POST" action="{{ route('setor.store') }}">
-                                @csrf
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="modalHafalanLabel">Input Setoran Hafalan</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <input type="hidden" name="santri_id" id="santri_id">
-
-                                    <div class="form-group">
-                                        <label for="nama_hafalan">Nama Hafalan</label>
-                                        <input type="text" name="nama_hafalan" id="nama_hafalan" class="form-control"
-                                            required readonly>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="mulai">Mulai</label>
-                                        <input type="number" name="mulai" id="mulai" class="form-control" required>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="selesai">Selesai</label>
-                                        <input type="number" name="selesai" id="selesai" class="form-control" required>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="total">Total</label>
-                                        <input type="number" name="total" id="total" class="form-control" required>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="tanggal_setor">Tanggal Setor</label>
-                                        <input type="date" name="tanggal_setor" id="tanggal_setor" class="form-control"
-                                            required>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="keterangan">Keterangan</label>
-                                        <textarea name="keterangan" id="keterangan" class="form-control"></textarea>
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    <button type="submit" class="btn btn-primary">Simpan Setoran Hafalan</button>
-                                </div>
-                            </form>
+                        <div class="col-md-4 justify-content-end">
+                            <input type="text" id="searchSantri" class="form-control rounded-5" placeholder="Search Santri..."
+                                style="margin-bottom: 10px;">
                         </div>
+
+                        <form id="input-hafalan-form">
+                            @csrf
+                            <table class="table table-bordered table-striped" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th>Nama Santri</th>
+                                        <th>Mulai</th>
+                                        <th>Selesai</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="santri-list"></tbody>
+                            </table>
+                            <div class="text-end">
+                                <button type="submit" id="submit-button" class="btn btn-primary mt-2 text-end"
+                                    style="display: none;">
+                                    Simpan Setoran Hafalan
+                                </button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        $('#kelas_id').on('change', function() {
-            var kelasId = $(this).val();
-            console.log(kelasId);
+        $(document).ready(function() {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
 
-            if (kelasId) {
-                $.get("{{ route('getMapelAndSantriByKelas') }}", {
-                    kelas_id: kelasId
-                }, function(response) {
-                    console.log(response);
-                    if (response.mapels.length > 0) {
-                        $('#mapel_id').empty().append(
-                            '<option value="">-- Pilih Mata Pelajaran --</option>');
-                        response.mapels.forEach(function(mapel) {
-                            $('#mapel_id').append('<option value="' + mapel.id + '">' + mapel
-                                .nama_mapel + '</option>');
-                        });
-                        $('#mapel-section').show();
-                    } else {
-                        $('#mapel-section').hide();
-                    }
+            // When Kelas is selected, fetch Santri data
+            $('#kelas_id').on('change', function() {
+                var kelasId = $(this).val();
 
-                    if (response.santris.length > 0) {
-                        $('#santri-list').empty();
-                        response.santris.forEach(function(santri) {
-                            console.log(response)
-                            $('#santri-list').append(
-                                '<tr>' +
-                                '<td>' + santri.nama + '</td>' +
-                                '<td><button class="btn btn-primary btn-sm" onclick="openHafalanModal(' +
-                                santri.id + ', \'' + response.hafalan_id + '\', \'' + response
-                                .nama_hafalan + '\')">Input Hafalan</button></td>' +
-                                '</tr>'
-                            );
-                        });
-                        $('#santri-section').show();
-                        $('#kelas-details').show();
+                if (kelasId) {
+                    $.get("{{ route('getMapelAndSantriByKelas') }}", {
+                        kelas_id: kelasId
+                    }, function(response) {
+
+                        $('#namaHafalan').val(response.nama_hafalan).show();
+
+                        if (response.santris.length > 0) {
+                            $('#santri-list').empty();
+
+                            response.santris.forEach(function(santri) {
+                                var mulaiValue = santri.setoran_today ? santri.setoran_today
+                                    .mulai : '';
+                                var selesaiValue = santri.setoran_today ? santri
+                                    .setoran_today.selesai : '';
+                                var totalValue = santri.setoran_today ? santri.setoran_today
+                                    .total : '';
+
+                                $('#santri-list').append(`
+                                    <tr class="santri-row">
+                                        <td>${santri.nama}</td>
+                                        <td><input type="number" name="mulai[${santri.id}]" class="form-control mulai" style="width:100%;" value="${mulaiValue}"></td>
+                                        <td><input type="number" name="selesai[${santri.id}]" class="form-control selesai" style="width:100%;" value="${selesaiValue}"></td>
+                                        <td><input type="number" name="total[${santri.id}]" class="form-control total" style="width:100%;" value="${totalValue}" readonly></td>
+                                    </tr>
+                                `);
+                            });
+                            $('#santri-section').show();
+                            $('#kelas-details').show();
+                            $('#submit-button').show();
+                        } else {
+                            $('#santri-section').hide();
+                        }
+                    });
+                } else {
+                    $('#santri-section').hide();
+                    $('#kelas-details').hide();
+                    $('#submit-button').hide();
+                }
+            });
+
+            // Realtime Search for Santri
+            $('#searchSantri').on('input', function() {
+                var searchTerm = $(this).val().toLowerCase();
+
+                // Filter Santri rows based on search term
+                $('#santri-list tr').each(function() {
+                    var santriName = $(this).find('td').first().text().toLowerCase();
+                    if (santriName.indexOf(searchTerm) !== -1) {
+                        $(this).show();
                     } else {
-                        $('#santri-section').hide();
+                        $(this).hide();
                     }
                 });
-            } else {
-                $('#mapel-section').hide();
-                $('#santri-section').hide();
-                $('#kelas-details').hide();
-            }
-        });
+            });
 
-        function openHafalanModal(santriId, hafalanId, namaHafalan) {
-            $('#santri_id').val(santriId);
-            $('#hafalan_id').val(hafalanId);
-            $('#nama_hafalan').val(namaHafalan);
-            $('#modalHafalan').modal('show');
-        }
+            // Calculate Total when Mulai or Selesai changes
+            $(document).on('input', '.mulai, .selesai', function() {
+                var row = $(this).closest('tr');
+                var mulai = row.find('.mulai').val();
+                var selesai = row.find('.selesai').val();
+
+                if (mulai && selesai) {
+                    var total = selesai - mulai;
+                    row.find('.total').val(total);
+                } else {
+                    row.find('.total').val('');
+                }
+            });
+
+            // Handle form submission
+            $('#input-hafalan-form').on('submit', function(e) {
+                e.preventDefault();
+                var formData = $(this).serialize();
+                var namaHafalan = $('#namaHafalan').val();
+                formData += '&nama_hafalan=' + encodeURIComponent(namaHafalan);
+
+                $.post("{{ route('setor.store') }}", formData, function(response) {
+                    if (response.success) {
+                        swal.fire('Success', response.message, 'success');
+                    } else {
+                        swal.fire('Error', response.message, 'error');
+                    }
+                });
+            });
+        });
     </script>
 @endsection
