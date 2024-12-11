@@ -5,12 +5,15 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Faker\Factory as Faker;
 
 class DatabaseSeeder extends Seeder
 {
     public function run()
     {
-        $adminId = DB::table('users')->insertGetId([
+        $faker = Faker::create();
+
+        DB::table('users')->insertGetId([
             'name' => 'Admin User',
             'email' => 'admin@gmail.com',
             'password' => Hash::make('password'),
@@ -20,90 +23,78 @@ class DatabaseSeeder extends Seeder
             'updated_at' => now(),
         ]);
 
-        $guruUserId = DB::table('users')->insertGetId([
-            'name' => 'Guru User',
-            'email' => 'guru@gmail.com',
-            'password' => Hash::make('password'),
-            'role' => 'guru',
-            'foto' => null,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+        for ($i = 0; $i < 20; $i++) {
+            $guruUserId = DB::table('users')->insertGetId([
+                'name' => 'Guru ' . ($i + 1), 
+                'email' => 'guru' . ($i + 1) . '@gmail.com',
+                'password' => Hash::make('password'),
+                'role' => 'guru',
+                'foto' => null,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
 
-        $guruId = DB::table('guru')->insertGetId([
-            'user_id' => $guruUserId,
-            'nip' => '12345678',
-            'alamat' => 'Jalan Guru',
-            'no_telepon' => '081234567890',
-            'pendidikan_terakhir' => 'S1 Pendidikan',
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+            DB::table('guru')->insertGetId([
+                'user_id' => $guruUserId,
+                'nip' => $faker->randomNumber(8),
+                'alamat' => $faker->address,
+                'no_telepon' => $faker->phoneNumber,
+                'pendidikan_terakhir' => 'S1 Pendidikan',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
 
-        DB::table('kepala_pondok')->insertGetId([
-            'user_id' => $guruUserId,
-            'nip' => '87654321',
-            'alamat' => 'Jalan Kepala',
-            'no_telepon' => '081098765432',
-            'pendidikan_terakhir' => 'S2 Pendidikan',
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+        for ($i = 0; $i < 30; $i++) {
 
-        $kelasId = DB::table('kelas')->insertGetId([
-            'nama_kelas' => 'Kelas A',
-            'wali_kelas_id' => $guruId,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+            DB::table('kelas')->insertGetId([
+                'nama_kelas' => 'KELAS ' . ($i + 1),
+                'wali_kelas_id' => DB::table('guru')->inRandomOrder()->first()->id,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+    
+             DB::table('mapel')->insertGetId([
+                'nama_mapel' => 'Mapel ' . ($i + 1), 
+                'guru_id' => DB::table('guru')->inRandomOrder()->first()->id,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
 
-        DB::table('hafalan')->insertGetId([
-            'nama' => 'Jurumiyah',
-            'kelas_id' => $kelasId,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+        for ($i = 0; $i < 200; $i++) {
+            $namaAyah = $faker->name;
+            $nis = $faker->randomNumber(5);
+            
+            $userId = DB::table('users')->insertGetId([
+                'name' => 'Santri ' . chr(65 + ($i % 26)) . '-' . ($i + 1), 
+                'email' => $nis . $i . '@gmail.com',
+                'password' => Hash::make('password'),
+                'foto' => null, 
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
 
-        $santriId = DB::table('santri')->insertGetId([
-            'nama' => 'Santri A',
-            'nis' => '12345',
-            'kamar' => 'Kamar 1',
-            'jenis_kelamin' => 'Laki-laki',
-            'alamat' => 'Jalan Santri',
-            'telp' => '08123456789',
-            'tanggal_lahir' => '2005-05-15',
-            'nama_ayah' => 'Ayah Santri',
-            'nama_ibu' => 'Ibu Santri',
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+            $santriId = DB::table('santri')->insertGetId([
+                'nama' => 'Santri ' . chr(65 + ($i % 26)) . '-' . ($i + 1), 
+                'nis' =>  $nis . $i ,
+                'kamar' => 'Kamar ' . $faker->numberBetween(1, 5),
+                'jenis_kelamin' => $faker->randomElement(['Laki-laki', 'Perempuan']),
+                'alamat' => $faker->address,
+                'telp' => $faker->phoneNumber,
+                'tanggal_lahir' => $faker->date(),
+                'nama_ayah' => $namaAyah,
+                'nama_ibu' => $faker->name,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
 
-        DB::table('santri_kelas')->insert([
-            'santri_id' => $santriId,
-            'kelas_id' => $kelasId,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-
-        DB::table('wali_santri')->insertGetId([
-            'user_id' => $adminId,
-            'santri_id' => $santriId,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-
-        $mapelId = DB::table('mapel')->insertGetId([
-            'nama_mapel' => 'Matematika',
-            'guru_id' => $guruId,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-
-        DB::table('mapel_kelas')->insert([
-            'mapel_id' => $mapelId,
-            'kelas_id' => $kelasId,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+            DB::table('wali_santri')->insert([
+                'user_id' => $userId,
+                'santri_id' => $santriId,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
     }
 }

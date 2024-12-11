@@ -83,6 +83,7 @@ class CreateMonitoringSantriTables extends Migration
         Schema::create('absensi', function (Blueprint $table) {
             $table->id();
             $table->foreignId('santri_id')->constrained('santri')->onDelete('cascade');
+            $table->foreignId('mapel_id')->constrained('mapel')->onDelete('cascade');
             $table->date('tanggal');
             $table->enum('status', ['hadir', 'izin', 'sakit', 'alfa']);
             $table->text('keterangan')->nullable();
@@ -109,15 +110,6 @@ class CreateMonitoringSantriTables extends Migration
             $table->timestamps();
         });
 
-        Schema::create('nilai', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('santri_id')->constrained('santri')->onDelete('cascade');
-            $table->foreignId('mapel_id')->constrained('mapel')->onDelete('cascade');
-            $table->integer('nilai');
-            $table->text('keterangan')->nullable();
-            $table->timestamps();
-        });
-
         Schema::create('pelanggaran', function (Blueprint $table) {
             $table->id();
             $table->foreignId('santri_id')->constrained('santri')->onDelete('cascade');
@@ -136,15 +128,15 @@ class CreateMonitoringSantriTables extends Migration
             $table->timestamps();
         });
 
-        Schema::create('nilai_santri', function (Blueprint $table) {
+        Schema::create('nilai', function (Blueprint $table) {
             $table->id();
             $table->foreignId('santri_id')->constrained('santri')->onDelete('cascade');
             $table->foreignId('mapel_id')->constrained('mapel')->onDelete('cascade');
+            $table->foreignId('kelas_id')->constrained('kelas')->onDelete('cascade');
             $table->integer('presensi')->default(0);
             $table->integer('nilai_uts')->nullable();
             $table->integer('nilai_uas')->nullable();
             $table->integer('hafalan')->nullable();
-            $table->integer('peringkat')->nullable();
             $table->timestamps();
         });
     }
@@ -163,7 +155,6 @@ class CreateMonitoringSantriTables extends Migration
         Schema::dropIfExists('kelas');
         Schema::dropIfExists('hafalan');
         Schema::dropIfExists('users');
-        Schema::dropIfExists('nilai_santri');
         Schema::dropIfExists('guru');
         Schema::dropIfExists('kepala_pondok');
         

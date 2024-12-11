@@ -1,11 +1,13 @@
 <?php
 
+use App\Http\Controllers\AbsensiController;
 use App\Http\Controllers\GuruController;
 use App\Http\Controllers\HafalanController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\KelasController;
 use App\Http\Controllers\KepalaPondokController;
 use App\Http\Controllers\MapelController;
+use App\Http\Controllers\NilaiController;
 use App\Http\Controllers\SantriController;
 use App\Http\Controllers\SetorHafalanController;
 use App\Http\Controllers\WaliSantriController;
@@ -40,4 +42,12 @@ Route::middleware(['auth'])->group(function () {
     Route::get('setor', [SetorHafalanController::class, 'index'])->name('setor.index');
     Route::post('setor/store', [SetorHafalanController::class, 'store'])->name('setor.store');
     Route::get('get-mapel-santri', [SetorHafalanController::class, 'getMapelAndSantriByKelas'])->name('getMapelAndSantriByKelas');
+
+    Route::get('absensi', [AbsensiController::class, 'index'])->name('absensi.index');
+    Route::post('absensi/store', [AbsensiController::class, 'store'])->name('absensi.store');
+    Route::get('get-mapel-santri/absensi', [AbsensiController::class, 'getMapelAndSantriByKelas'])->name('getMapelAndSantriByKelas.absensi');
+
+    Route::get('nilai', [NilaiController::class, 'index'])->name('nilai.index');
+    Route::post('nilai/store', [NilaiController::class, 'store'])->name('nilai.store');
+    Route::get('get-mapel-santri/nilai', [NilaiController::class, 'getMapelAndSantriByKelas'])->name('getMapelAndSantriByKelas.nilai');
 });

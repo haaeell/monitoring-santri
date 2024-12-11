@@ -9,16 +9,22 @@ class Nilai extends Model
 {
     use HasFactory;
 
-    protected $table = 'nilai_santri';
+    protected $table = 'nilai';
 
-    protected $fillable = ['santri_kelas_id', 'mapel_id','presensi', 'nilai_uts', 'nilai_uas', 'hafalan', 'peringkat'];
+    protected $fillable = ['santri_id', 'kelas_id', 'mapel_id','presensi', 'nilai_uts', 'nilai_uas', 'hafalan', 'peringkat'];
 
-    public function santriKelas()
+    public function santri()
     {
-        return $this->belongsTo(SantriKelas::class);
+        return $this->belongsTo(Santri::class);
     }
     public function mapel()
     {
         return $this->belongsTo(Mapel::class);
     }
+    public function kelas()
+    {
+        return $this->belongsTo(Kelas::class);
+    }
+
+
 }

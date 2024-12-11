@@ -35,8 +35,7 @@
                             <div class="brand-logo">
                                 <img src="assets/images/logo.svg" alt="logo">
                             </div>
-                            <h4>New here?</h4>
-                            <h6 class="font-weight-light">lOGIN up is easy. It only takes a few steps</h6>
+                            <h6 class="font-weight-light">lOGIN</h6>
                             <form class="pt-3" action="{{ route('login') }}" method="POST">
                                 @csrf
                                 <div class="form-group">
