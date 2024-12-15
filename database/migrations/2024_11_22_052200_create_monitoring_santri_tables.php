@@ -92,9 +92,11 @@ class CreateMonitoringSantriTables extends Migration
 
         Schema::create('pembahasan', function (Blueprint $table) {
             $table->id();
+            $table->date('tanggal');
             $table->foreignId('guru_id')->constrained('guru')->onDelete('cascade');
             $table->foreignId('kelas_id')->constrained('kelas')->onDelete('cascade');
-            $table->date('tanggal');
+            $table->foreignId('mapel_id')->constrained('mapel')->onDelete('cascade');
+            $table->text('pembahasan');
             $table->timestamps();
         });
 

@@ -23,7 +23,7 @@ class DatabaseSeeder extends Seeder
             'updated_at' => now(),
         ]);
 
-        for ($i = 0; $i < 20; $i++) {
+        for ($i = 0; $i < 10; $i++) {
             $guruUserId = DB::table('users')->insertGetId([
                 'name' => 'Guru ' . ($i + 1), 
                 'email' => 'guru' . ($i + 1) . '@gmail.com',
@@ -45,7 +45,7 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-        for ($i = 0; $i < 30; $i++) {
+        for ($i = 0; $i < 10; $i++) {
 
             DB::table('kelas')->insertGetId([
                 'nama_kelas' => 'KELAS ' . ($i + 1),
@@ -62,7 +62,7 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-        for ($i = 0; $i < 200; $i++) {
+        for ($i = 0; $i < 10; $i++) {
             $namaAyah = $faker->name;
             $nis = $faker->randomNumber(5);
             
