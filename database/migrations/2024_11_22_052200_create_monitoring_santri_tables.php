@@ -56,13 +56,7 @@ class CreateMonitoringSantriTables extends Migration
             $table->string('nama_ayah')->nullable();
             $table->string('nama_ibu')->nullable();
             $table->date('tanggal_lahir');
-            $table->timestamps();
-        });
-
-        Schema::create('santri_kelas', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('santri_id')->constrained('santri')->onDelete('cascade');
-            $table->foreignId('kelas_id')->constrained('kelas')->onDelete('cascade');
+            $table->foreignId('kelas_id')->nullable()->constrained('kelas')->onDelete('set null');
             $table->timestamps();
         });
 
@@ -83,10 +77,12 @@ class CreateMonitoringSantriTables extends Migration
         Schema::create('absensi', function (Blueprint $table) {
             $table->id();
             $table->foreignId('santri_id')->constrained('santri')->onDelete('cascade');
+            $table->foreignId('kelas_id')->constrained('kelas')->onDelete('cascade');
             $table->foreignId('mapel_id')->constrained('mapel')->onDelete('cascade');
             $table->date('tanggal');
             $table->enum('status', ['hadir', 'izin', 'sakit', 'alfa']);
             $table->text('keterangan')->nullable();
+            $table->integer('pertemuan');
             $table->timestamps();
         });
 

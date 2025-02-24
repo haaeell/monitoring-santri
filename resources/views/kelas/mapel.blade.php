@@ -28,6 +28,7 @@
                             <thead>
                                 <tr class="text-center">
                                     <th>Nama Mapel</th>
+                                    <th>Nama Guru</th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
@@ -35,6 +36,7 @@
                                 @foreach ($mapels as $mapel)
                                     <tr>
                                         <td>{{ $mapel->nama_mapel }}</td>
+                                        <td>{{ $mapel->guru->user->name }}</td>
                                         <td>
                                             <div class="d-flex gap-1">
                                                 <form action="{{ route('kelas.removeMapel', [$kelas->id, $mapel->id]) }}"

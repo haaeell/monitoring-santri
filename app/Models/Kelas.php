@@ -31,8 +31,9 @@ class Kelas extends Model
 
     public function santris()
     {
-        return $this->belongsToMany(Santri::class, 'santri_kelas');
+        return $this->hasMany(Santri::class, 'kelas_id');
     }
+
     public function mapels()
     {
         return $this->belongsToMany(Mapel::class, 'mapel_kelas');

@@ -90,10 +90,14 @@
                             $('#santri-list').empty();
 
                             response.santris.forEach(function(santri) {
-                                var statusValue = santri.absensi_today ? santri.absensi_today
-                                    .status : '';
-                                var keteranganValue = santri.absensi_today ? santri
-                                    .absensi_today.keterangan : '';
+                                var presensiValue = santri.nilai ? santri.nilai
+                                    .presensi : '';
+                                var hafalanValue = santri.nilai ? santri
+                                    .nilai.hafalan : '';
+                                var uasValue = santri.nilai ? santri
+                                    .nilai.nilai_uas : '';
+                                var utsValue = santri.nilai ? santri
+                                    .nilai.nilai_uts : '';
 
                                 $('#santri-list').append(`
                                     <tr class="santri-row">
@@ -103,10 +107,10 @@
                                         <td>${santri.presensi.izin}</td>
                                         <td>${santri.presensi.sakit}</td>
                                         <td>${santri.presensi.alfa}</td>
-                                        <td><input type="number" name="nilai_uts[${santri.id}]" class="form-control selesai" style="width:100%;" value="${santri.nilai_uts}"></td>
-                                        <td><input type="number" name="nilai_uas[${santri.id}]" class="form-control selesai" style="width:100%;" value="${santri.nilai_uas}"></td>
-                                        <td><input type="number" name="hafalan[${santri.id}]" class="form-control selesai" style="width:100%;" value="${santri.hafalan}"></td>
-                                        <input type="hidden" name="hadir[${santri.id}]" class="form-control" style="width:100%;" value="${santri.presensi.hadir}">
+                                        <td><input type="number" name="nilai_uts[${santri.id}]" class="form-control selesai" style="width:100%;" value="${utsValue}"></td>
+                                        <td><input type="number" name="nilai_uas[${santri.id}]" class="form-control selesai" style="width:100%;" value="${uasValue}"></td>
+                                        <td><input type="number" name="hafalan[${santri.id}]" class="form-control selesai" style="width:100%;" value="${hafalanValue}"></td>
+                                        <input type="hidden" name="hadir[${santri.id}]" class="form-control" style="width:100%;" value="${presensiValue}">
                                     </tr>
                                 `);
                             });
@@ -143,6 +147,7 @@
                 var mapelId = $('#mapelId').val();
                 var kelasId = $('#kelasId').val();
                 formData += '&mapel_id=' + encodeURIComponent(mapelId);
+                formData += '&kelas_id=' + encodeURIComponent(kelasId);
 
                 $.post("{{ route('nilai.store') }}", formData, function(response) {
                     if (response.success) {

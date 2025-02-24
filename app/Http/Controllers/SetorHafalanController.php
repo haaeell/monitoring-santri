@@ -59,6 +59,7 @@ class SetorHafalanController extends Controller
                 $setoranHafalan->update([
                     'mulai' => $mulai,
                     'selesai' => $request->selesai[$santriId],
+                    'selesai' => $request->selesai[$santriId],
                     'total' => $request->total[$santriId],
                 ]);
             } else {

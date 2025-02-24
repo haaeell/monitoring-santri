@@ -12,7 +12,7 @@ class KelasController extends Controller
 {
     public function index()
     {
-        $kelas = Kelas::with('waliKelas')->get();
+        $kelas = Kelas::with('waliKelas')->orderBy('nama_kelas', 'desc')->get();
         return view('kelas.index', compact('kelas'));
     }
 
@@ -70,46 +70,40 @@ class KelasController extends Controller
     public function showSantri($kelasId)
     {
         $kelas = Kelas::findOrFail($kelasId);
-        $santris = $kelas->santris; 
-        
+        $santris = Santri::where('kelas_id', $kelasId)->get();
+
         $allSantris = Santri::whereDoesntHave('kelas')->get();
 
         return view('kelas.santri', compact('kelas', 'santris', 'allSantris'));
     }
 
 
-    public function addSantri(Request $request, $kelasId)
+    public function addSantri(Request $request, $kelas_id)
     {
-        $kelas = Kelas::findOrFail($kelasId);
-        $santriIds = $request->input('santri_id');
+        $request->validate([
+            'santri_id' => 'required|array',
+            'santri_id.*' => 'exists:santri,id'
+        ]);
 
-        foreach ($santriIds as $santriId) {
-            $santri = Santri::findOrFail($santriId);
+        $kelas = Kelas::findOrFail($kelas_id);
 
-            if ($santri->kelas()->count() >= 2) {
-                return redirect()->route('kelas.santri', $kelasId)
-                    ->with('error', 'Santri ' . $santri->nama . ' sudah terdaftar di 2 kelas.');
-            }
-        }
+        Santri::whereIn('id', $request->santri_id)->update(['kelas_id' => $kelas->id]);
 
-        $kelas->santris()->attach($santriIds);
-
-        return redirect()->route('kelas.santri', $kelasId)->with('success', 'Santri berhasil ditambahkan ke kelas.');
+        return redirect()->back()->with('success', 'Santri berhasil ditambahkan ke kelas!');
     }
 
-
-    public function removeSantri($kelasId, $santriId)
+    public function removeSantri($kelas_id, $santri_id)
     {
-        $kelas = Kelas::findOrFail($kelasId);
+        $santri = Santri::where('id', $santri_id)->where('kelas_id', $kelas_id)->firstOrFail();
+        $santri->update(['kelas_id' => null]);
 
-        $kelas->santris()->detach($santriId);
-
-        return redirect()->route('kelas.santri', $kelasId)->with('success', 'Santri berhasil dihapus dari kelas.');
+        return redirect()->back()->with('success', 'Santri berhasil dihapus dari kelas!');
     }
+
     public function showMapel($mapelId)
     {
         $kelas = Kelas::findOrFail($mapelId);
-        $mapels = $kelas->mapels; 
+        $mapels = $kelas->mapels;
 
         $allMapels = Mapel::whereDoesntHave('kelas', function ($query) use ($mapelId) {
             $query->where('kelas.id', $mapelId);

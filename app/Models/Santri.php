@@ -22,15 +22,17 @@ class Santri extends Model
         'foto',
         'nama_ayah',
         'nama_ibu',
+        'kelas_id',
     ];
 
     public function user()
     {
         return $this->belongsTo(User::class);
     }
+
     public function kelas()
     {
-        return $this->belongsToMany(Kelas::class, 'santri_kelas');
+        return $this->belongsTo(Kelas::class);
     }
 
     public function nilai()

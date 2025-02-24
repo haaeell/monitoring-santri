@@ -18,8 +18,8 @@ class Guru extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function mapels()
+    public function mapel()
     {
-        return $this->hasMany(Mapel::class);
+        return $this->hasOne(Mapel::class);
     }
 }

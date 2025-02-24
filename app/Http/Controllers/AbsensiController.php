@@ -14,15 +14,22 @@ use Illuminate\Support\Facades\Auth;
 
 class AbsensiController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $guruId = Auth::user()->guru->id;
+        $kelas = Kelas::all();
+        $selectedKelas = $request->kelas_id ? Kelas::find($request->kelas_id) : null;
+        $santris = [];
 
-        $kelas = Kelas::whereHas('mapels', function ($query) use ($guruId) {
-            $query->where('guru_id', $guruId);
-        })->get();
+        if ($selectedKelas) {
+            $santris = Santri::where('kelas_id', $selectedKelas->id)
+                ->with(['absensi' => function ($query) use ($selectedKelas) {
+                    $query->where('kelas_id', $selectedKelas->id);
+                }])
+                ->get();
+        }
 
-        return view('absensi.index', compact('kelas'));
+
+        return view('absensi.index', compact('kelas', 'selectedKelas', 'santris'));
     }
 
     public function getMapelAndSantriByKelas(Request $request)
@@ -78,37 +85,49 @@ class AbsensiController extends Controller
     }
     public function store(Request $request)
     {
-        $tanggal = $request->tanggal ? Carbon::parse($request->tanggal)->toDateString() : Carbon::today()->toDateString();
-
-        Pembahasan::create([
-            'tanggal' => $tanggal,
-            'guru_id' => Auth::user()->guru->id,
-            'kelas_id' => $request->kelas_id,
-            'mapel_id' => $request->mapel_id,
-            'pembahasan' => $request->pembahasan,
-        ]);
-
-        foreach ($request->status as $santriId => $status) {
-            $absensi = Absensi::where('santri_id', $santriId)
-                ->whereDate('tanggal', $tanggal)
-                ->first();
-
-            if ($absensi) {
-                $absensi->update([
-                    'status' => $status,
-                    'keterangan' => $request->keterangan[$santriId] ?? '',
-                ]);
-            } else {
-                Absensi::create([
-                    'santri_id' => $santriId,
-                    'mapel_id' => $request->mapel_id,
-                    'status' => $status,
-                    'keterangan' => $request->keterangan[$santriId] ?? '',
-                    'tanggal' => now(),
-                ]);
+        dd($request->all());
+        foreach ($request->absensi as $santri_id => $absensiData) {
+            foreach ($absensiData as $pertemuan => $status) {
+                Absensi::updateOrCreate(
+                    [
+                        'santri_id' => $santri_id,
+                        'kelas_id' => $request->kelas_id,
+                        'mapel_id' => $request->mapel_id,
+                        'pertemuan' => $pertemuan,
+                        'tanggal' => now(),
+                    ],
+                    [
+                        'status' => $status
+                    ]
+                );
             }
         }
 
-        return response()->json(['success' => true, 'message' => 'Absensi dan Pembahasan berhasil disimpan']);
+        return redirect()->back()->with('success', 'Absensi berhasil diperbarui!');
+    }
+
+
+    public function filter(Request $request)
+    {
+        $kelas_id = $request->kelas_id;
+        $tanggal = $request->tanggal ? Carbon::parse($request->tanggal)->toDateString() : Carbon::today()->toDateString();
+
+        $kelas = Kelas::where('id', $kelas_id)->with(['santris', 'walikelas.user'])->first();
+
+        if ($kelas) {
+            $kelas->santris->map(function ($santri) use ($tanggal) {
+                $absensiToday = Absensi::where('santri_id', $santri->id)
+                    ->whereDate('tanggal', $tanggal)
+                    ->first();
+                $santri->absensi_today = $absensiToday;
+                return $santri;
+            });
+
+            return response()->json([
+                'kelas' => $kelas->santris,
+            ]);
+        }
+
+        return response()->json(['message' => 'Kelas tidak ditemukan'], 404);
     }
 }

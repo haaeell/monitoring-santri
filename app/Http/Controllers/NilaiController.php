@@ -67,7 +67,6 @@ class NilaiController extends Controller
 
     public function store(Request $request)
     {
-        dd($request->all());
         foreach ($request->nilai_uts as $santriId => $nilaiUts) {
             $nilai = Nilai::where('santri_id', $santriId)
                 ->first();
@@ -82,6 +81,7 @@ class NilaiController extends Controller
                 Nilai::create([
                     'santri_id' => $santriId,
                     'mapel_id' => $request->mapel_id,
+                    'kelas_id' => $request->kelas_id,
                     'presensi' => $request->hadir[$santriId],
                     'nilai_uts' => $nilaiUts,
                     'nilai_uas' => $request->nilai_uas[$santriId],

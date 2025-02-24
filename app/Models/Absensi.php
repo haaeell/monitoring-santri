@@ -14,9 +14,11 @@ class Absensi extends Model
     protected $fillable = [
         'santri_id',
         'mapel_id',
+        'kelas_id',
         'status',
         'keterangan',
         'tanggal',
+        'pertemuan'
     ];
 
     public function mapel()
@@ -27,6 +29,10 @@ class Absensi extends Model
     public function santri()
     {
         return $this->belongsTo(Santri::class, 'santri_id');
+    }
+    public function kelas()
+    {
+        return $this->belongsTo(Kelas::class, 'kelas_id');
     }
 
     public $timestamps = false;

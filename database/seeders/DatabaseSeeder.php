@@ -14,7 +14,7 @@ class DatabaseSeeder extends Seeder
         $faker = Faker::create();
 
         DB::table('users')->insertGetId([
-            'name' => 'Admin User',
+            'name' => 'Admin',
             'email' => 'admin@gmail.com',
             'password' => Hash::make('password'),
             'role' => 'admin',
@@ -62,7 +62,7 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-        for ($i = 0; $i < 10; $i++) {
+        for ($i = 0; $i < 100; $i++) {
             $namaAyah = $faker->name;
             $nis = $faker->randomNumber(5);
             
@@ -85,6 +85,7 @@ class DatabaseSeeder extends Seeder
                 'tanggal_lahir' => $faker->date(),
                 'nama_ayah' => $namaAyah,
                 'nama_ibu' => $faker->name,
+                'kelas_id' =>  DB::table('kelas')->inRandomOrder()->first()->id,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
