@@ -11,7 +11,7 @@ class Nilai extends Model
 
     protected $table = 'nilai';
 
-    protected $fillable = ['santri_id', 'kelas_id', 'mapel_id','presensi', 'nilai_uts', 'nilai_uas', 'hafalan', 'peringkat'];
+    protected $fillable = ['santri_id', 'kelas_id', 'mapel_id','presensi', 'nilai_uts', 'nilai_uas', 'hafalan', 'peringkat','tahun_ajaran_id'];
 
     public function santri()
     {

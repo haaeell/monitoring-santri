@@ -9,12 +9,23 @@ class CreateMonitoringSantriTables extends Migration
     public function up()
     {
 
+
+        Schema::create('tahun_ajaran', function (Blueprint $table) {
+            $table->id();
+            $table->string('nama');
+            $table->date('tanggal_mulai');
+            $table->date('tanggal_selesai');
+            $table->enum('status', ['aktif', 'nonaktif'])->default('aktif');
+            $table->timestamps();
+        });
+
         Schema::create('guru', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->string('nip')->unique()->nullable();
             $table->string('alamat')->nullable();
             $table->string('no_telepon')->nullable();
+            $table->string('jenis_kelamin')->nullable();
             $table->string('pendidikan_terakhir')->nullable();
             $table->timestamps();
         });
@@ -29,14 +40,15 @@ class CreateMonitoringSantriTables extends Migration
             $table->timestamps();
         });
 
-        
+
         Schema::create('kelas', function (Blueprint $table) {
             $table->id();
             $table->string('nama_kelas');
             $table->foreignId('wali_kelas_id')->nullable()->constrained('guru');
+
             $table->timestamps();
         });
-        
+
         Schema::create('hafalan', function (Blueprint $table) {
             $table->id();
             $table->string('nama');
@@ -80,9 +92,10 @@ class CreateMonitoringSantriTables extends Migration
             $table->foreignId('kelas_id')->constrained('kelas')->onDelete('cascade');
             $table->foreignId('mapel_id')->constrained('mapel')->onDelete('cascade');
             $table->date('tanggal');
-            $table->enum('status', ['hadir', 'izin', 'sakit', 'alfa']);
+            $table->string('status');
             $table->text('keterangan')->nullable();
             $table->integer('pertemuan');
+            $table->foreignId('tahun_ajaran_id')->constrained('tahun_ajaran')->onDelete('cascade');
             $table->timestamps();
         });
 
@@ -135,6 +148,8 @@ class CreateMonitoringSantriTables extends Migration
             $table->integer('nilai_uts')->nullable();
             $table->integer('nilai_uas')->nullable();
             $table->integer('hafalan')->nullable();
+            $table->foreignId('tahun_ajaran_id')->constrained('tahun_ajaran')->onDelete('cascade');
+
             $table->timestamps();
         });
     }
@@ -155,6 +170,5 @@ class CreateMonitoringSantriTables extends Migration
         Schema::dropIfExists('users');
         Schema::dropIfExists('guru');
         Schema::dropIfExists('kepala_pondok');
-        
     }
 }

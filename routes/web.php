@@ -10,6 +10,7 @@ use App\Http\Controllers\MapelController;
 use App\Http\Controllers\NilaiController;
 use App\Http\Controllers\SantriController;
 use App\Http\Controllers\SetorHafalanController;
+use App\Http\Controllers\TahunAjaranController;
 use App\Http\Controllers\WaliSantriController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -50,4 +51,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('nilai', [NilaiController::class, 'index'])->name('nilai.index');
     Route::post('nilai/store', [NilaiController::class, 'store'])->name('nilai.store');
     Route::get('get-mapel-santri/nilai', [NilaiController::class, 'getMapelAndSantriByKelas'])->name('getMapelAndSantriByKelas.nilai');
+    Route::resource('tahun-ajaran', TahunAjaranController::class);
+
 });

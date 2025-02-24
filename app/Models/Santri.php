@@ -9,7 +9,7 @@ class Santri extends Model
 {
     use HasFactory;
 
-    protected $table = 'santri'; 
+    protected $table = 'santri';
 
     protected $fillable = [
         'nama',
@@ -37,8 +37,11 @@ class Santri extends Model
 
     public function nilai()
     {
-        return $this->hasMany(Nilai::class);
+        return $this->hasOne(Nilai::class, 'santri_id')
+            ->where('mapel_id', auth()->user()->guru->mapel->id ?? null)
+            ->where('tahun_ajaran_id', request('tahun_ajaran_id'));
     }
+
 
     public function waliSantri()
     {
@@ -48,5 +51,40 @@ class Santri extends Model
     public function absensi()
     {
         return $this->hasMany(Absensi::class);
+    }
+    public function getTotalHAttribute()
+    {
+        $tahunAjaranId = request('tahun_ajaran_id');
+        return $this->absensi()
+            ->where('status', 'H')
+            ->when($tahunAjaranId, fn($q) => $q->where('tahun_ajaran_id', $tahunAjaranId))
+            ->count();
+    }
+
+    public function getTotalIAttribute()
+    {
+        $tahunAjaranId = request('tahun_ajaran_id');
+        return $this->absensi()
+            ->where('status', 'I')
+            ->when($tahunAjaranId, fn($q) => $q->where('tahun_ajaran_id', $tahunAjaranId))
+            ->count();
+    }
+
+    public function getTotalSAttribute()
+    {
+        $tahunAjaranId = request('tahun_ajaran_id');
+        return $this->absensi()
+            ->where('status', 'S')
+            ->when($tahunAjaranId, fn($q) => $q->where('tahun_ajaran_id', $tahunAjaranId))
+            ->count();
+    }
+
+    public function getTotalAAttribute()
+    {
+        $tahunAjaranId = request('tahun_ajaran_id');
+        return $this->absensi()
+            ->where('status', 'A')
+            ->when($tahunAjaranId, fn($q) => $q->where('tahun_ajaran_id', $tahunAjaranId))
+            ->count();
     }
 }

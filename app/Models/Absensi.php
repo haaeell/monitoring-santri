@@ -18,7 +18,8 @@ class Absensi extends Model
         'status',
         'keterangan',
         'tanggal',
-        'pertemuan'
+        'pertemuan',
+        'tahun_ajaran_id',
     ];
 
     public function mapel()
@@ -33,6 +34,10 @@ class Absensi extends Model
     public function kelas()
     {
         return $this->belongsTo(Kelas::class, 'kelas_id');
+    }
+    public function tahunAjaran()
+    {
+        return $this->belongsTo(TahunAjaran::class, 'tahun_ajaran_id');
     }
 
     public $timestamps = false;

@@ -37,6 +37,7 @@ class GuruController extends Controller
             'nip.unique' => 'NIP sudah terdaftar.',
             'nip.numeric' => 'NIP harus berupa angka.',
             'alamat.required' => 'Alamat harus diisi.',
+            'jenis_kelamin.required' => 'Jenis Kelamin harus diisi.',
             'no_telepon.required' => 'No Telepon harus diisi.',
             'pendidikan_terakhir.required' => 'Pendidikan terakhir harus diisi.',
             'foto.image' => 'File yang diunggah harus berupa gambar.',
@@ -51,6 +52,7 @@ class GuruController extends Controller
             'nama' => 'required|string|max:255',
             'nip' => 'required|unique:guru,nip|numeric',
             'alamat' => 'required|string',
+            'jenis_kelamin' => 'required|string',
             'no_telepon' => 'required|string|max:15',
             'pendidikan_terakhir' => 'required|string|max:255',
             'foto' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
@@ -79,6 +81,7 @@ class GuruController extends Controller
                 'alamat' => $data['alamat'],
                 'no_telepon' => $data['no_telepon'],
                 'pendidikan_terakhir' => $data['pendidikan_terakhir'],
+                'jenis_kelamin' => $data['jenis_kelamin'],
             ]);
 
             DB::commit();
@@ -99,6 +102,7 @@ class GuruController extends Controller
             'nip.unique' => 'NIP sudah terdaftar.',
             'nip.numeric' => 'NIP harus berupa angka.',
             'alamat.required' => 'Alamat harus diisi.',
+            '.required' => 'Jenis Kelamin harus diisi.',
             'no_telepon.required' => 'No Telepon harus diisi.',
             'pendidikan_terakhir.required' => 'Pendidikan terakhir harus diisi.',
             'foto.image' => 'File yang diunggah harus berupa gambar.',
@@ -110,6 +114,7 @@ class GuruController extends Controller
             'nama' => 'required|string|max:255',
             'nip' => 'required|numeric|unique:guru,nip,' . $id,
             'alamat' => 'required|string',
+            'jenis_kelamin' => 'required|string',
             'no_telepon' => 'required|string|max:15',
             'pendidikan_terakhir' => 'required|string|max:255',
             'foto' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
@@ -142,6 +147,7 @@ class GuruController extends Controller
                 'alamat' => $data['alamat'],
                 'no_telepon' => $data['no_telepon'],
                 'pendidikan_terakhir' => $data['pendidikan_terakhir'],
+                'jenis_kelamin' => $data['jenis_kelamin'],
             ]);
 
             DB::commit();

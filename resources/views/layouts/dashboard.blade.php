@@ -20,6 +20,7 @@
 
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 
 <body>
@@ -108,102 +109,95 @@
                 <ul class="nav">
                     <li class="nav-item">
                         <a class="nav-link" href="/home">
-                            <i class="icon-grid menu-icon"></i>
+                            <i class="bi bi-grid menu-icon"></i>
                             <span class="menu-title">Dashboard</span>
                         </a>
                     </li>
                     <hr>
                     @if (Auth::user()->role == 'admin' || Auth::user()->role == 'kepala_pondok')
-                        <span>MASTER DATA</span>
+                        <span>MASTER</span>
                         <li class="nav-item">
                             <a class="nav-link" href="/santri">
-                                <i class="icon-paper menu-icon"></i>
+                                <i class="bi bi-person menu-icon"></i>
                                 <span class="menu-title">Santri</span>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="/guru">
-                                <i class="icon-paper menu-icon"></i>
+                                <i class="bi bi-person-badge menu-icon"></i>
                                 <span class="menu-title">Guru</span>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="/kepala_pondok">
-                                <i class="icon-paper menu-icon"></i>
+                                <i class="bi bi-person-gear menu-icon"></i>
                                 <span class="menu-title">Kepala Pondok</span>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="/wali">
-                                <i class="icon-paper menu-icon"></i>
+                                <i class="bi bi-people menu-icon"></i>
                                 <span class="menu-title">Wali Santri</span>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="/kelas">
-                                <i class="icon-paper menu-icon"></i>
+                                <i class="bi bi-house-door menu-icon"></i>
                                 <span class="menu-title">Kelas</span>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="/hafalan">
-                                <i class="icon-paper menu-icon"></i>
+                                <i class="bi bi-book menu-icon"></i>
                                 <span class="menu-title">Hafalan</span>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="/mapel">
-                                <i class="icon-paper menu-icon"></i>
+                                <i class="bi bi-journal-text menu-icon"></i>
                                 <span class="menu-title">Mapel</span>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/tahun-ajaran">
+                                <i class="bi bi-journal-text menu-icon"></i>
+                                <span class="menu-title">Tahun Ajaran</span>
+                            </a>
+                        </li>
                     @endif
+            
                     @if (Auth::user()->role == 'guru')
-                            <li class="nav-item">
-                                <a class="nav-link" href="/setor">
-                                    <i class="icon-paper menu-icon"></i>
-                                    <span class="menu-title">Setor Hafalan</span>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="/absensi">
-                                    <i class="icon-paper menu-icon"></i>
-                                    <span class="menu-title">Absensi</span>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="/nilai">
-                                    <i class="icon-paper menu-icon"></i>
-                                    <span class="menu-title">Nilai</span>
-                                </a>
-                            </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/setor">
+                                <i class="bi bi-upload menu-icon"></i>
+                                <span class="menu-title">Setor Hafalan</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/absensi">
+                                <i class="bi bi-bar-chart menu-icon"></i>
+                                <span class="menu-title">Absensi dan Nilai</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/nilai">
+                                <i class="bi bi-bar-chart menu-icon"></i>
+                                <span class="menu-title">Laporan</span>
+                            </a>
+                        </li>
                     @endif   
+            
                     @if (Auth::user()->role == 'wali_santri')
-                    <li class="nav-item">
-                        <a class="nav-link" href="/nilai">
-                            <i class="icon-paper menu-icon"></i>
-                            <span class="menu-title">Nilai Santri</span>
-                        </a>
-                    </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/nilai">
+                                <i class="bi bi-graph-up menu-icon"></i>
+                                <span class="menu-title">Nilai Santri</span>
+                            </a>
+                        </li>
                     @endif   
-                    {{-- <li class="nav-item">
-                        <a class="nav-link" data-bs-toggle="collapse" href="#error" aria-expanded="false"
-                            aria-controls="error">
-                            <i class="icon-ban menu-icon"></i>
-                            <span class="menu-title">Error pages</span>
-                            <i class="menu-arrow"></i>
-                        </a>
-                        <div class="collapse" id="error">
-                            <ul class="nav flex-column sub-menu">
-                                <li class="nav-item"> <a class="nav-link" href="pages/samples/error-404.html"> 404
-                                    </a></li>
-                                <li class="nav-item"> <a class="nav-link" href="pages/samples/error-500.html"> 500
-                                    </a></li>
-                            </ul>
-                        </div>
-                    </li> --}}
                 </ul>
             </nav>
+            
             <!-- partial -->
             <div class="main-panel">
                 <div class="content-wrapper">

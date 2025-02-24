@@ -11,7 +11,7 @@ class Guru extends Model
 
     protected $table = 'guru';
 
-    protected $fillable = ['user_id', 'nip', 'alamat', 'no_telepon', 'pendidikan_terakhir', 'jabatan'];
+    protected $fillable = ['user_id', 'nip', 'alamat', 'no_telepon', 'pendidikan_terakhir', 'jabatan','jenis_kelamin'];
 
     public function user()
     {
@@ -20,6 +20,6 @@ class Guru extends Model
 
     public function mapel()
     {
-        return $this->hasOne(Mapel::class);
+        return $this->hasOne(Mapel::class, 'guru_id');
     }
 }

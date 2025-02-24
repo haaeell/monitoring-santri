@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -9,15 +8,12 @@ class TahunAjaran extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['tahun', 'semester', 'aktif'];
+    protected $table = 'tahun_ajaran';
 
-    public function kelas()
-    {
-        return $this->hasMany(Kelas::class);
-    }
-
-    public function santriKelas()
-    {
-        return $this->hasMany(SantriKelas::class);
-    }
+    protected $fillable = [
+        'nama',
+        'tanggal_mulai',
+        'tanggal_selesai',
+        'status',
+    ];
 }

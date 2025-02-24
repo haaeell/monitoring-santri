@@ -7,30 +7,53 @@ use App\Models\Kelas;
 use App\Models\Mapel;
 use App\Models\Santri;
 use App\Models\Absensi;
+use App\Models\Guru;
+use App\Models\Nilai;
 use App\Models\Pembahasan;
+use App\Models\TahunAjaran;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class AbsensiController extends Controller
 {
+
     public function index(Request $request)
     {
-        $kelas = Kelas::all();
-        $selectedKelas = $request->kelas_id ? Kelas::find($request->kelas_id) : null;
+        $user = auth()->user();
+        $guru = Guru::where('user_id', $user->id)->first(); 
+    
+        if (!$guru) {
+            return abort(403, 'Anda bukan guru.');
+        }
+    
+        $kelasId = $request->kelas_id;
+        $tahunAjaranId = $request->tahun_ajaran_id;
+        $kelas = Kelas::whereHas('mapels', function ($query) use ($guru) {
+            $query->where('guru_id', $guru->id);
+        })->get();
+    
+        $tahunAjaran = TahunAjaran::all();
+    
+        $selectedKelas = $kelasId ? Kelas::find($kelasId) : null;
+        $selectedTahunAjaran = $tahunAjaranId ? TahunAjaran::find($tahunAjaranId) : null;
+    
         $santris = [];
-
-        if ($selectedKelas) {
-            $santris = Santri::where('kelas_id', $selectedKelas->id)
-                ->with(['absensi' => function ($query) use ($selectedKelas) {
-                    $query->where('kelas_id', $selectedKelas->id);
+    
+        if ($selectedKelas && $selectedTahunAjaran) {
+            $santris = Santri::where('kelas_id', $kelasId)
+                ->with(['absensi' => function ($query) use ($tahunAjaranId) {
+                    $query->where('tahun_ajaran_id', $tahunAjaranId);
                 }])
                 ->get();
         }
-
-
-        return view('absensi.index', compact('kelas', 'selectedKelas', 'santris'));
+    
+        return view('absensi.index', compact('kelas', 'tahunAjaran', 'selectedKelas', 'selectedTahunAjaran', 'santris'));
     }
+    
+    
+
+
 
     public function getMapelAndSantriByKelas(Request $request)
     {
@@ -85,26 +108,52 @@ class AbsensiController extends Controller
     }
     public function store(Request $request)
     {
-        dd($request->all());
-        foreach ($request->absensi as $santri_id => $absensiData) {
+        $request->validate([
+            'kelas_id' => 'required|exists:kelas,id',
+            'mapel_id' => 'nullable|exists:mapel,id',
+            'tahun_ajaran_id' => 'required|exists:tahun_ajaran,id',
+            'absensi' => 'required|array',
+        ]);
+
+        foreach ($request->absensi as $santriId => $absensiData) {
             foreach ($absensiData as $pertemuan => $status) {
-                Absensi::updateOrCreate(
-                    [
-                        'santri_id' => $santri_id,
-                        'kelas_id' => $request->kelas_id,
-                        'mapel_id' => $request->mapel_id,
-                        'pertemuan' => $pertemuan,
-                        'tanggal' => now(),
-                    ],
-                    [
-                        'status' => $status
-                    ]
-                );
+                // Hanya proses jika status tidak kosong
+                if (!empty($status)) {
+                    Absensi::updateOrCreate(
+                        [
+                            'santri_id' => $santriId,
+                            'kelas_id' => $request->kelas_id,
+                            'mapel_id' => $request->mapel_id,
+                            'tahun_ajaran_id' => $request->tahun_ajaran_id,
+                            'pertemuan' => $pertemuan,
+                        ],
+                        [
+                            'status' => $status
+                        ]
+                    );
+                }
             }
         }
 
-        return redirect()->back()->with('success', 'Absensi berhasil diperbarui!');
+        foreach ($request->uts as $santriId => $nilaiUts) {
+            Nilai::updateOrCreate(
+                [
+                    'santri_id' => $santriId,
+                    'kelas_id' => $request->kelas_id,
+                    'mapel_id' => $request->mapel_id,
+                    'tahun_ajaran_id' => $request->tahun_ajaran_id,
+                ],
+                [
+                    'nilai_uts' => $nilaiUts ?? 0,
+                    'nilai_uas' => $request->uas[$santriId] ?? 0,
+                ]
+            );
+        }
+
+        return redirect()->route('absensi.index', ['kelas_id' => $request->kelas_id, 'tahun_ajaran_id' => $request->tahun_ajaran_id])
+            ->with('success', 'Absensi berhasil disimpan.');
     }
+
 
 
     public function filter(Request $request)
