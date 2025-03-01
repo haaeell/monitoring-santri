@@ -22,7 +22,7 @@ class AbsensiController extends Controller
     {
         $user = auth()->user();
         $guru = Guru::where('user_id', $user->id)->first(); 
-    
+
         if (!$guru) {
             return abort(403, 'Anda bukan guru.');
         }
@@ -43,69 +43,15 @@ class AbsensiController extends Controller
         if ($selectedKelas && $selectedTahunAjaran) {
             $santris = Santri::where('kelas_id', $kelasId)
                 ->with(['absensi' => function ($query) use ($tahunAjaranId) {
-                    $query->where('tahun_ajaran_id', $tahunAjaranId);
+                    $query->where('tahun_ajaran_id', $tahunAjaranId)->where('mapel_id',  Auth::user()->guru->mapel->id ?? null);
                 }])
                 ->get();
         }
-    
+
         return view('absensi.index', compact('kelas', 'tahunAjaran', 'selectedKelas', 'selectedTahunAjaran', 'santris'));
     }
     
     
-
-
-
-    public function getMapelAndSantriByKelas(Request $request)
-    {
-        $kelas = Kelas::with(['mapels', 'santris'])->find($request->kelas_id);
-        $mapel = Mapel::where('guru_id', Auth::user()->guru->id)->first();
-
-        if ($kelas) {
-
-            $tanggal = $request->tanggal ? Carbon::parse($request->tanggal)->toDateString() : Carbon::today()->toDateString();
-
-            $jumlahHadir = 0;
-            $jumlahAlfa = 0;
-            $jumlahIzin = 0;
-            $jumlahSakit = 0;
-
-            $kelas->santris->map(function ($santri) use ($tanggal, &$jumlahHadir, &$jumlahAlfa, &$jumlahIzin, &$jumlahSakit) {
-                $absensiToday = Absensi::where('santri_id', $santri->id)
-                    ->whereDate('tanggal', $tanggal)
-                    ->first();
-                $santri->absensi_today = $absensiToday;
-
-                if ($absensiToday) {
-                    switch ($absensiToday->status) {
-                        case 'hadir':
-                            $jumlahHadir++;
-                            break;
-                        case 'alfa':
-                            $jumlahAlfa++;
-                            break;
-                        case 'izin':
-                            $jumlahIzin++;
-                            break;
-                        case 'sakit':
-                            $jumlahSakit++;
-                            break;
-                    }
-                }
-                return $santri;
-            });
-
-            return response()->json([
-                'santris' => $kelas->santris,
-                'mapel' => $mapel,
-                'jumlahHadir' => $jumlahHadir,
-                'jumlahAlfa' => $jumlahAlfa,
-                'jumlahIzin' => $jumlahIzin,
-                'jumlahSakit' => $jumlahSakit,
-                'pembahasan' => Pembahasan::where('kelas_id', $kelas->id)->where('mapel_id', $mapel->id)->where('guru_id', Auth::user()->guru->id)->whereDate('tanggal', $tanggal)->first(),
-            ]);
-        }
-        return response()->json(['message' => 'Data tidak ditemukan'], 404);
-    }
     public function store(Request $request)
     {
         $request->validate([

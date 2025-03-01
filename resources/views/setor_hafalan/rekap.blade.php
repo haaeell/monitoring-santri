@@ -45,13 +45,13 @@
                         <table class="table table-bordered table-striped" id="dataTable">
                             <thead>
                                 <tr class="text-center">
-                                    <th>Nama Santri</th>
-                                    <th>NIS</th>
-                                    <th>Nama Hafalan</th>
-                                    <th>Total Hafalan</th>
-                                    <th>Target</th>
-                                    <th>Terakhir Setor</th>
-                                    <th>Status</th>
+                                    <th class="text-center">Nama Santri</th>
+                                    <th class="text-center">NIS</th>
+                                    <th class="text-center">Nama Hafalan</th>
+                                    <th class="text-center">Total Hafalan</th>
+                                    <th class="text-center">Target</th>
+                                    <th class="text-center">Terakhir Setor</th>
+                                    <th class="text-center">Status</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -62,11 +62,11 @@
                                         $statusClass = $totalHafalan < $target ? 'table-danger' : ($totalHafalan > $target ? 'table-success' : '');
                                     @endphp
                                     <tr class="text-center {{ $statusClass }}">
-                                        <td>{{ $santri->nama }}</td>
-                                        <td>{{ $santri->nis }}</td>
-                                        <td>{{ $namaHafalan }}</td>
-                                        <td>{{ $totalHafalan }}</td>
-                                        <td>{{ $target }}</td>
+                                        <td class="text-center text-nowrap">{{ $santri->nama }}</td>
+                                        <td class="text-center">{{ $santri->nis }}</td>
+                                        <td class="text-center">{{ $namaHafalan }}</td>
+                                        <td class="text-center">{{ $totalHafalan }}</td>
+                                        <td class="text-center">{{ $target }}</td>
                                         <td>{{ $lastSetor ? \Carbon\Carbon::parse($lastSetor->tanggal_setor)->format('d F Y') : '-' }}
                                         </td>
                                         <td>
