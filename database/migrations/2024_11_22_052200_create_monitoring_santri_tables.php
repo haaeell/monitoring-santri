@@ -53,6 +53,7 @@ class CreateMonitoringSantriTables extends Migration
             $table->id();
             $table->string('nama');
             $table->foreignId('kelas_id')->constrained('kelas')->onDelete('cascade');
+            $table->integer('target');
             $table->timestamps();
         });
 
@@ -113,11 +114,13 @@ class CreateMonitoringSantriTables extends Migration
             $table->id();
             $table->foreignId('santri_id')->constrained('santri')->onDelete('cascade');
             $table->string('nama_hafalan');
-            $table->integer('mulai');
-            $table->integer('selesai');
-            $table->integer('total');
+            $table->integer('mulai')->nullable();
+            $table->integer('selesai')->nullable();
+            $table->integer('total')->nullable();
             $table->date('tanggal_setor');
             $table->text('keterangan')->nullable();
+
+            $table->foreignId('tahun_ajaran_id')->constrained('tahun_ajaran')->onDelete('cascade');
             $table->timestamps();
         });
 

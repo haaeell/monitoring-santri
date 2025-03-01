@@ -42,15 +42,16 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('setor', [SetorHafalanController::class, 'index'])->name('setor.index');
     Route::post('setor/store', [SetorHafalanController::class, 'store'])->name('setor.store');
-    Route::get('get-mapel-santri', [SetorHafalanController::class, 'getMapelAndSantriByKelas'])->name('getMapelAndSantriByKelas');
 
     Route::get('absensi', [AbsensiController::class, 'index'])->name('absensi.index');
     Route::post('absensi/store', [AbsensiController::class, 'store'])->name('absensi.store');
-    Route::get('get-mapel-santri/absensi', [AbsensiController::class, 'getMapelAndSantriByKelas'])->name('getMapelAndSantriByKelas.absensi');
 
     Route::get('nilai', [NilaiController::class, 'index'])->name('nilai.index');
-    Route::post('nilai/store', [NilaiController::class, 'store'])->name('nilai.store');
-    Route::get('get-mapel-santri/nilai', [NilaiController::class, 'getMapelAndSantriByKelas'])->name('getMapelAndSantriByKelas.nilai');
+    Route::get('nilai/{santri_id}', [NilaiController::class, 'detail'])->name('nilai.detail');
+    Route::get('detail-nilai/{santri_id}', [NilaiController::class, 'show'])->name('detail-nilai');
     Route::resource('tahun-ajaran', TahunAjaranController::class);
+
+    Route::get('/rekap-hafalan', [SetorHafalanController::class, 'rekap'])->name('rekap.index');
+
 
 });

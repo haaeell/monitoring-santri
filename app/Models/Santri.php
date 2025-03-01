@@ -48,6 +48,10 @@ class Santri extends Model
         return $this->hasOne(WaliSantri::class);
     }
 
+    public function hafalan()
+    {
+        return $this->hasMany(SetorHafalan::class);
+    }
     public function absensi()
     {
         return $this->hasMany(Absensi::class);

@@ -10,7 +10,13 @@ use Illuminate\Http\Request;
 
 class KelasController extends Controller
 {
-    public function index()
+/*************  ✨ Codeium Command ⭐  *************/
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+/******  b72b30a2-b610-40fa-be76-4ce10dee2573  *******/    public function index()
     {
         $kelas = Kelas::with('waliKelas')->orderBy('nama_kelas', 'desc')->get();
         return view('kelas.index', compact('kelas'));

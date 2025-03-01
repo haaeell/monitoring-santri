@@ -5,11 +5,11 @@
         <div class="card">
             <div class="card-body">
                 <div class="card-title">
-                    <h4>Rapor santri</h4>
+                    <h4>Rekap Hafalan</h4>
                 </div>
 
                 {{-- Form Filter Kelas --}}
-                <form method="GET" action="{{ route('nilai.index') }}">
+                <form method="GET" action="{{ route('rekap.index') }}">
                     <div class="form-group">
                         <label for="kelas_id">Pilih Kelas</label>
                         <select name="kelas_id" id="kelas_id" class="form-control" required>
@@ -45,27 +45,40 @@
                         <table class="table table-bordered table-striped" id="dataTable">
                             <thead>
                                 <tr class="text-center">
-                                    <th class="text-center">Nama Santri</th>
-                                    <th class="text-center">NIS</th>
-                                    <th class="text-center">Aksi</th>
+                                    <th>Nama Santri</th>
+                                    <th>NIS</th>
+                                    <th>Nama Hafalan</th>
+                                    <th>Total Hafalan</th>
+                                    <th>Target</th>
+                                    <th>Terakhir Setor</th>
+                                    <th>Status</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($rekap as $santri)
-                                    <tr class="text-center">
-                                        <td class="text-center">{{ $santri->nama }}</td>
-                                        <td class="text-center">{{ $santri->nis }}</td>
-
-                                        <td>
-                                            <form action="{{ route('nilai.detail', $santri->id) }}" method="GET">
-                                                <input type="hidden" name="kelas_id" value="{{ $selectedKelas->id }}">
-                                                <input type="hidden" name="tahun_ajaran_id"
-                                                    value="{{ $selectedTahunAjaran->id }}">
-                                                <button type="submit" class="btn btn-primary btn-sm">
-                                                    <i class="ti-eye"></i> Detail
-                                                </button>
-                                            </form>
+                                    @php
+                                        $totalHafalan = $santri->hafalan->sum('total');
+                                        $lastSetor = $santri->hafalan->sortByDesc('tanggal_setor')->first();
+                                        $statusClass = $totalHafalan < $target ? 'table-danger' : ($totalHafalan > $target ? 'table-success' : '');
+                                    @endphp
+                                    <tr class="text-center {{ $statusClass }}">
+                                        <td>{{ $santri->nama }}</td>
+                                        <td>{{ $santri->nis }}</td>
+                                        <td>{{ $namaHafalan }}</td>
+                                        <td>{{ $totalHafalan }}</td>
+                                        <td>{{ $target }}</td>
+                                        <td>{{ $lastSetor ? \Carbon\Carbon::parse($lastSetor->tanggal_setor)->format('d F Y') : '-' }}
                                         </td>
+                                        <td>
+                                            @if ($totalHafalan < $target)
+                                                <span class="badge bg-danger">Belum Mencapai Target</span>
+                                            @elseif ($totalHafalan > $target)
+                                                <span class="badge bg-success">Melebihi Target</span>
+                                            @else
+                                                <span class="badge bg-warning">Sesuai Target</span>
+                                            @endif
+                                        </td>
+
                                     </tr>
                                 @endforeach
                             </tbody>

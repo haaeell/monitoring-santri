@@ -12,9 +12,6 @@
     <link rel="stylesheet" href="{{ asset('assets') }}/vendors/css/vendor.bundle.base.css">
     <link rel="stylesheet" href="{{ asset('assets') }}/vendors/font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" href="{{ asset('assets') }}/vendors/mdi/css/materialdesignicons.min.css">
-    <link rel="stylesheet" href="{{ asset('assets') }}/vendors/datatables.net-bs5/dataTables.bootstrap5.css">
-    <link rel="stylesheet" href="{{ asset('assets') }}/vendors/ti-icons/css/themify-icons.css">
-    <link rel="stylesheet" type="text/css" href="{{ asset('assets') }}/js/select.dataTables.min.css">
     <link rel="stylesheet" href="{{ asset('assets') }}/css/style.css">
     <link rel="shortcut icon" href="{{ asset('assets') }}/images/favicon.png" />
 
@@ -179,12 +176,22 @@
                                 <span class="menu-title">Absensi dan Nilai</span>
                             </a>
                         </li>
+                      
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('rekap.index') }}">
+                                <i class="bi bi-book menu-icon"></i>
+                                <span class="menu-title">Rekap Hafalan</span>
+                            </a>
+                        </li>
+
+
                         <li class="nav-item">
                             <a class="nav-link" href="/nilai">
                                 <i class="bi bi-bar-chart menu-icon"></i>
                                 <span class="menu-title">Laporan</span>
                             </a>
                         </li>
+                        
                     @endif   
             
                     @if (Auth::user()->role == 'wali_santri')
@@ -209,10 +216,6 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="{{ asset('assets') }}/vendors/js/vendor.bundle.base.js"></script>
     <script src="{{ asset('assets') }}/vendors/chart.js/chart.umd.js"></script>
-    <script src="{{ asset('assets') }}/vendors/dutatatables.net/jquery.dataTables.js"></script>
-    <script src="{{ asset('assets') }}/vendors/datatables.net-bs4/dataTables.bootstrap4.js"></script>
-    <script src="{{ asset('assets') }}/vendors/datatables.net-bs5/dataTables.bootstrap5.js"></script>
-    <script src="{{ asset('assets') }}/js/dataTables.select.min.js"></script>
     <script src="{{ asset('assets') }}/js/off-canvas.js"></script>
     <script src="{{ asset('assets') }}/js/template.js"></script>
     <script src="{{ asset('assets') }}/js/settings.js"></script>

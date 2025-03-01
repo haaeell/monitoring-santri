@@ -24,6 +24,7 @@ class HafalanController extends Controller
         $request->validate([
             'nama' => 'required|string|max:255',
             'kelas_id' => 'required|exists:kelas,id',
+            'target' => 'required',
         ]);
 
         try {
@@ -46,6 +47,7 @@ class HafalanController extends Controller
         $request->validate([
             'nama' => 'required|string|max:255',
             'kelas_id' => 'required|exists:kelas,id',
+            'target' => 'required',
         ]);
 
         try {

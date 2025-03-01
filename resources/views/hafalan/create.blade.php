@@ -12,6 +12,10 @@
                             <label for="nama">Nama Hafalan</label>
                             <input type="text" name="nama" class="form-control" required>
                         </div>
+                        <div class="form-group">
+                            <label for="target">Target</label>
+                            <input type="number" name="target" class="form-control" required>
+                        </div>
 
                         <div class="form-group">
                             <label for="kelas_id">Pilih Kelas</label>

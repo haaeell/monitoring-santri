@@ -8,6 +8,7 @@ use App\Models\Nilai;
 use App\Models\SantriKelas;
 use App\Models\Mapel;
 use App\Models\Santri;
+use App\Models\TahunAjaran;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -16,80 +17,51 @@ class NilaiController extends Controller
 {
     public function index(Request $request)
     {
-        $kelas = Kelas::all();
-        return view('nilai.index', compact('kelas'));
-    }
-    public function getMapelAndSantriByKelas(Request $request)
-    {
-        $kelas = Kelas::with(['mapels', 'santris'])->find($request->kelas_id);
-        $mapel = Mapel::where('guru_id', Auth::user()->id)->first();
+        $kelas = Kelas::where('wali_kelas_id', Auth::user()->guru->waliKelas->id)->get();
+        $tahunAjaran = TahunAjaran::all();
 
-        if ($kelas) {
-            $kelas->santris->map(function ($santri) {
-                $nilai = Nilai::where('santri_id', $santri->id)->first();
-                $santri->nilai = $nilai;
+        $kelasId = $request->kelas_id;
+        $tahunAjaranId = $request->tahun_ajaran_id;
+        $selectedKelas = $kelasId ? Kelas::find($kelasId) : null;
+        $selectedTahunAjaran = $tahunAjaranId ? TahunAjaran::find($tahunAjaranId) : null;
 
-                $hadirCount = Absensi::where('santri_id', $santri->id)
-                    ->where('status', 'hadir')
-                    ->count();
+        $rekap = [];
 
-                $sakitCount = Absensi::where('santri_id', $santri->id)
-                    ->where('status', 'sakit')
-                    ->count();
-
-                $izinCount = Absensi::where('santri_id', $santri->id)
-                    ->where('status', 'izin')
-                    ->count();
-
-                $alfaCount = Absensi::where('santri_id', $santri->id)
-                    ->where('status', 'alfa')
-                    ->count();
-
-                $santri->presensi = [
-                    'hadir' => $hadirCount,
-                    'sakit' => $sakitCount,
-                    'izin'  => $izinCount,
-                    'alfa'  => $alfaCount,
-                ];
-
-                return $santri;
-            });
-
-            return response()->json([
-                'santris' => $kelas->santris,
-                'mapel' => $mapel,
-                'kelas' => $kelas
-            ]);
+        if ($selectedKelas && $selectedTahunAjaran) {
+            $rekap = Santri::where('kelas_id', $kelasId)->get();
         }
 
-        return response()->json(['message' => 'Data tidak ditemukan'], 404);
+        return view('nilai.index', compact('kelas', 'tahunAjaran', 'rekap', 'selectedKelas', 'selectedTahunAjaran'));
     }
 
-    public function store(Request $request)
+    public function show($santri_id, Request $request)
     {
-        foreach ($request->nilai_uts as $santriId => $nilaiUts) {
-            $nilai = Nilai::where('santri_id', $santriId)
-                ->first();
+        $santri = Santri::find($santri_id);
+        $kelasId = request('kelas_id');
+        $tahunAjaranId = request('tahun_ajaran_id');
 
-            if ($nilai) {
-                $nilai->update([
-                    'presensi' => $request->hadir[$santriId],
-                    'nilai_uts' => $nilaiUts,
-                    'nilai_uas' => $request->nilai_uas[$santriId],
-                ]);
-            } else {
-                Nilai::create([
-                    'santri_id' => $santriId,
-                    'mapel_id' => $request->mapel_id,
-                    'kelas_id' => $request->kelas_id,
-                    'presensi' => $request->hadir[$santriId],
-                    'nilai_uts' => $nilaiUts,
-                    'nilai_uas' => $request->nilai_uas[$santriId],
-                    'tanggal' => now(),
-                ]);
-            }
-        }
+        $tahunAjaran = TahunAjaran::findOrFail($tahunAjaranId)->nama;
+        $mapel = Mapel::findOrFail($request->mapel_id)->nama_mapel;
 
-        return response()->json(['success' => true]);
+        $kelas = Kelas::findOrFail($kelasId);
+        $mapels = $kelas->mapels;
+
+        $absensi = Absensi::where('santri_id', $santri_id)->where('status', 'H')->where('tahun_ajaran_id', $tahunAjaranId)->where('kelas_id', $kelasId)->get();
+        dd($absensi);
+        return view('nilai.show', compact('santri', 'absensi', 'mapel', 'tahunAjaran'));
+    }
+    public function detail($santri_id, Request $request)
+    {
+        $santri = Santri::find($santri_id);
+        $kelasId = request('kelas_id');
+        $tahunAjaranId = request('tahun_ajaran_id');
+
+        $tahunAjaran = TahunAjaran::findOrFail($tahunAjaranId)->nama;
+        $kelas = Kelas::findOrFail($kelasId);
+
+        $absensi = Absensi::where('santri_id', $santri_id)->where('status', 'H')->where('tahun_ajaran_id', $tahunAjaranId)->where('kelas_id', $kelasId)->get();
+        $nilai = Nilai::with('mapel')->where('santri_id', $santri_id)->where('tahun_ajaran_id', $tahunAjaranId)->get();
+
+        return view('nilai.show', compact('santri', 'absensi', 'nilai', 'tahunAjaran', 'kelas'));
     }
 }

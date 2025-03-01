@@ -51,7 +51,7 @@
                         <div class="table-responsive mt-3">
                             <table class="table table-bordered table-striped" id="dataTable">
                                 <thead>
-                                    <tr>
+                                    <tr class="table-success">
                                         <th rowspan="2">Nama Santri</th>
                                         <th rowspan="2">NPM</th>
                                         <th colspan="12" class="text-center">Absensi</th>
@@ -60,7 +60,7 @@
                                         <th rowspan="2">Nilai Akhir</th>
                                         <th rowspan="2">Nilai Mutu</th>
                                     </tr>
-                                    <tr>
+                                    <tr class="table-success">
                                         @for ($i = 1; $i <= 12; $i++)
                                             <th>{{ $i }}</th>
                                         @endfor

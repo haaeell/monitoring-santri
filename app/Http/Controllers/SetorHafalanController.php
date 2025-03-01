@@ -7,39 +7,37 @@ use App\Models\Kelas;
 use App\Models\Mapel;
 use App\Models\Santri;
 use App\Models\SetorHafalan;
+use App\Models\TahunAjaran;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class SetorHafalanController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $kelas = Kelas::all();
-        return view('setor_hafalan.index', compact('kelas'));
+        $kelas = Kelas::where('wali_kelas_id', Auth::user()->guru->waliKelas->id)->get();
+        $tahunAjaran = TahunAjaran::all();
+        $kelasId = $request->kelas_id;
+        $tahunAjaranId = $request->tahun_ajaran_id;
+        $selectedKelas = $kelasId ? Kelas::find($kelasId) : null;
+        $selectedTahunAjaran = $tahunAjaranId ? TahunAjaran::find($tahunAjaranId) : null;
+
+        $santris = [];
+
+        $today = Carbon::today()->toDateString();
+
+        $santris = Santri::where('kelas_id', $kelasId)
+            ->with(['hafalan' => function ($query) use ($tahunAjaranId) {
+                $query->where('tahun_ajaran_id', $tahunAjaranId);
+            }, 'hafalan' => function ($query) use ($today) {
+                $query->whereDate('tanggal_setor', $today);
+            }])
+            ->get();
+
+
+        return view('setor_hafalan.index', compact('kelas', 'tahunAjaran', 'santris', 'selectedKelas', 'selectedTahunAjaran'));
     }
-    public function getMapelAndSantriByKelas(Request $request)
-    {
-        $kelas = Kelas::with(['mapels', 'santris'])->find($request->kelas_id);
-        $hafalan = Hafalan::where('kelas_id', $kelas->id)->first();
-
-        if ($kelas) {
-            $today = Carbon::today()->toDateString();
-            $kelas->santris->map(function ($santri) use ($today) {
-                $setoranHafalanToday = SetorHafalan::where('santri_id', $santri->id)
-                    ->whereDate('tanggal_setor', $today)
-                    ->first();
-                $santri->setoran_today = $setoranHafalanToday;
-                return $santri;
-            });
-
-            return response()->json([
-                'santris' => $kelas->santris,
-                'nama_hafalan' => $hafalan->nama,
-            ]);
-        }
-        return response()->json(['message' => 'Data tidak ditemukan'], 404);
-    }
-
     public function store(Request $request)
     {
         $request->validate([
@@ -48,7 +46,7 @@ class SetorHafalanController extends Controller
             'total' => 'required|array',
         ]);
 
-        $today = Carbon::today()->toDateString(); 
+        $today = Carbon::today()->toDateString();
 
         foreach ($request->mulai as $santriId => $mulai) {
             $setoranHafalan = SetorHafalan::where('santri_id', $santriId)
@@ -61,6 +59,7 @@ class SetorHafalanController extends Controller
                     'selesai' => $request->selesai[$santriId],
                     'selesai' => $request->selesai[$santriId],
                     'total' => $request->total[$santriId],
+                    'tahun_ajaran_id' => $request->tahun_ajaran_id,
                 ]);
             } else {
                 SetorHafalan::create([
@@ -70,10 +69,36 @@ class SetorHafalanController extends Controller
                     'selesai' => $request->selesai[$santriId],
                     'total' => $request->total[$santriId],
                     'tanggal_setor' => now(),
+                    'tahun_ajaran_id' => $request->tahun_ajaran_id,
                 ]);
             }
         }
 
-        return response()->json(['success' => true]);
+        return redirect()->back()->with('success', 'Setoran hafalan berhasil disimpan.');
+    }
+    public function rekap(Request $request)
+    {
+        $kelas = Kelas::where('wali_kelas_id', Auth::user()->guru->waliKelas->id)->get();
+        $tahunAjaran = TahunAjaran::all();
+
+        $kelasId = $request->kelas_id;
+        $tahunAjaranId = $request->tahun_ajaran_id;
+        $selectedKelas = $kelasId ? Kelas::find($kelasId) : null;
+        $selectedTahunAjaran = $tahunAjaranId ? TahunAjaran::find($tahunAjaranId) : null;
+
+        $rekap = [];
+
+        if ($selectedKelas && $selectedTahunAjaran) {
+            $rekap = Santri::where('kelas_id', $kelasId)
+                ->with(['hafalan' => function ($query) use ($tahunAjaranId) {
+                    $query->where('tahun_ajaran_id', $tahunAjaranId);
+                }])
+                ->get();
+        }
+
+        $namaHafalan = Hafalan::where('kelas_id', $kelasId)->pluck('nama')->first();
+        $target = Hafalan::where('kelas_id', $kelasId)->pluck('target')->first();
+
+        return view('setor_hafalan.rekap', compact('kelas', 'tahunAjaran', 'rekap', 'selectedKelas', 'selectedTahunAjaran', 'namaHafalan', 'target'));
     }
 }

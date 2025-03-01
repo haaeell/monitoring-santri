@@ -22,4 +22,14 @@ class Guru extends Model
     {
         return $this->hasOne(Mapel::class, 'guru_id');
     }
+
+    public function hafalan()
+    {
+        return $this->hasOne(Hafalan::class, 'guru_id');
+    }
+
+    public function waliKelas()
+    {
+        return $this->hasOne(Kelas::class, 'wali_kelas_id');
+    }
 }

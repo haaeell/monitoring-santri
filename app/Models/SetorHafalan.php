@@ -19,5 +19,6 @@ class SetorHafalan extends Model
         'total',
         'tanggal_setor',
         'keterangan',
+        'tahun_ajaran_id',
     ];
 }

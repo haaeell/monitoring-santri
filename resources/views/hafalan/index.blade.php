@@ -16,6 +16,7 @@
                                     <thead>
                                         <tr class="text-center">
                                             <th>Nama hafalan</th>
+                                            <th>Target</th>
                                             <th>Kelas</th>
                                             <th>Aksi</th>
                                         </tr>
@@ -24,6 +25,7 @@
                                         @foreach ($hafalan as $item)
                                             <tr>
                                                 <td>{{ $item->nama }}</td>
+                                                <td>{{ $item->target }}</td>
                                                 <td>{{ $item->kelas->nama_kelas }}</td>
                                                 <td>
                                                     <div class="d-flex gap-1">

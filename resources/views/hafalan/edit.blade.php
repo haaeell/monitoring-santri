@@ -15,10 +15,16 @@
                         </div>
 
                         <div class="form-group">
+                            <label for="target">Target</label>
+                            <input type="number" name="target" value="{{ $hafalan->target }}" class="form-control" required>
+                        </div>
+
+                        <div class="form-group">
                             <label for="kelas_id">Pilih Kelas</label>
                             <select name="kelas_id" class="form-control" required>
                                 @foreach ($kelas as $kls)
-                                    <option value="{{ $kls->id }}" {{ $kls->id == $hafalan->kelas_id ? 'selected' : '' }}>
+                                    <option value="{{ $kls->id }}"
+                                        {{ $kls->id == $hafalan->kelas_id ? 'selected' : '' }}>
                                         {{ $kls->nama_kelas }}
                                     </option>
                                 @endforeach

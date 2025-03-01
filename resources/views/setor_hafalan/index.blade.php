@@ -7,154 +7,99 @@
                 <div class="card-title">
                     <h4>Setor Hafalan</h4>
                 </div>
-                <form id="kelas-form" method="POST">
-                    @csrf
+
+                {{-- Form Filter Kelas --}}
+                <form method="GET" action="{{ route('setor.index') }}">
                     <div class="form-group">
                         <label for="kelas_id">Pilih Kelas</label>
                         <select name="kelas_id" id="kelas_id" class="form-control" required>
                             <option value="">-- Pilih Kelas --</option>
                             @foreach ($kelas as $kelasItem)
-                                <option value="{{ $kelasItem->id }}">{{ $kelasItem->nama_kelas }}</option>
+                                <option value="{{ $kelasItem->id }}"
+                                    {{ request('kelas_id') == $kelasItem->id ? 'selected' : '' }}>
+                                    {{ $kelasItem->nama_kelas }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group mt-2">
+                        <label for="tahun_ajaran_id">Pilih Tahun Ajaran</label>
+                        <select name="tahun_ajaran_id" id="tahun_ajaran_id" class="form-control" required
+                            onchange="this.form.submit()">
+                            <option value="">-- Pilih Tahun Ajaran --</option>
+                            @foreach ($tahunAjaran as $tahun)
+                                <option value="{{ $tahun->id }}"
+                                    {{ request('tahun_ajaran_id') == $tahun->id ? 'selected' : '' }}>
+                                    {{ $tahun->nama }}
+                                </option>
                             @endforeach
                         </select>
                     </div>
                 </form>
 
-                <div id="kelas-details" style="display: none;">
-                    <div id="hafalan-section" class="form-group">
-                        <label for="hafalan_id">Nama Hafalan</label>
-                        <input type="text" id="namaHafalan" name="nama_hafalan" class="form-control" readonly>
-                    </div>
-
-                    <div id="santri-section" class="my-3">
-                        <div class="col-md-4 justify-content-end">
-                            <input type="text" id="searchSantri" class="form-control rounded-5" placeholder="Search Santri..."
-                                style="margin-bottom: 10px;">
-                        </div>
-
-                        <form id="input-hafalan-form">
-                            @csrf
-                            <table class="table table-bordered table-striped" style="width:100%">
+                @if ($selectedKelas)
+                    @php
+                        $hafalan = \App\Models\Hafalan::where('kelas_id', $selectedKelas->id)->first();
+                    @endphp
+                    <h5 class="mt-3">Nama Hafalan: {{ $hafalan->nama }} </h5>
+                    <h5 class="mt-3">Target : {{ $hafalan->target }} </h5>
+                    <form method="POST" action="{{ route('setor.store') }}">
+                        @csrf
+                        <input type="hidden" name="kelas_id" value="{{ $selectedKelas->id }}">
+                        <input type="hidden" name="hafalan_id" value="{{ $hafalan->id }}">
+                        <input type="hidden" name="tahun_ajaran_id" value="{{ $selectedTahunAjaran->id }}">
+                        <input type="hidden" name="nama_hafalan" value="{{ $hafalan->nama }}">
+                        <div class="table-responsive mt-3">
+                            <table class="table table-bordered table-striped" id="dataTable">
                                 <thead>
                                     <tr>
                                         <th>Nama Santri</th>
+                                        <th>NPM</th>
                                         <th>Mulai</th>
                                         <th>Selesai</th>
                                         <th>Total</th>
                                     </tr>
                                 </thead>
-                                <tbody id="santri-list"></tbody>
+                                <tbody>
+                                    @foreach ($santris as $santri)
+                                    @php
+                                        $setoranHariIni = $santri->hafalan->first();
+                                    @endphp
+                                    <tr>
+                                        <td>{{ $santri->nama }}</td>
+                                        <td>{{ $santri->nis }}</td>
+                                        <td><input type="number" name="mulai[{{ $santri->id }}]" class="form-control mulai"
+                                                value="{{ $setoranHariIni ? $setoranHariIni->mulai : '' }}" style="width:100%;"></td>
+                                        <td><input type="number" name="selesai[{{ $santri->id }}]" class="form-control selesai"
+                                                value="{{ $setoranHariIni ? $setoranHariIni->selesai : '' }}" style="width:100%;"></td>
+                                        <td><input type="text" class="form-control total" name="total[{{ $santri->id }}]" style="width:100%;"
+                                                value="{{ $setoranHariIni ? $setoranHariIni->total : '' }}" readonly></td>
+                                    </tr>
+                                @endforeach
+                                
+                                </tbody>
                             </table>
-                            <div class="text-end">
-                                <button type="submit" id="submit-button" class="btn btn-primary mt-2 text-end"
-                                    style="display: none;">
-                                    Simpan Setoran Hafalan
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
+
+                        </div>
+                        <div class="mt-3">
+                            <button type="submit" class="btn btn-primary">Simpan Data</button>
+                        </div>
+                    </form>
+                @endif
             </div>
         </div>
     </div>
-
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+@endsection
+@section('scripts')
     <script>
         $(document).ready(function() {
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-
-            // When Kelas is selected, fetch Santri data
-            $('#kelas_id').on('change', function() {
-                var kelasId = $(this).val();
-
-                if (kelasId) {
-                    $.get("{{ route('getMapelAndSantriByKelas') }}", {
-                        kelas_id: kelasId
-                    }, function(response) {
-
-                        $('#namaHafalan').val(response.nama_hafalan).show();
-
-                        if (response.santris.length > 0) {
-                            $('#santri-list').empty();
-
-                            response.santris.forEach(function(santri) {
-                                var mulaiValue = santri.setoran_today ? santri.setoran_today
-                                    .mulai : '';
-                                var selesaiValue = santri.setoran_today ? santri
-                                    .setoran_today.selesai : '';
-                                var totalValue = santri.setoran_today ? santri.setoran_today
-                                    .total : '';
-
-                                $('#santri-list').append(`
-                                    <tr class="santri-row">
-                                        <td>${santri.nama}</td>
-                                        <td><input type="number" name="mulai[${santri.id}]" class="form-control mulai" style="width:100%;" value="${mulaiValue}"></td>
-                                        <td><input type="number" name="selesai[${santri.id}]" class="form-control selesai" style="width:100%;" value="${selesaiValue}"></td>
-                                        <td><input type="number" name="total[${santri.id}]" class="form-control total" style="width:100%;" value="${totalValue}" readonly></td>
-                                    </tr>
-                                `);
-                            });
-                            $('#santri-section').show();
-                            $('#kelas-details').show();
-                            $('#submit-button').show();
-                        } else {
-                            $('#santri-section').hide();
-                        }
-                    });
-                } else {
-                    $('#santri-section').hide();
-                    $('#kelas-details').hide();
-                    $('#submit-button').hide();
-                }
-            });
-
-            // Realtime Search for Santri
-            $('#searchSantri').on('input', function() {
-                var searchTerm = $(this).val().toLowerCase();
-
-                // Filter Santri rows based on search term
-                $('#santri-list tr').each(function() {
-                    var santriName = $(this).find('td').first().text().toLowerCase();
-                    if (santriName.indexOf(searchTerm) !== -1) {
-                        $(this).show();
-                    } else {
-                        $(this).hide();
-                    }
-                });
-            });
-
-            // Calculate Total when Mulai or Selesai changes
-            $(document).on('input', '.mulai, .selesai', function() {
+            $('.mulai, .selesai').on('input', function() {
                 var row = $(this).closest('tr');
-                var mulai = row.find('.mulai').val();
-                var selesai = row.find('.selesai').val();
+                var mulai = parseInt(row.find('.mulai').val()) || 0;
+                var selesai = parseInt(row.find('.selesai').val()) || 0;
+                var total = selesai - mulai;
 
-                if (mulai && selesai) {
-                    var total = selesai - mulai;
-                    row.find('.total').val(total);
-                } else {
-                    row.find('.total').val('');
-                }
-            });
-
-            // Handle form submission
-            $('#input-hafalan-form').on('submit', function(e) {
-                e.preventDefault();
-                var formData = $(this).serialize();
-                var namaHafalan = $('#namaHafalan').val();
-                formData += '&nama_hafalan=' + encodeURIComponent(namaHafalan);
-
-                $.post("{{ route('setor.store') }}", formData, function(response) {
-                    if (response.success) {
-                        swal.fire('Success', response.message, 'success');
-                    } else {
-                        swal.fire('Error', response.message, 'error');
-                    }
-                });
+                row.find('.total').val(total >= 0 ? total : 0); // Pastikan tidak negatif
             });
         });
     </script>
