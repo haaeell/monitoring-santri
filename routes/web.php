@@ -48,10 +48,10 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('nilai', [NilaiController::class, 'index'])->name('nilai.index');
     Route::get('nilai/{santri_id}', [NilaiController::class, 'detail'])->name('nilai.detail');
-    Route::get('detail-nilai/{santri_id}', [NilaiController::class, 'show'])->name('detail-nilai');
+    Route::get('rapor-pdf/{santri_id}', [NilaiController::class, 'generatePDF'])->name('rapor.pdf');
+
     Route::resource('tahun-ajaran', TahunAjaranController::class);
 
     Route::get('/rekap-hafalan', [SetorHafalanController::class, 'rekap'])->name('rekap.index');
-
 
 });

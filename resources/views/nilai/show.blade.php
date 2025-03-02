@@ -105,20 +105,20 @@
                             <div class="bg-light p-3">
                                 <div class="row mb-2">
                                     <label class="col-md-3"><i class="bi bi-check-circle text-success"></i> Hadir</label>
-                                    <div class="col-md-9">: <span class="badge bg-success">{{ $hadir }}</span></div>
+                                    <div class="col-md-9">: {{ $hadir }}</div>
                                 </div>
                                 <div class="row mb-2">
                                     <label class="col-md-3"><i class="bi bi-exclamation-triangle text-warning"></i>
                                         Izin</label>
-                                    <div class="col-md-9">: <span class="badge bg-warning">{{ $izin }}</span></div>
+                                    <div class="col-md-9">: {{ $izin }}</div>
                                 </div>
                                 <div class="row mb-2">
                                     <label class="col-md-3"><i class="bi bi-thermometer text-primary"></i> Sakit</label>
-                                    <div class="col-md-9">: <span class="badge bg-primary">{{ $sakit }}</span></div>
+                                    <div class="col-md-9">: {{ $sakit }}</div>
                                 </div>
                                 <div class="row mb-2">
                                     <label class="col-md-3"><i class="bi bi-x-circle text-danger"></i> Alfa</label>
-                                    <div class="col-md-9">: <span class="badge bg-danger">{{ $alfa }}</span></div>
+                                    <div class="col-md-9">: {{ $alfa }}</div>
                                 </div>
                             </div>
                         </div>
@@ -128,21 +128,19 @@
                             <h5><i class="bi bi-bookmark-star"></i> Data Hafalan</h5>
                             <div class="bg-light p-3">
                                 <div class="row mb-2">
-                                    <label class="col-md-3"><i class="bi bi-book"></i> Nama Hafalan</label>
+                                    <label class="col-md-3"> Nama Hafalan</label>
                                     <div class="col-md-9">: <strong>{{ $namaHafalan }}</strong></div>
                                 </div>
                                 <div class="row mb-2">
-                                    <label class="col-md-3"><i class="bi bi-journal-bookmark"></i> Total Hafalan</label>
+                                    <label class="col-md-3">Total Hafalan</label>
                                     <div class="col-md-9">: <strong>{{ $totalHafalan }}</strong></div>
                                 </div>
                                 <div class="row mb-2">
-                                    <label class="col-md-3"><i class="bi bi-flag"></i> Target Hafalan</label>
+                                    <label class="col-md-3">Target Hafalan</label>
                                     <div class="col-md-9">: <strong>{{ $target }}</strong></div>
                                 </div>
                                 <div class="row mb-2">
-                                    <label class="col-md-3"><i
-                                            class="bi bi-check-square {{ $keteranganHafalan == 'Tercapai' ? 'text-success' : 'text-warning' }}"></i>
-                                        Keterangan</label>
+                                    <label class="col-md-3">Keterangan</label>
                                     <div class="col-md-9">:
                                         <span
                                             class="badge {{ $keteranganHafalan == 'Tercapai' ? 'bg-success' : 'bg-warning' }}">
@@ -165,18 +163,12 @@
                         </h3>
                     </div>
 
-                    <div class="mt-4">
-                        <h5><i class="bi bi-chat-left-text"></i> Catatan Wali Kelas:</h5>
-                        <p class="border p-3 bg-light">
-                            Santri menunjukkan perkembangan yang baik, tetap semangat dalam belajar.
-                        </p>
-                    </div>
-
                     <div class="text-end mt-4">
-                        <button class="btn btn-primary" onclick="window.print()">
-                            <i class="bi bi-printer-fill"></i> Cetak Rapor
-                        </button>
+                        <a href="{{ route('rapor.pdf', $santri->id) }}" class="btn btn-danger">
+                            <i class="bi bi-file-earmark-pdf-fill"></i> Unduh Rapor PDF
+                        </a>
                     </div>
+                    
                 </div>
             </div>
         </div>
