@@ -164,9 +164,7 @@
                     </div>
 
                     <div class="text-end mt-4">
-                        <a href="{{ route('rapor.pdf', $santri->id) }}" class="btn btn-danger">
-                            <i class="bi bi-file-earmark-pdf-fill"></i> Unduh Rapor PDF
-                        </a>
+                        <a href="{{ route('nilai.detail', ['santri_id' => $santri->id, 'kelas_id' => $kelas->id, 'tahun_ajaran_id' => $tahunAjaranId, 'pdf' => 'true']) }}" class="btn btn-danger">Cetak PDF</a>
                     </div>
                     
                 </div>
