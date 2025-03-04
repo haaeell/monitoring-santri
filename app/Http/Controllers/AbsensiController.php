@@ -21,25 +21,26 @@ class AbsensiController extends Controller
     public function index(Request $request)
     {
         $user = auth()->user();
-        $guru = Guru::where('user_id', $user->id)->first(); 
+        $guru = Guru::where('user_id', $user->id)->first();
+        $mapelId = Auth::user()->guru->mapel->id;
 
         if (!$guru) {
             return abort(403, 'Anda bukan guru.');
         }
-    
+
         $kelasId = $request->kelas_id;
         $tahunAjaranId = $request->tahun_ajaran_id;
         $kelas = Kelas::whereHas('mapels', function ($query) use ($guru) {
             $query->where('guru_id', $guru->id);
         })->get();
-    
+
         $tahunAjaran = TahunAjaran::all();
-    
+
         $selectedKelas = $kelasId ? Kelas::find($kelasId) : null;
         $selectedTahunAjaran = $tahunAjaranId ? TahunAjaran::find($tahunAjaranId) : null;
-    
+
         $santris = [];
-    
+
         if ($selectedKelas && $selectedTahunAjaran) {
             $santris = Santri::where('kelas_id', $kelasId)
                 ->with(['absensi' => function ($query) use ($tahunAjaranId) {
@@ -48,10 +49,16 @@ class AbsensiController extends Controller
                 ->get();
         }
 
-        return view('absensi.index', compact('kelas', 'tahunAjaran', 'selectedKelas', 'selectedTahunAjaran', 'santris'));
+        $pembahasan = Pembahasan::where('kelas_id', $kelasId)
+            ->where('mapel_id', $mapelId)
+            ->where('tahun_ajaran_id', $tahunAjaranId)
+            ->pluck('pembahasan', 'pertemuan');
+
+
+        return view('absensi.index', compact('kelas', 'tahunAjaran', 'selectedKelas', 'selectedTahunAjaran', 'santris', 'pembahasan'));
     }
-    
-    
+
+
     public function store(Request $request)
     {
         $request->validate([
@@ -63,7 +70,6 @@ class AbsensiController extends Controller
 
         foreach ($request->absensi as $santriId => $absensiData) {
             foreach ($absensiData as $pertemuan => $status) {
-                // Hanya proses jika status tidak kosong
                 if (!empty($status)) {
                     Absensi::updateOrCreate(
                         [
@@ -96,6 +102,27 @@ class AbsensiController extends Controller
                 ]
             );
         }
+
+        if ($request->has('pembahasan')) {
+            foreach ($request->pembahasan as $pertemuan => $isiPembahasan) {
+                if (!empty($isiPembahasan)) {
+                    Pembahasan::updateOrCreate(
+                        [
+                            'kelas_id' => $request->kelas_id,
+                            'mapel_id' => $request->mapel_id,
+                            'guru_id' => Auth::user()->guru->id,
+                            'tahun_ajaran_id' => $request->tahun_ajaran_id,
+                            'pertemuan' => $pertemuan,
+                            'tanggal' => now()->toDateString()
+                        ],
+                        [
+                            'pembahasan' => $isiPembahasan
+                        ]
+                    );
+                }
+            }
+        }
+
 
         return redirect()->route('absensi.index', ['kelas_id' => $request->kelas_id, 'tahun_ajaran_id' => $request->tahun_ajaran_id])
             ->with('success', 'Absensi berhasil disimpan.');

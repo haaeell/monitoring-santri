@@ -106,7 +106,9 @@ class CreateMonitoringSantriTables extends Migration
             $table->foreignId('guru_id')->constrained('guru')->onDelete('cascade');
             $table->foreignId('kelas_id')->constrained('kelas')->onDelete('cascade');
             $table->foreignId('mapel_id')->constrained('mapel')->onDelete('cascade');
+            $table->foreignId('tahun_ajaran_id')->constrained('tahun_ajaran')->onDelete('cascade');
             $table->text('pembahasan');
+            $table->integer('pertemuan');
             $table->timestamps();
         });
 

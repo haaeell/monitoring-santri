@@ -12,6 +12,6 @@ class Pembahasan extends Model
 protected $table = 'pembahasan';
 
     protected $fillable = [
-        'tanggal', 'guru_id', 'kelas_id', 'mapel_id', 'pembahasan'
+        'tanggal', 'guru_id', 'kelas_id', 'mapel_id', 'pembahasan','tahun_ajaran_id','pertemuan','tanggal'
     ];
 }

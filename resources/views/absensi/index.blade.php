@@ -40,10 +40,35 @@
                 @if ($selectedKelas)
                     <h5 class="mt-3">Mata Pelajaran: {{ Auth::user()->guru->mapel->nama_mapel ?? 'Tidak ada data' }}</h5>
 
-
-                    {{-- Form Simpan Absensi & Nilai --}}
                     <form method="POST" action="{{ route('absensi.store') }}">
                         @csrf
+
+                        <ul class="nav nav-tabs bg-success text-white p-2 rounded" id="pertemuanTabs" role="tablist">
+                            @for ($i = 1; $i <= 12; $i++)
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link text-white  fw-bold {{ $i == 1 ? 'active bg-light text-dark' : '' }}"
+                                        id="tab-{{ $i }}" data-bs-toggle="tab"
+                                        data-bs-target="#pertemuan-{{ $i }}" type="button" role="tab">
+                                        Pertemuan {{ $i }}
+                                    </button>
+                                </li>
+                            @endfor
+                        </ul>
+
+                        <div class="tab-content mt-3" id="pertemuanTabContent">
+                            @for ($i = 1; $i <= 12; $i++)
+                                <div class="tab-pane fade {{ $i == 1 ? 'show active' : '' }}"
+                                    id="pertemuan-{{ $i }}" role="tabpanel">
+                                    <div class="card shadow-sm">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Pembahasan Pertemuan {{ $i }}</h5>
+                                            <textarea name="pembahasan[{{ $i }}]" class="form-control" rows="3">{{ $pembahasan[$i] ?? '' }}</textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endfor
+                        </div>
+
                         <input type="hidden" name="kelas_id" value="{{ $selectedKelas->id }}">
                         <input type="hidden" name="mapel_id" value="{{ Auth::user()->guru->mapel->id ?? '' }}">
                         <input type="hidden" name="tahun_ajaran_id" value="{{ $selectedTahunAjaran->id ?? '' }}">
@@ -92,7 +117,8 @@
                                                 @endphp
                                                 <td>
                                                     <select name="absensi[{{ $santri->id }}][{{ $i }}]"
-                                                        class="form-control {{ $warna }} fw-bold text-dark text-center" style="width: 50px;">
+                                                        class="form-control {{ $warna }} fw-bold text-dark text-center"
+                                                        style="width: 50px;">
                                                         <option value=""></option>
                                                         <option value="H"
                                                             {{ $nilaiAbsensi == 'H' ? 'selected' : '' }}>H</option>
@@ -174,4 +200,21 @@
             </div>
         </div>
     </div>
+
+    {{-- Bootstrap 5 Script --}}
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var firstTab = new bootstrap.Tab(document.querySelector("#tab-1"));
+            firstTab.show();
+        });
+
+        // Mengubah warna tab yang aktif
+        document.querySelectorAll('.nav-link').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('bg-light',
+                    'text-dark'));
+                this.classList.add('bg-light', 'text-dark');
+            });
+        });
+    </script>
 @endsection

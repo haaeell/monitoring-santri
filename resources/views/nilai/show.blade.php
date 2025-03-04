@@ -4,7 +4,7 @@
     <div class="row">
         <div class="col-md-12">
             <div class="card shadow-sm">
-                <div class="card-header bg-primary text-white text-center">
+                <div class="card-header bg-success p-3 text-white text-center">
                     <h4 class="mb-0"><i class="bi bi-book"></i> Rapor Santri</h4>
                 </div>
                 <div class="card-body">
@@ -28,7 +28,7 @@
                                 <div class="col-md-9">: <strong>{{ $kelas->nama_kelas }}</strong></div>
                             </div>
                             <div class="row">
-                                <label class="col-md-3"><i class="bi bi-calendar-event"></i> Tahun Ajaran</label>
+                                <label class="col-md-3 text-nowrap"><i class="bi bi-calendar-event"></i> Tahun Ajaran</label>
                                 <div class="col-md-9">: <strong>{{ $tahunAjaran }}</strong></div>
                             </div>
                         </div>
@@ -38,8 +38,8 @@
                     {{-- Tabel Nilai --}}
                     <div class="table-responsive">
                         <table class="table table-bordered table-hover">
-                            <thead class="bg-secondary text-white text-center">
-                                <tr class="table-primary">
+                            <thead class="bg-success text-white text-center">
+                                <tr class="table-success">
                                     <th>Mata Pelajaran</th>
                                     <th>Nilai UTS</th>
                                     <th>Nilai UAS</th>
