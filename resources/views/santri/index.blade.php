@@ -29,11 +29,11 @@
                                     <tbody>
                                         @foreach ($santri as $item)
                                             <tr>
-                                                <td>{{ $item->nama }}</td>
+                                                <td class="text-nowrap">{{ $item->nama }}</td>
                                                 <td>
                                                     <img src="{{ $item->foto ? asset('storage/' . $item->foto) : 'https://ui-avatars.com/api/?name=' . $item->nama }}"
                                                         width="100px" height="100px" class="rounded"
-                                                        style="object-fit: cover" alt="Foto Santri">
+                                                        style="object-fit: cover" alt="{{ $item->foto }}">
                                                 </td>
                                                 <td>{{ $item->nis }}</td>
                                                 <td>{{ $item->jenis_kelamin }}</td>

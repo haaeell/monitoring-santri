@@ -27,7 +27,7 @@ class DatabaseSeeder extends Seeder
         }
 
         // Seeder Admin
-        DB::table('users')->insertGetId([
+        DB::table('users')->insert([
             'name' => 'Admin',
             'email' => 'admin@gmail.com',
             'password' => Hash::make('password'),
@@ -38,6 +38,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         // Seeder Guru
+        $guruIds = [];
         for ($i = 0; $i < 10; $i++) {
             $guruUserId = DB::table('users')->insertGetId([
                 'name' => 'Guru ' . ($i + 1),
@@ -49,9 +50,9 @@ class DatabaseSeeder extends Seeder
                 'updated_at' => now(),
             ]);
 
-            DB::table('guru')->insertGetId([
+            $guruIds[] = DB::table('guru')->insertGetId([
                 'user_id' => $guruUserId,
-                'nip' => $faker->randomNumber(8),
+                'nip' => $faker->randomNumber(8, true),
                 'alamat' => $faker->address,
                 'no_telepon' => $faker->phoneNumber,
                 'pendidikan_terakhir' => 'S1 Pendidikan',
@@ -60,11 +61,15 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-        // Seeder Kelas dan Mapel
+        // Seeder Kelas
+        $kelasIds = [];
         for ($i = 0; $i < 10; $i++) {
-            DB::table('kelas')->insertGetId([
-                'nama_kelas' => 'KELAS ' . ($i + 1),
-                'wali_kelas_id' => DB::table('guru')->inRandomOrder()->first()->id,
+            $tingkatan = $faker->numberBetween(7, 12);
+            $kelasIds[] = DB::table('kelas')->insertGetId([
+                'tingkatan' => $tingkatan,
+                'sub_kelas' => chr(65 + ($i % 5)), // Sub Kelas A, B, C, dst.
+                'nama_kelas' => 'Kelas ' . $tingkatan . ' ' . chr(65 + ($i % 5)),
+                'wali_kelas_id' => $faker->randomElement($guruIds),
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
@@ -77,14 +82,51 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-        // Seeder Santri dan Wali Santri
+        // Seeder Hafalan (Berdasarkan tingkatan kelas)
+        foreach ($kelasIds as $kelasId) {
+            $kelas = DB::table('kelas')->where('id', $kelasId)->first();
+
+            // Tentukan hafalan berdasarkan tingkatan
+            $hafalan = match ($kelas->tingkatan) {
+                7 => 'Alfiyah',
+                8 => 'Hadits Arbain',
+                9 => 'Matan Taqrib',
+                10 => 'Riyadhus Shalihin',
+                11 => 'Bulughul Maram',
+                12 => 'Umdatul Ahkam',
+                default => 'Hafalan Umum',
+            };
+
+            // Check if the hafalan for this tingkatan already exists
+            $existingHafalan = DB::table('hafalan')->where('tingkatan', $kelas->tingkatan)->first();
+
+            if (!$existingHafalan) {
+                // Insert Hafalan only if not already inserted
+                $hafalanId = DB::table('hafalan')->insertGetId([
+                    'nama' => $hafalan,
+                    'target' => $faker->numberBetween(50, 100),
+                    'tingkatan' => $kelas->tingkatan,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            } else {
+                // If the hafalan exists, use the existing hafalan id
+                $hafalanId = $existingHafalan->id;
+            }
+
+            // Update kelas with hafalan_id
+            DB::table('kelas')->where('id', $kelasId)->update(['hafalan_id' => $hafalanId]);
+        }
+
+
+        // Seeder Santri
         for ($i = 0; $i < 100; $i++) {
             $namaAyah = $faker->name;
-            $nis = $faker->randomNumber(5);
+            $nis = $faker->unique()->randomNumber(6, true);
 
             $santriId = DB::table('santri')->insertGetId([
                 'nama' => 'Santri ' . chr(65 + ($i % 26)) . '-' . ($i + 1),
-                'nis' => $nis . $i,
+                'nis' => $nis,
                 'kamar' => 'Kamar ' . $faker->numberBetween(1, 5),
                 'jenis_kelamin' => $faker->randomElement(['Laki-laki', 'Perempuan']),
                 'alamat' => $faker->address,
@@ -92,14 +134,14 @@ class DatabaseSeeder extends Seeder
                 'tanggal_lahir' => $faker->date(),
                 'nama_ayah' => $namaAyah,
                 'nama_ibu' => $faker->name,
-                'kelas_id' => DB::table('kelas')->inRandomOrder()->first()->id,
+                'kelas_id' => $faker->randomElement($kelasIds),
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
 
             $waliUserId = DB::table('users')->insertGetId([
                 'name' => $namaAyah,
-                'email' => $nis . '@santri.com',
+                'email' => 'wali' . $nis . '@gmail.com',
                 'password' => Hash::make('password'),
                 'role' => 'wali_santri',
                 'created_at' => now(),

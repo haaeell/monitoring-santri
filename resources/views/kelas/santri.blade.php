@@ -27,14 +27,16 @@
                         <table id="dataTable" class="display expandable-table" style="width:100%">
                             <thead>
                                 <tr class="text-center">
-                                    <th>Nama Santri</th>
+                                    <th class="text-center">Nama Santri</th>
+                                    <th class="text-center">NIS</th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($santris as $santri)
                                     <tr>
-                                        <td>{{ $santri->nama }}</td>
+                                        <td class="text-center">{{ $santri->nama }}</td>
+                                        <td class="text-center">{{ $santri->nis }}</td>
                                         <td>
                                             <div class="d-flex gap-1">
                                                 <form action="{{ route('kelas.removeSantri', [$kelas->id, $santri->id]) }}"

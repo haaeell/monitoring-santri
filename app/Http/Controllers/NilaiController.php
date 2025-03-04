@@ -20,7 +20,8 @@ class NilaiController extends Controller
         $kelas = Kelas::whereHas('mapels', function ($query) use ($guru) {
             $query->where('guru_id', $guru->id);
         })->get();
-        $tahunAjaran = TahunAjaran::all();
+        
+        $tahunAjaran = TahunAjaran::where('status', 'Aktif')->get();
 
         $kelasId = $request->kelas_id;
         $tahunAjaranId = $request->tahun_ajaran_id;
@@ -73,19 +74,19 @@ class NilaiController extends Controller
             ->count();
 
         $totalHafalan = $santri->hafalan->sum('total');
-        $namaHafalan = Hafalan::where('kelas_id', $kelasId)->pluck('nama')->first();
-        $target = Hafalan::where('kelas_id', $kelasId)->pluck('target')->first();
+
+        $target = $kelas->hafalan->target;
         $keteranganHafalan = ($totalHafalan >= $target) ? 'Tercapai' : 'Belum Tercapai';
         $statusKenaikan = ($totalHafalan >= $target) ? 'Naik Kelas' : 'Tidak Naik Kelas';
 
         if ($request->has('pdf') && $request->pdf == 'true') {
             $pdf = FacadePdf::loadView('nilai.pdf', compact(
                 'santri', 'absensi', 'nilai', 'tahunAjaran', 'kelas', 'hadir', 'izin', 
-                'sakit', 'alfa', 'totalHafalan', 'namaHafalan', 'target', 'keteranganHafalan', 'statusKenaikan'
+                'sakit', 'alfa', 'totalHafalan','keteranganHafalan', 'statusKenaikan'
             ));
-            return $pdf->download('rapor_santri.pdf');
+            return $pdf->download('rapor_santri_' . $santri->nama . '.pdf');
         }
 
-        return view('nilai.show', compact('tahunAjaranId', 'santri', 'absensi', 'nilai', 'tahunAjaran', 'kelas', 'hadir', 'izin', 'sakit', 'alfa', 'totalHafalan', 'namaHafalan', 'target', 'keteranganHafalan', 'statusKenaikan'));
+        return view('nilai.show', compact('tahunAjaranId', 'santri', 'absensi', 'nilai', 'tahunAjaran', 'kelas', 'hadir', 'izin', 'sakit', 'alfa', 'totalHafalan','keteranganHafalan', 'statusKenaikan'));
     }
 }

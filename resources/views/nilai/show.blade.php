@@ -128,22 +128,22 @@
                             <h5><i class="bi bi-bookmark-star"></i> Data Hafalan</h5>
                             <div class="bg-light p-3">
                                 <div class="row mb-2">
-                                    <label class="col-md-3"> Nama Hafalan</label>
-                                    <div class="col-md-9">: <strong>{{ $namaHafalan }}</strong></div>
+                                    <label class="col-md-3 text-nowrap"> Nama Hafalan</label>
+                                    <div class="col-md-9">: <strong>{{ $kelas->hafalan->nama }}</strong></div>
                                 </div>
                                 <div class="row mb-2">
-                                    <label class="col-md-3">Total Hafalan</label>
+                                    <label class="col-md-3 text-nowrap">Total Hafalan</label>
                                     <div class="col-md-9">: <strong>{{ $totalHafalan }}</strong></div>
                                 </div>
                                 <div class="row mb-2">
-                                    <label class="col-md-3">Target Hafalan</label>
-                                    <div class="col-md-9">: <strong>{{ $target }}</strong></div>
+                                    <label class="col-md-3 text-nowrap">Target Hafalan</label>
+                                    <div class="col-md-9">: <strong>{{ $kelas->hafalan->target }}</strong></div>
                                 </div>
                                 <div class="row mb-2">
                                     <label class="col-md-3">Keterangan</label>
                                     <div class="col-md-9">:
                                         <span
-                                            class="badge {{ $keteranganHafalan == 'Tercapai' ? 'bg-success' : 'bg-warning' }}">
+                                            class="badge fw-bold {{ $keteranganHafalan == 'Tercapai' ? 'bg-success' : 'bg-warning' }}">
                                             {{ $keteranganHafalan }}
                                         </span>
                                     </div>
@@ -164,7 +164,7 @@
                     </div>
 
                     <div class="text-end mt-4">
-                        <a href="{{ route('nilai.detail', ['santri_id' => $santri->id, 'kelas_id' => $kelas->id, 'tahun_ajaran_id' => $tahunAjaranId, 'pdf' => 'true']) }}" class="btn btn-danger">Cetak PDF</a>
+                        <a href="{{ route('nilai.detail', ['santri_id' => $santri->id, 'kelas_id' => $kelas->id, 'tahun_ajaran_id' => $tahunAjaranId, 'pdf' => 'true']) }}" class="btn btn-success text-white fw-bold">Cetak PDF</a>
                     </div>
                     
                 </div>

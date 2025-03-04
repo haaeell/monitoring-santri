@@ -34,7 +34,7 @@ class AbsensiController extends Controller
             $query->where('guru_id', $guru->id);
         })->get();
 
-        $tahunAjaran = TahunAjaran::all();
+        $tahunAjaran = TahunAjaran::where('status', 'Aktif')->get();
 
         $selectedKelas = $kelasId ? Kelas::find($kelasId) : null;
         $selectedTahunAjaran = $tahunAjaranId ? TahunAjaran::find($tahunAjaranId) : null;

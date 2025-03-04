@@ -34,7 +34,7 @@
                     <span class="icon-menu"></span>
                 </button>
                 <ul class="navbar-nav navbar-nav-right">
-                    <li class="nav-item dropdown">
+                    {{-- <li class="nav-item dropdown">
                         <a class="nav-link count-indicator dropdown-toggle" id="notificationDropdown" href="#"
                             data-bs-toggle="dropdown">
                             <i class="icon-bell mx-0"></i>
@@ -77,17 +77,15 @@
                                 </div>
                             </a>
                         </div>
-                    </li>
+                    </li> --}}
                     <li class="nav-item nav-profile dropdown">
                         <span class="mx-2">{{ Auth::user()->name }}</span>
                         <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown"
                             id="profileDropdown">
-                            <img src="{{ asset('assets') }}/images/faces/face28.jpg" alt="profile" />
+                            <img src="{{ Auth::user()->foto ? asset('storage/' . Auth::user()->foto) : 'https://ui-avatars.com/api/?name=' . Auth::user()->nama }}" alt="profile" />
                         </a>
                         <div class="dropdown-menu dropdown-menu-right navbar-dropdown"
                             aria-labelledby="profileDropdown">
-                            <a class="dropdown-item">
-                                <i class="ti-settings text-primary"></i> Settings </a>
                             <a href="{{ route('logout') }}" class="dropdown-item"
                                 onclick="event.preventDefault();
                                               document.getElementById('logout-form').submit();">

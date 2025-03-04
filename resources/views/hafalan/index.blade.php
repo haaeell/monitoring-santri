@@ -26,7 +26,7 @@
                                             <tr>
                                                 <td>{{ $item->nama }}</td>
                                                 <td>{{ $item->target }}</td>
-                                                <td>{{ $item->kelas->nama_kelas }}</td>
+                                                <td>{{ $item->tingkatan }}</td>
                                                 <td>
                                                     <div class="d-flex gap-1">
                                                         <a href="/hafalan/{{ $item->id }}/edit"

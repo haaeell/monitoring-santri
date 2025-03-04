@@ -38,7 +38,7 @@
                 </form>
 
                 @if ($selectedKelas && $selectedTahunAjaran)
-                    <h5 class="mt-3">Kelas: {{ $selectedKelas->nama_kelas }}</h5>
+                    <h5 class="mt-3">Kelas: {{ $selectedKelas->hafalan->nama }}</h5>
                     <h5 class="mt-3">Tahun Ajaran: {{ $selectedTahunAjaran->nama }}</h5>
 
                     <div class="table-responsive mt-3">
@@ -59,20 +59,20 @@
                                     @php
                                         $totalHafalan = $santri->hafalan->sum('total');
                                         $lastSetor = $santri->hafalan->sortByDesc('tanggal_setor')->first();
-                                        $statusClass = $totalHafalan < $target ? 'table-danger' : ($totalHafalan > $target ? 'table-success' : '');
+                                        $statusClass = $totalHafalan < intVal($selectedKelas->hafalan->target) ? 'table-danger' : ($totalHafalan > intVal($selectedKelas->hafalan->target) ? 'table-success' : '');
                                     @endphp
                                     <tr class="text-center {{ $statusClass }}">
                                         <td class="text-center text-nowrap">{{ $santri->nama }}</td>
                                         <td class="text-center">{{ $santri->nis }}</td>
-                                        <td class="text-center">{{ $namaHafalan }}</td>
+                                        <td class="text-center">{{ $selectedKelas->hafalan->nama }}</td>
                                         <td class="text-center">{{ $totalHafalan }}</td>
-                                        <td class="text-center">{{ $target }}</td>
+                                        <td class="text-center">{{ $selectedKelas->hafalan->target }}</td>
                                         <td>{{ $lastSetor ? \Carbon\Carbon::parse($lastSetor->tanggal_setor)->format('d F Y') : '-' }}
                                         </td>
                                         <td>
-                                            @if ($totalHafalan < $target)
+                                            @if ($totalHafalan < $selectedKelas->hafalan->target)
                                                 <span class="badge bg-danger">Belum Mencapai Target</span>
-                                            @elseif ($totalHafalan > $target)
+                                            @elseif ($totalHafalan > $selectedKelas->hafalan->target)
                                                 <span class="badge bg-success">Melebihi Target</span>
                                             @else
                                                 <span class="badge bg-warning">Sesuai Target</span>

@@ -38,23 +38,20 @@
                 </form>
 
                 @if ($selectedKelas)
-                    @php
-                        $hafalan = \App\Models\Hafalan::where('kelas_id', $selectedKelas->id)->first();
-                    @endphp
-                    <h5 class="mt-3">Nama Hafalan: {{ $hafalan->nama }} </h5>
-                    <h5 class="mt-3">Target : {{ $hafalan->target }} </h5>
+                    <h5 class="mt-3">Nama Hafalan: {{ $selectedKelas->hafalan->nama }} </h5>
+                    <h5 class="mt-3">Target : {{ $selectedKelas->hafalan->target }} </h5>
                     <form method="POST" action="{{ route('setor.store') }}">
                         @csrf
                         <input type="hidden" name="kelas_id" value="{{ $selectedKelas->id }}">
-                        <input type="hidden" name="hafalan_id" value="{{ $hafalan->id }}">
+                        <input type="hidden" name="hafalan_id" value="{{ $selectedKelas->hafalan->id }}">
                         <input type="hidden" name="tahun_ajaran_id" value="{{ $selectedTahunAjaran->id }}">
-                        <input type="hidden" name="nama_hafalan" value="{{ $hafalan->nama }}">
+                        <input type="hidden" name="nama_hafalan" value="{{ $selectedKelas->hafalan->nama }}">
                         <div class="table-responsive mt-3">
                             <table class="table table-bordered table-striped" id="dataTable">
                                 <thead>
                                     <tr>
                                         <th>Nama Santri</th>
-                                        <th>NPM</th>
+                                        <th>NIS</th>
                                         <th>Mulai</th>
                                         <th>Selesai</th>
                                         <th>Total</th>

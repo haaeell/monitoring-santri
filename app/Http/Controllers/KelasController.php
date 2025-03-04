@@ -10,15 +10,9 @@ use Illuminate\Http\Request;
 
 class KelasController extends Controller
 {
-/*************  ✨ Codeium Command ⭐  *************/
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-/******  b72b30a2-b610-40fa-be76-4ce10dee2573  *******/    public function index()
+    public function index()
     {
-        $kelas = Kelas::with('waliKelas')->orderBy('nama_kelas', 'desc')->get();
+        $kelas = Kelas::with('waliKelas')->orderBy('tingkatan', 'desc')->get();
         return view('kelas.index', compact('kelas'));
     }
 
@@ -123,15 +117,6 @@ class KelasController extends Controller
     {
         $kelas = Kelas::findOrFail($kelasId);
         $mapelIds = $request->input('mapel_id');
-
-        foreach ($mapelIds as $mapelId) {
-            $mapel = Mapel::findOrFail($mapelId);
-
-            if ($mapel->kelas()->count() >= 2) {
-                return redirect()->route('kelas.mapel', $kelasId)
-                    ->with('error', 'Mapel ' . $mapel->nama_mapel . ' sudah terdaftar di 2 kelas.');
-            }
-        }
 
         $kelas->mapels()->attach($mapelIds);
 

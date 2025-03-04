@@ -16,8 +16,9 @@ class SetorHafalanController extends Controller
 {
     public function index(Request $request)
     {
-        $kelas = Kelas::where('wali_kelas_id', Auth::user()->guru->waliKelas->id)->get();
-        $tahunAjaran = TahunAjaran::all();
+        $kelas = Kelas::where('wali_kelas_id', Auth::user()->guru->id)->get();
+        
+        $tahunAjaran = TahunAjaran::where('status', 'Aktif')->get();
         $kelasId = $request->kelas_id;
         $tahunAjaranId = $request->tahun_ajaran_id;
         $selectedKelas = $kelasId ? Kelas::find($kelasId) : null;
@@ -78,8 +79,8 @@ class SetorHafalanController extends Controller
     }
     public function rekap(Request $request)
     {
-        $kelas = Kelas::where('wali_kelas_id', Auth::user()->guru->waliKelas->id)->get();
-        $tahunAjaran = TahunAjaran::all();
+        $kelas = Kelas::where('wali_kelas_id', Auth::user()->guru->id)->get();
+        $tahunAjaran = TahunAjaran::where('status', 'Aktif')->get();
 
         $kelasId = $request->kelas_id;
         $tahunAjaranId = $request->tahun_ajaran_id;
@@ -96,9 +97,6 @@ class SetorHafalanController extends Controller
                 ->get();
         }
 
-        $namaHafalan = Hafalan::where('kelas_id', $kelasId)->pluck('nama')->first();
-        $target = Hafalan::where('kelas_id', $kelasId)->pluck('target')->first();
-
-        return view('setor_hafalan.rekap', compact('kelas', 'tahunAjaran', 'rekap', 'selectedKelas', 'selectedTahunAjaran', 'namaHafalan', 'target'));
+        return view('setor_hafalan.rekap', compact('kelas', 'tahunAjaran', 'rekap', 'selectedKelas', 'selectedTahunAjaran'));
     }
 }

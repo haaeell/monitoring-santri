@@ -41,21 +41,24 @@ class CreateMonitoringSantriTables extends Migration
         });
 
 
-        Schema::create('kelas', function (Blueprint $table) {
-            $table->id();
-            $table->string('nama_kelas');
-            $table->foreignId('wali_kelas_id')->nullable()->constrained('guru');
-
-            $table->timestamps();
-        });
-
         Schema::create('hafalan', function (Blueprint $table) {
             $table->id();
             $table->string('nama');
-            $table->foreignId('kelas_id')->constrained('kelas')->onDelete('cascade');
             $table->integer('target');
+            $table->integer('tingkatan')->unique();
             $table->timestamps();
         });
+
+        Schema::create('kelas', function (Blueprint $table) {
+            $table->id();
+            $table->integer('tingkatan');
+            $table->string('sub_kelas');
+            $table->string('nama_kelas');
+            $table->foreignId('wali_kelas_id')->nullable()->constrained('guru');
+            $table->foreignId('hafalan_id')->nullable()->constrained('hafalan'); 
+            $table->timestamps();
+        });
+
 
         Schema::create('santri', function (Blueprint $table) {
             $table->id();

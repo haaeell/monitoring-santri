@@ -20,15 +20,8 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="kelas_id">Pilih Kelas</label>
-                            <select name="kelas_id" class="form-control" required>
-                                @foreach ($kelas as $kls)
-                                    <option value="{{ $kls->id }}"
-                                        {{ $kls->id == $hafalan->kelas_id ? 'selected' : '' }}>
-                                        {{ $kls->nama_kelas }}
-                                    </option>
-                                @endforeach
-                            </select>
+                            <label for="kelas_id">Kelas</label>
+                            <input type="number" name="tingkatan" value="{{ $hafalan->tingkatan }}" class="form-control" required>
                         </div>
 
                         <button type="submit" class="btn btn-primary mt-3">Simpan Perubahan</button>
