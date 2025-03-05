@@ -46,7 +46,8 @@
                         <ul class="nav nav-tabs bg-success text-white p-2 rounded" id="pertemuanTabs" role="tablist">
                             @for ($i = 1; $i <= 12; $i++)
                                 <li class="nav-item" role="presentation">
-                                    <button class="nav-link text-white  fw-bold {{ $i == 1 ? 'active bg-light text-dark' : '' }}"
+                                    <button
+                                        class="nav-link text-white  fw-bold {{ $i == 1 ? 'active bg-light text-dark' : '' }}"
                                         id="tab-{{ $i }}" data-bs-toggle="tab"
                                         data-bs-target="#pertemuan-{{ $i }}" type="button" role="tab">
                                         Pertemuan {{ $i }}
@@ -100,6 +101,24 @@
                                 </thead>
                                 <tbody>
                                     @foreach ($santris as $santri)
+                                        @php
+
+                                            $nilai_absensi = ($santri->total_h / 12) * 100;
+                                            $nilai_absensi_persen = $nilai_absensi * 0.4;
+                                            $nilai_uts =
+                                                $santri->nilai
+                                                    ->where('tahun_ajaran_id', $selectedTahunAjaran->id)
+                                                    ->where('kelas_id', $selectedKelas->id)
+                                                    ->where('mapel_id', Auth::user()->guru->mapel->id)
+                                                    ->first()->nilai_uts ?? 0;
+                                            $nilai_uas =
+                                                $santri->nilai
+                                                    ->where('tahun_ajaran_id', $selectedTahunAjaran->id)
+                                                    ->where('kelas_id', $selectedKelas->id)
+                                                    ->where('mapel_id', Auth::user()->guru->mapel->id)
+                                                    ->first()->nilai_uas ?? 0;
+                                            $nilai_akhir = $nilai_absensi * 0.4 + $nilai_uts * 0.3 + $nilai_uas * 0.3;
+                                        @endphp
                                         <tr>
                                             <td>{{ $santri->nama }}</td>
                                             <td>{{ $santri->nis }}</td>
@@ -138,32 +157,22 @@
 
                                             {{-- Persentase Nilai --}}
                                             <td>
-                                                @php
-                                                    $nilai_absensi = ($santri->total_h / 12) * 100;
-                                                    $nilai_absensi_persen = $nilai_absensi * 0.4;
-                                                @endphp
                                                 {{ number_format($nilai_absensi, 2) }}%
+                                                <input type="hidden" name="presensi[{{ $santri->id }}]"
+                                                    value="{{ $nilai_absensi }}">
                                             </td>
                                             <td>
                                                 <input type="number" name="uts[{{ $santri->id }}]" class="form-control"
-                                                    value="{{ $santri->nilai->nilai_uts ?? '' }}" min="0"
-                                                    max="100">
+                                                    value="{{ $nilai_uts ?? '' }}" min="0" max="100">
                                             </td>
                                             <td>
                                                 <input type="number" name="uas[{{ $santri->id }}]" class="form-control"
-                                                    value="{{ $santri->nilai->nilai_uas ?? '' }}" min="0"
-                                                    max="100">
+                                                    value="{{ $nilai_uas ?? '' }}" min="0" max="100">
                                             </td>
 
 
                                             {{-- Nilai Akhir --}}
                                             <td>
-                                                @php
-                                                    $nilai_uts = $santri->nilai->nilai_uts ?? 0;
-                                                    $nilai_uas = $santri->nilai->nilai_uas ?? 0;
-                                                    $nilai_akhir =
-                                                        $nilai_absensi * 0.4 + $nilai_uts * 0.3 + $nilai_uas * 0.3;
-                                                @endphp
                                                 {{ number_format($nilai_akhir, 2) }}
                                             </td>
 

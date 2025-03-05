@@ -53,5 +53,8 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('tahun-ajaran', TahunAjaranController::class);
 
     Route::get('/rekap-hafalan', [SetorHafalanController::class, 'rekap'])->name('rekap.index');
+    Route::post('/santri/import', [SantriController::class, 'importExcel'])->name('santri.import');
+    Route::get('/download-template', [SantriController::class, 'downloadTemplate'])->name('download-template');
+
 
 });

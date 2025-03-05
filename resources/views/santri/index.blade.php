@@ -1,13 +1,31 @@
 @extends('layouts.dashboard')
 
 @section('content')
+    <div class="row mb-3">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <a href="{{ route('download-template') }}" class="btn btn-danger fw-bold text-white mb-3">Download Template</a>
+
+                    <form action="{{ route('santri.import') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <input type="file" name="file" class="form-control" required>
+                        <button type="submit" class="btn btn-danger text-white fw-bold mt-3 text-end">Import Excel</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="row">
         <div class="col-md-12 grid-margin stretch-card">
             <div class="card">
                 <div class="card-body">
                     <p class="card-title">Data Santri</p>
-                    <a href="/santri/create" class="btn btn-primary btn-rounded btn-sm mb-3"><i
-                            class="ti-plus fw-bold fs-7"></i></a>
+                    <div class="d-flex justify-content-between">
+                        <a href="/santri/create" class="btn btn-primary btn-rounded btn-sm mb-3"><i
+                                class="ti-plus fw-bold fs-7"></i></a>
+                    </div>
+
                     <div class="row">
                         <div class="col-12">
 
@@ -70,21 +88,22 @@
                                                                 aria-label="Close"></button>
                                                         </div>
                                                         <div class="modal-body">
-                                                            <div class="fw-semibold my-4 fs-5 uppercase">Apakah Anda yakin ingin menghapus data santri
+                                                            <div class="fw-semibold my-4 fs-5 uppercase">Apakah Anda yakin
+                                                                ingin menghapus data santri
                                                                 <strong>{{ $item->nama }} </strong>?
                                                             </div>
                                                             <form id="delete-form" method="POST"
                                                                 action="{{ route('santri.destroy', $item->id) }}">
                                                                 @csrf
                                                                 @method('DELETE')
-                                                            </div>
-                                                            <div class="card-footer text-end my-2">
-                                                                <button type="submit"
-                                                                    class="btn btn-danger fw-bold btn-rounded text-white btn-sm">Hapus</button>
-                                                                <button type="button"
-                                                                    class="btn btn-secondary fw-bold btn-rounded text-white btn-sm"
-                                                                    data-bs-dismiss="modal">Batal</button>
-                                                            </div>
+                                                        </div>
+                                                        <div class="card-footer text-end my-2">
+                                                            <button type="submit"
+                                                                class="btn btn-danger fw-bold btn-rounded text-white btn-sm">Hapus</button>
+                                                            <button type="button"
+                                                                class="btn btn-secondary fw-bold btn-rounded text-white btn-sm"
+                                                                data-bs-dismiss="modal">Batal</button>
+                                                        </div>
                                                         </form>
                                                     </div>
                                                 </div>

@@ -14,7 +14,7 @@
                         <div class="form-group">
                             <select class="form-select select2" name="santri_id[]" multiple>
                                 @foreach ($allSantris as $item)
-                                    <option value="{{ $item->id }}">{{ $item->nama }}</option>
+                                    <option value="{{ $item->id }}">{{ $item->nama }} - {{ $item->nis }}</option>
                                 @endforeach
                             </select>
                         </div>

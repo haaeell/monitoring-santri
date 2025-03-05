@@ -24,7 +24,7 @@
                                         @foreach ($mapel as $item)
                                             <tr>
                                                 <td>{{ $item->nama_mapel}}</td>
-                                                <td>{{ $item->guru->user->name }}</td>
+                                                <td>{{ $item->jenis_kelamin  }}{{ $item->guru->user->name ?? ''}}</td>
                                                 <td>
                                                     <div class="d-flex gap-1">
                                                         <a href="/mapel/{{ $item->id }}/edit"

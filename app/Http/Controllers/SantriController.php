@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\SantriTemplateExport;
+use App\Imports\SantriImport;
 use App\Models\Santri;
 use App\Models\User;
 use App\Models\WaliSantri;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Maatwebsite\Excel\Facades\Excel;
 
 class SantriController extends Controller
 {
@@ -71,7 +74,7 @@ class SantriController extends Controller
             'alamat' => $data['alamat'],
             'foto' => $fotoPath ?? null,
             'nama_ayah' => $data['nama_ayah'],
-            'nama_ibu' => $data['nama_ibu'],    
+            'nama_ibu' => $data['nama_ibu'],
         ]);
 
         $user = User::create([
@@ -146,11 +149,27 @@ class SantriController extends Controller
     {
         $santri = Santri::findOrFail($id);
         if ($santri->foto && file_exists(storage_path('app/public/' . $santri->foto))) {
-            unlink(storage_path('app/public/' . $santri->foto)); 
+            unlink(storage_path('app/public/' . $santri->foto));
         }
 
         $santri->delete();
-        
+
         return redirect()->route('santri.index')->with('success', 'Santri has been deleted successfully!');
+    }
+
+    public function importExcel(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,csv',
+        ]);
+
+        Excel::import(new SantriImport, $request->file('file'));
+
+        return redirect()->route('santri.index')->with('success', 'Data santri berhasil diimpor.');
+    }
+
+    public function downloadTemplate()
+    {
+        return Excel::download(new SantriTemplateExport, 'santri_template.xlsx');
     }
 }

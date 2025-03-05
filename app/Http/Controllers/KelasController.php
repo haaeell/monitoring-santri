@@ -32,6 +32,8 @@ class KelasController extends Controller
         Kelas::create([
             'nama_kelas' => $request->nama_kelas,
             'wali_kelas_id' => $request->wali_kelas_id,
+            'tingkatan' => $request->tingkatan,
+            'sub_kelas' => $request->sub_kelas
         ]);
 
         return redirect()->route('kelas.index')->with('success', 'Kelas berhasil dibuat');
@@ -55,6 +57,8 @@ class KelasController extends Controller
         $kelas->update([
             'nama_kelas' => $request->nama_kelas,
             'wali_kelas_id' => $request->wali_kelas_id,
+            'tingkatan' => $request->tingkatan,
+            'sub_kelas' => $request->sub_kelas
         ]);
 
         return redirect()->route('kelas.index')->with('success', 'Kelas berhasil diperbarui');

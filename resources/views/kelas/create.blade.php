@@ -12,6 +12,14 @@
                             <label for="nama_kelas">Nama Kelas</label>
                             <input type="text" name="nama_kelas" id="nama_kelas" class="form-control" required>
                         </div>
+                        <div class="form-group">
+                            <label for="tingkatan">Tingkatan</label>
+                            <input type="text" name="tingkatan" id="tingkatan" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="sub_kelas">Sub kelas</label>
+                            <input type="text" name="sub_kelas" id="sub_kelas" class="form-control" required>
+                        </div>
 
                         <div class="form-group">
                             <label for="wali_kelas_id">Wali Kelas</label>

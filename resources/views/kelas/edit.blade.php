@@ -16,6 +16,15 @@
                         </div>
 
                         <div class="form-group">
+                            <label for="tingkatan">Tingkatan</label>
+                            <input type="text" name="tingkatan" value="{{ $kelas->tingkatan }}" id="tingkatan" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="sub_kelas">Sub kelas</label>
+                            <input type="text" name="sub_kelas" value="{{ $kelas->sub_kelas }}" id="sub_kelas" class="form-control" required>
+                        </div>
+
+                        <div class="form-group">
                             <label for="wali_kelas_id">Wali Kelas</label>
                             <select name="wali_kelas_id" id="wali_kelas_id" class="form-control" required>
                                 @foreach($gurus as $guru)

@@ -99,6 +99,7 @@ class AbsensiController extends Controller
                 [
                     'nilai_uts' => $nilaiUts ?? 0,
                     'nilai_uas' => $request->uas[$santriId] ?? 0,
+                    'presensi' => $request->presensi[$santriId] ?? 0
                 ]
             );
         }

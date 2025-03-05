@@ -28,7 +28,8 @@
                                 <div class="col-md-9">: <strong>{{ $kelas->nama_kelas }}</strong></div>
                             </div>
                             <div class="row">
-                                <label class="col-md-3 text-nowrap"><i class="bi bi-calendar-event"></i> Tahun Ajaran</label>
+                                <label class="col-md-3 text-nowrap"><i class="bi bi-calendar-event"></i> Tahun
+                                    Ajaran</label>
                                 <div class="col-md-9">: <strong>{{ $tahunAjaran }}</strong></div>
                             </div>
                         </div>
@@ -41,6 +42,7 @@
                             <thead class="bg-success text-white text-center">
                                 <tr class="table-success">
                                     <th>Mata Pelajaran</th>
+                                    <th>Absen</th>
                                     <th>Nilai UTS</th>
                                     <th>Nilai UAS</th>
                                     <th>Nilai Akhir</th>
@@ -55,7 +57,7 @@
                                 @endphp
                                 @foreach ($nilai as $item)
                                     @php
-                                        $nilai_akhir = $item->nilai_uts * 0.4 + $item->nilai_uas * 0.6;
+                                        $nilai_akhir = $item->presensi * 0.4 + $item->nilai_uts * 0.3 + $item->nilai_uas * 0.3;
                                         $totalNilaiAkhir += $nilai_akhir;
 
                                         if ($nilai_akhir >= 85) {
@@ -74,6 +76,7 @@
                                     @endphp
                                     <tr class="text-center">
                                         <td class="text-start">{{ $item->mapel->nama_mapel }}</td>
+                                        <td>{{ $item->presensi }}%</td>
                                         <td>{{ $item->nilai_uts }}</td>
                                         <td>{{ $item->nilai_uas }}</td>
                                         <td>{{ number_format($nilai_akhir, 2) }}</td>
@@ -86,11 +89,29 @@
                                     </tr>
                                 @endforeach
                             </tbody>
+
+                            @php
+                                $RataRataNilai =
+                                    $jumlahMapel > 0 ? number_format($totalNilaiAkhir / $jumlahMapel, 2) : '0.00';
+
+                                if ($RataRataNilai >= 85) {
+                                    $mutuAkhir = 'A';
+                                } elseif ($RataRataNilai >= 75) {
+                                    $mutuAkhir = 'B';
+                                } elseif ($RataRataNilai >= 60) {
+                                    $mutuAkhir = 'C';
+                                } elseif ($RataRataNilai >= 50) {
+                                    $mutuAkhir = 'D';
+                                } else {
+                                    $mutuAkhir = 'E';
+                                }
+                            @endphp
                             <tfoot class="bg-light">
                                 <tr class="text-center">
-                                    <th colspan="3">Rata-rata Nilai</th>
-                                    <th>{{ $jumlahMapel > 0 ? number_format($totalNilaiAkhir / $jumlahMapel, 2) : '0.00' }}
+                                    <th colspan="4">Rata-rata Nilai</th>
+                                    <th>{{ $RataRataNilai }}
                                     </th>
+                                    <th>{{ $mutuAkhir }}</th>
                                     <th colspan="2"></th>
                                 </tr>
                             </tfoot>
@@ -164,9 +185,10 @@
                     </div>
 
                     <div class="text-end mt-4">
-                        <a href="{{ route('nilai.detail', ['santri_id' => $santri->id, 'kelas_id' => $kelas->id, 'tahun_ajaran_id' => $tahunAjaranId, 'pdf' => 'true']) }}" class="btn btn-success text-white fw-bold">Cetak PDF</a>
+                        <a href="{{ route('nilai.detail', ['santri_id' => $santri->id, 'kelas_id' => $kelas->id, 'tahun_ajaran_id' => $tahunAjaranId, 'pdf' => 'true']) }}"
+                            class="btn btn-success text-white fw-bold">Cetak PDF</a>
                     </div>
-                    
+
                 </div>
             </div>
         </div>

@@ -11,6 +11,7 @@ use App\Models\Santri;
 use App\Models\TahunAjaran;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use Illuminate\Http\Request;
+
 class NilaiController extends Controller
 {
     public function index(Request $request)
@@ -20,8 +21,7 @@ class NilaiController extends Controller
         $kelas = Kelas::whereHas('mapels', function ($query) use ($guru) {
             $query->where('guru_id', $guru->id);
         })->get();
-        
-        $tahunAjaran = TahunAjaran::where('status', 'Aktif')->get();
+        $tahunAjaran = TahunAjaran::all();
 
         $kelasId = $request->kelas_id;
         $tahunAjaranId = $request->tahun_ajaran_id;
@@ -31,7 +31,11 @@ class NilaiController extends Controller
         $rekap = [];
 
         if ($selectedKelas && $selectedTahunAjaran) {
-            $rekap = Santri::where('kelas_id', $kelasId)->get();
+            $rekap = Santri::where('kelas_id', $kelasId)
+                ->with(['nilai' => function ($query) use ($tahunAjaranId) {
+                    $query->where('tahun_ajaran_id', $tahunAjaranId);
+                }])
+                ->get();
         }
 
         return view('nilai.index', compact('kelas', 'tahunAjaran', 'rekap', 'selectedKelas', 'selectedTahunAjaran'));
@@ -74,19 +78,30 @@ class NilaiController extends Controller
             ->count();
 
         $totalHafalan = $santri->hafalan->sum('total');
-
         $target = $kelas->hafalan->target;
         $keteranganHafalan = ($totalHafalan >= $target) ? 'Tercapai' : 'Belum Tercapai';
         $statusKenaikan = ($totalHafalan >= $target) ? 'Naik Kelas' : 'Tidak Naik Kelas';
 
         if ($request->has('pdf') && $request->pdf == 'true') {
             $pdf = FacadePdf::loadView('nilai.pdf', compact(
-                'santri', 'absensi', 'nilai', 'tahunAjaran', 'kelas', 'hadir', 'izin', 
-                'sakit', 'alfa', 'totalHafalan','keteranganHafalan', 'statusKenaikan'
+                'santri',
+                'absensi',
+                'nilai',
+                'tahunAjaran',
+                'kelas',
+                'hadir',
+                'izin',
+                'sakit',
+                'alfa',
+                'totalHafalan',
+                'namaHafalan',
+                'target',
+                'keteranganHafalan',
+                'statusKenaikan'
             ));
-            return $pdf->download('rapor_santri_' . $santri->nama . '.pdf');
+            return $pdf->download('rapor_santri.pdf');
         }
 
-        return view('nilai.show', compact('tahunAjaranId', 'santri', 'absensi', 'nilai', 'tahunAjaran', 'kelas', 'hadir', 'izin', 'sakit', 'alfa', 'totalHafalan','keteranganHafalan', 'statusKenaikan'));
+        return view('nilai.show', compact('tahunAjaranId', 'santri', 'absensi', 'nilai', 'tahunAjaran', 'kelas', 'hadir', 'izin', 'sakit', 'alfa', 'totalHafalan', 'target', 'keteranganHafalan', 'statusKenaikan'));
     }
 }

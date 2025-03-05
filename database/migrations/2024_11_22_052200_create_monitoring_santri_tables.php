@@ -62,16 +62,16 @@ class CreateMonitoringSantriTables extends Migration
 
         Schema::create('santri', function (Blueprint $table) {
             $table->id();
-            $table->string('nama');
+            $table->string('nama')->nullable();
             $table->string('nis')->unique();
-            $table->string('kamar');
-            $table->string('jenis_kelamin');
-            $table->string('alamat');
-            $table->string('telp');
+            $table->string('kamar')->nullable();
+            $table->string('jenis_kelamin')->nullable();
+            $table->string('alamat')->nullable();
+            $table->string('telp')->nullable();
             $table->string('foto')->nullable();
             $table->string('nama_ayah')->nullable();
             $table->string('nama_ibu')->nullable();
-            $table->date('tanggal_lahir');
+            $table->date('tanggal_lahir')->nullable();
             $table->foreignId('kelas_id')->nullable()->constrained('kelas')->onDelete('set null');
             $table->timestamps();
         });
@@ -79,7 +79,7 @@ class CreateMonitoringSantriTables extends Migration
         Schema::create('mapel', function (Blueprint $table) {
             $table->id();
             $table->string('nama_mapel');
-            $table->foreignId('guru_id')->constrained('guru')->onDelete('cascade');
+            $table->foreignId('guru_id')->nullable()->constrained('guru')->onDelete('cascade');
             $table->timestamps();
         });
 

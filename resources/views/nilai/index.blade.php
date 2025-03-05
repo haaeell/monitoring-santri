@@ -42,11 +42,20 @@
                     <h5 class="mt-3">Tahun Ajaran: {{ $selectedTahunAjaran->nama }}</h5>
 
                     <div class="table-responsive mt-3">
-                        <table class="table table-bordered table-striped" id="dataTable">
+                        @php
+                            $rekap = $rekap->sortByDesc(
+                                fn($santri) => $santri->hitungRataRata($selectedKelas->id, $selectedTahunAjaran->id),
+                            );
+                            $peringkat = 1;
+                        @endphp
+
+                        <table class="display expandable-table" id="dataTable">
                             <thead>
                                 <tr class="text-center">
                                     <th class="text-center">Nama Santri</th>
                                     <th class="text-center">NIS</th>
+                                    <th class="text-center">Nilai Rata Rata</th>
+                                    <th class="text-center">Peringkat</th>
                                     <th class="text-center">Aksi</th>
                                 </tr>
                             </thead>
@@ -55,7 +64,24 @@
                                     <tr class="text-center">
                                         <td class="text-center">{{ $santri->nama }}</td>
                                         <td class="text-center">{{ $santri->nis }}</td>
-
+                                        <td class="text-center">
+                                            {{ $santri->hitungRataRata($selectedKelas->id, $selectedTahunAjaran->id) }}
+                                        </td>
+                                        <td class="text-center">
+                                            @php
+                                                $badge = '';
+                                                if ($peringkat == 1) {
+                                                    $badge = '<span class="badge bg-success">🏆 Juara 1</span>';
+                                                } elseif ($peringkat == 2) {
+                                                    $badge = '<span class="badge bg-primary">🥈 Juara 2</span>';
+                                                } elseif ($peringkat == 3) {
+                                                    $badge = '<span class="badge bg-warning">🥉 Juara 3</span>';
+                                                } else {
+                                                    $badge = $peringkat;
+                                                }
+                                            @endphp
+                                            {!! $badge !!}
+                                        </td>
                                         <td>
                                             <form action="{{ route('nilai.detail', $santri->id) }}" method="GET">
                                                 <input type="hidden" name="kelas_id" value="{{ $selectedKelas->id }}">
@@ -67,10 +93,11 @@
                                             </form>
                                         </td>
                                     </tr>
+                                    @php $peringkat++; @endphp
                                 @endforeach
                             </tbody>
-
                         </table>
+
                     </div>
                 @endif
             </div>
