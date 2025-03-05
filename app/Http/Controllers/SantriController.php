@@ -79,7 +79,7 @@ class SantriController extends Controller
 
         $user = User::create([
             'name' => $data['nama_ayah'],
-            'email' => $data['nis'] . '@santri.com',
+            'email' => $data['nis'] . '@gmail.com',
             'password' => Hash::make('password'),
             'role' => 'wali_santri',
         ]);

@@ -17,8 +17,6 @@
                                             <th>Nama Ayah</th>
                                             <th>Nama Ibu</th>
                                             <th>Email</th>
-                                            <th>No Telepon</th>
-                                            <th>Alamat</th>
                                             <th>Aksi</th>
                                         </tr>
                                     </thead>
@@ -29,8 +27,6 @@
                                                 <td>{{ $item->santri->nama_ayah }}</td>
                                                 <td>{{ $item->santri->nama_ibu }}</td>
                                                 <td>{{ $item->user->email }}</td>
-                                                <td>{{ $item->santri->telp }}</td>
-                                                <td>{{ $item->santri->alamat }}</td>
                                                 <td>
                                                     <div class="d-flex gap-1">
                                                         <a href="/wali/{{ $item->santri->id }}/edit"

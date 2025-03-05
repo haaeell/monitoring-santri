@@ -67,7 +67,7 @@ class DatabaseSeeder extends Seeder
             $tingkatan = $faker->numberBetween(7, 12);
             $kelasIds[] = DB::table('kelas')->insertGetId([
                 'tingkatan' => $tingkatan,
-                'sub_kelas' => chr(65 + ($i % 5)), // Sub Kelas A, B, C, dst.
+                'sub_kelas' => chr(65 + ($i % 5)),
                 'nama_kelas' => 'Kelas ' . $tingkatan . ' ' . chr(65 + ($i % 5)),
                 'wali_kelas_id' => $faker->randomElement($guruIds),
                 'created_at' => now(),
@@ -82,26 +82,22 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-        // Seeder Hafalan (Berdasarkan tingkatan kelas)
         foreach ($kelasIds as $kelasId) {
             $kelas = DB::table('kelas')->where('id', $kelasId)->first();
 
-            // Tentukan hafalan berdasarkan tingkatan
             $hafalan = match ($kelas->tingkatan) {
-                7 => 'Alfiyah',
-                8 => 'Hadits Arbain',
-                9 => 'Matan Taqrib',
-                10 => 'Riyadhus Shalihin',
-                11 => 'Bulughul Maram',
-                12 => 'Umdatul Ahkam',
+                7 => 'Jurumiyah 1',
+                8 => 'Imrithi',
+                9 => 'Alfiyah I',
+                10 => 'Alfiyah II',
+                11 => 'Alfiyah III',
+                12 => 'Alfiyah IV',
                 default => 'Hafalan Umum',
             };
 
-            // Check if the hafalan for this tingkatan already exists
             $existingHafalan = DB::table('hafalan')->where('tingkatan', $kelas->tingkatan)->first();
 
             if (!$existingHafalan) {
-                // Insert Hafalan only if not already inserted
                 $hafalanId = DB::table('hafalan')->insertGetId([
                     'nama' => $hafalan,
                     'target' => $faker->numberBetween(50, 100),
@@ -110,16 +106,12 @@ class DatabaseSeeder extends Seeder
                     'updated_at' => now(),
                 ]);
             } else {
-                // If the hafalan exists, use the existing hafalan id
                 $hafalanId = $existingHafalan->id;
             }
 
-            // Update kelas with hafalan_id
             DB::table('kelas')->where('id', $kelasId)->update(['hafalan_id' => $hafalanId]);
         }
 
-
-        // Seeder Santri
         for ($i = 0; $i < 100; $i++) {
             $namaAyah = $faker->name;
             $nis = $faker->unique()->randomNumber(6, true);
@@ -141,7 +133,7 @@ class DatabaseSeeder extends Seeder
 
             $waliUserId = DB::table('users')->insertGetId([
                 'name' => $namaAyah,
-                'email' => 'wali' . $nis . '@gmail.com',
+                'email' =>  $nis . '@gmail.com',
                 'password' => Hash::make('password'),
                 'role' => 'wali_santri',
                 'created_at' => now(),

@@ -39,8 +39,6 @@
                                             <th>Jenis Kelamin</th>
                                             <th>Kamar</th>
                                             <th>Nama Orangtua</th>
-                                            <th>Alamat</th>
-                                            <th>Telepon</th>
                                             <th>Aksi</th>
                                         </tr>
                                     </thead>
@@ -58,8 +56,6 @@
                                                 <td>{{ $item->kamar }}</td>
                                                 <td>{{ $item->nama_ayah }} / {{ $item->nama_ibu }}
                                                 </td>
-                                                <td>{{ $item->alamat }}</td>
-                                                <td>{{ $item->telp }}</td>
                                                 <td>
                                                     <div class="d-flex gap-1">
                                                         <a href="/santri/{{ $item->id }}/edit"

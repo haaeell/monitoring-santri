@@ -31,7 +31,7 @@ class SantriImport implements ToModel, WithHeadingRow, WithValidation
 
         $user = User::create([
             'name' => $row['nama_ayah'] ?? 'Nama Ayah',
-            'email' => $row['nis'] . '@santri.com',
+            'email' => $row['nis'] . '@gmail.com',
             'password' => Hash::make('password'),
             'role' => 'wali_santri',
         ]);
