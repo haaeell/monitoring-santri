@@ -94,7 +94,6 @@ class NilaiController extends Controller
                 'sakit',
                 'alfa',
                 'totalHafalan',
-                'namaHafalan',
                 'target',
                 'keteranganHafalan',
                 'statusKenaikan'

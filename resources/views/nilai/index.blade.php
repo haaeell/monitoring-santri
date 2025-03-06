@@ -71,7 +71,7 @@
                                             @php
                                                 $badge = '';
                                                 if ($peringkat == 1) {
-                                                    $badge = '<span class="badge bg-success">🏆 Juara 1</span>';
+                                                    $badge = '<span class="badge bg-info">🏆 Juara 1</span>';
                                                 } elseif ($peringkat == 2) {
                                                     $badge = '<span class="badge bg-primary">🥈 Juara 2</span>';
                                                 } elseif ($peringkat == 3) {

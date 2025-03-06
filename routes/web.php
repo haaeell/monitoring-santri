@@ -55,6 +55,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/rekap-hafalan', [SetorHafalanController::class, 'rekap'])->name('rekap.index');
     Route::post('/santri/import', [SantriController::class, 'importExcel'])->name('santri.import');
     Route::get('/download-template', [SantriController::class, 'downloadTemplate'])->name('download-template');
+    Route::get('/santri-nilai', [SantriController::class, 'santriNilai'])->name('santri-nilai');
+
+
 
 
 });

@@ -22,27 +22,38 @@
         .btn-primary::after {
             background-color: #00b309;
         }
+
         .text-danger {
             font-size: 14px;
+        }
+
+        body {
+            background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url('{{ asset('/bg-login.jpg') }}');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            height: 100vh;
         }
     </style>
 </head>
 
 <body>
     <div class="container-scroller">
-        <div class="container-fluid page-body-wrapper full-page-wrapper">
-            <div class="content-wrapper d-flex align-items-center auth px-0">
-                <div class="row w-100 mx-0">
+        <div class="container-fluid ">
+            <div class="d-flex align-items-center auth px-0 min-vh-100">
+                <div class="row w-100 mx-0 ">
                     <div class="col-lg-4 mx-auto">
-                        <div class="auth-form-light text-left py-5 px-4 px-sm-5">
-                            <div class="brand-logo">
+                        <div class="auth-form-light text-left py-3 px-4 px-sm-5" style="border-radius: 16px;">
+                            <div class="brand-logo text-center">
+                                <img src="{{ asset('/logo.jpg') }}" class="text-center" alt="">
                                 <h3 class="fw-bold text-center">Login Monitoring Santri</h3>
                             </div>
                             <form class="pt-3" action="{{ route('login') }}" method="POST">
                                 @csrf
                                 <div class="form-group">
                                     <label for="email">Email</label>
-                                    <input type="email" class="form-control form-control-lg @error('email') is-invalid @enderror" 
+                                    <input type="email"
+                                        class="form-control form-control-lg @error('email') is-invalid @enderror"
                                         id="email" placeholder="Email" name="email" value="{{ old('email') }}">
                                     @error('email')
                                         <span class="text-danger">{{ $message }}</span>
@@ -50,13 +61,14 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="password">Password</label>
-                                    <input type="password" class="form-control form-control-lg @error('password') is-invalid @enderror" 
+                                    <input type="password"
+                                        class="form-control form-control-lg @error('password') is-invalid @enderror"
                                         id="password" placeholder="Password" name="password">
                                     @error('password')
                                         <span class="text-danger">{{ $message }}</span>
                                     @enderror
                                 </div>
-                                <div class="mt-3 d-grid gap-2">
+                                <div class="mt-3 d-grid gap-2 mb-5">
                                     <button type="submit"
                                         class="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn">
                                         LOGIN

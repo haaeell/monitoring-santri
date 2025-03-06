@@ -20,9 +20,6 @@
                                             <th>Foto</th>
                                             <th>NIP</th>
                                             <th>Jenis Kelamin</th>
-                                            <th>Pendidikan Terakhir</th>
-                                            <th>Alamat</th>
-                                            <th>Telepon</th>
                                             <th>Aksi</th>
                                         </tr>
                                     </thead>
@@ -38,9 +35,6 @@
                                                 </td>
                                                 <td>{{ $item->nip }}</td>
                                                 <td>{{ $item->jenis_kelamin }}</td>
-                                                <td>{{ $item->pendidikan_terakhir }}</td>
-                                                <td>{{ $item->alamat }}</td>
-                                                <td>{{ $item->no_telepon }}</td>
                                                 <td>
                                                     <div class="d-flex gap-1">
                                                         <a href="/guru/{{ $item->id }}/edit"

@@ -61,7 +61,7 @@
                                         $lastSetor = $santri->hafalan->sortByDesc('tanggal_setor')->first();
                                         $statusClass = $totalHafalan < intVal($selectedKelas->hafalan->target) ? 'table-danger' : ($totalHafalan > intVal($selectedKelas->hafalan->target) ? 'table-success' : '');
                                     @endphp
-                                    <tr class="text-center {{ $statusClass }}">
+                                    <tr class="text-center table-success {{ $statusClass }}">
                                         <td class="text-center text-nowrap">{{ $santri->nama }}</td>
                                         <td class="text-center">{{ $santri->nis }}</td>
                                         <td class="text-center">{{ $selectedKelas->hafalan->nama }}</td>
@@ -75,7 +75,7 @@
                                             @elseif ($totalHafalan > $selectedKelas->hafalan->target)
                                                 <span class="badge bg-success">Melebihi Target</span>
                                             @else
-                                                <span class="badge bg-warning">Sesuai Target</span>
+                                                <span class="badge bg-success">Sesuai Target</span>
                                             @endif
                                         </td>
 

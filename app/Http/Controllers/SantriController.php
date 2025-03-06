@@ -172,4 +172,12 @@ class SantriController extends Controller
     {
         return Excel::download(new SantriTemplateExport, 'santri_template.xlsx');
     }
+
+    public function santriNilai()
+    {
+        $waliSantri = WaliSantri::where('user_id', auth()->user()->id)->first();
+        $santri = $waliSantri->santri;
+        
+        return view('santri.nilai', compact('santri'));
+    }
 }
