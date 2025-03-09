@@ -9,9 +9,8 @@
                     <h4 class="mb-0"><i class="bi bi-person-circle"></i> Informasi Santri</h4>
                 </div>
                 <div class="card-body">
-                    <p><strong>Nama:</strong> Ahmad Fauzan</p>
-                    <p><strong>Kelas:</strong> 7A</p>
-                    <p><strong>Tahun Ajaran:</strong> 2024/2025</p>
+                    <p><strong>Nama:</strong> {{ $santri->nama }}</p>
+                    <p><strong>Kelas:</strong> {{ $santri->kelas->nama_kelas }}</p>
                 </div>
             </div>
         </div>
@@ -24,13 +23,9 @@
                 </div>
                 <div class="card-body">
                     <ul>
-                        <li>Al-Qur'an</li>
-                        <li>Hadits</li>
-                        <li>Fiqih</li>
-                        <li>Akidah Akhlak</li>
-                        <li>Bahasa Arab</li>
-                        <li>Sejarah Islam</li>
-                        <li>Tafsir</li>
+                        @foreach ($santri->kelas->mapels as $mapel)
+                            <li>{{ $mapel->nama_mapel }}</li>
+                        @endforeach
                     </ul>
                 </div>
             </div>
@@ -42,10 +37,15 @@
                 <div class="card-header bg-primary p-3 text-white text-center">
                     <h4 class="mb-0"><i class="bi bi-journal-text"></i> Hafalan Santri</h4>
                 </div>
+                @php
+                    $totalHafalan = $santri->hafalan->sum('total');
+                    $lastSetor = $santri->hafalan->sortByDesc('tanggal_setor')->first();
+                @endphp
                 <div class="card-body">
-                    <p><strong>Juz yang sudah dihafal:</strong> 10 dari 30</p>
-                    <p><strong>Surat terakhir:</strong> Al-Kahfi</p>
-                    <p><strong>Status Hafalan:</strong> Lancar</p>
+                    <p><strong>Nama Hafalan:</strong> {{ $santri->kelas->hafalan->nama }}</p>
+                    <p><strong>Setoran Terakhir:</strong> {{ $lastSetor->tanggal_setor ?? 'Belum pernah setor hafalan' }}</p>
+                    <p><strong>Target Hafalan:</strong> {{ $santri->kelas->hafalan->target }}</p>
+                    <p><strong>Status Hafalan:</strong> {{ $totalHafalan >= $santri->kelas->hafalan->target ? 'Lulus' : 'Belum Lulus' }}</p>
                 </div>
             </div>
         </div>
@@ -59,6 +59,7 @@
                 <div class="card-body">
                     <p><strong>Hadir:</strong> 80%</p>
                     <p><strong>Izin:</strong> 10%</p>
+                    <p><strong>Sakit:</strong> 10%</p>
                     <p><strong>Alpha:</strong> 10%</p>
                 </div>
             </div>
