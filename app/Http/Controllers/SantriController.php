@@ -4,9 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Exports\SantriTemplateExport;
 use App\Imports\SantriImport;
+use App\Models\Absensi;
+use App\Models\Guru;
+use App\Models\Kelas;
+use App\Models\Nilai;
 use App\Models\Santri;
+use App\Models\TahunAjaran;
 use App\Models\User;
 use App\Models\WaliSantri;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
@@ -173,11 +179,36 @@ class SantriController extends Controller
         return Excel::download(new SantriTemplateExport, 'santri_template.xlsx');
     }
 
-    public function santriNilai()
+    public function santriNilai(Request $request)
     {
+        $tahunAjaran = TahunAjaran::where('status', 'Aktif')->get();
+        $selectedTahunAjaran = TahunAjaran::where('status', 'Aktif')->first();
+
         $waliSantri = WaliSantri::where('user_id', auth()->user()->id)->first();
         $santri = $waliSantri->santri;
+
+        $mapels = Nilai::where('santri_id', $santri->id)
+            ->where('tahun_ajaran_id', $selectedTahunAjaran->id)
+            ->join('mapel', 'nilai.mapel_id', '=', 'mapel.id')
+            ->select('mapel.nama_mapel as nama', 'nilai.nilai_uts', 'nilai.nilai_uas')
+            ->get();
+
+        $nilaiSantri = Nilai::where('santri_id', $santri->id)
+            ->where('kelas_id', $santri->kelas_id)
+            ->with('mapel')
+            ->get();
+
+        // $mapels = $nilaiSantri->map(function ($nilai) {
+        //     return $nilai->mapel;
+        // });
+        $mapels = $santri->kelas->mapels;
         
-        return view('santri.nilai', compact('santri'));
+        $absensiData = Absensi::with('santri', 'mapel')
+            ->where('kelas_id', $santri->kelas_id)
+            ->where('tahun_ajaran_id', $selectedTahunAjaran->id)
+            ->where('santri_id', $santri->id)
+            ->get();
+
+        return view('santri.nilai', compact('santri', 'tahunAjaran', 'selectedTahunAjaran', 'mapels', 'absensiData'));
     }
 }

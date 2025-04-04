@@ -58,7 +58,7 @@ class Santri extends Model
     {
         $tahunAjaranId = request('tahun_ajaran_id');
         $kelasId = request('kelas_id');
-        $mapelId = optional(Auth::user()->guru)->mapel->id; 
+        $mapelId = optional(Auth::user()->guru)->mapel->id ?? request('mapel_id'); 
 
         return $this->absensi()
             ->where('status', 'H')
@@ -72,7 +72,7 @@ class Santri extends Model
     {
         $tahunAjaranId = request('tahun_ajaran_id');
         $kelasId = request('kelas_id');
-        $mapelId = optional(Auth::user()->guru)->mapel->id; 
+        $mapelId = optional(Auth::user()->guru)->mapel->id ?? request('mapel_id'); 
 
         return $this->absensi()
             ->where('status', 'I')
@@ -86,7 +86,7 @@ class Santri extends Model
     {
         $tahunAjaranId = request('tahun_ajaran_id');
         $kelasId = request('kelas_id');
-        $mapelId = optional(Auth::user()->guru)->mapel->id; 
+        $mapelId = optional(Auth::user()->guru)->mapel->id ?? request('mapel_id'); 
         
         return $this->absensi()
             ->where('status', 'S')
@@ -100,7 +100,7 @@ class Santri extends Model
     {
         $tahunAjaranId = request('tahun_ajaran_id');
         $kelasId = request('kelas_id');
-        $mapelId = optional(Auth::user()->guru)->mapel->id; 
+        $mapelId = optional(Auth::user()->guru)->mapel->id ?? request('mapel_id'); 
 
         return $this->absensi()
             ->where('status', 'A')
