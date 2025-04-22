@@ -16,7 +16,7 @@
                             <option value="">-- Pilih Kelas --</option>
                             @foreach ($kelas as $kelasItem)
                                 <option value="{{ $kelasItem->id }}"
-                                    {{ request('kelas_id') == $kelasItem->id ? 'selected' : '' }}>
+                                    {{ request('kelas_id') || $selectedKelas->id == $kelasItem->id ? 'selected' : '' }}>
                                     {{ $kelasItem->nama_kelas }}
                                 </option>
                             @endforeach
@@ -29,7 +29,7 @@
                             <option value="">-- Pilih Tahun Ajaran --</option>
                             @foreach ($tahunAjaran as $tahun)
                                 <option value="{{ $tahun->id }}"
-                                    {{ request('tahun_ajaran_id') == $tahun->id ? 'selected' : '' }}>
+                                    {{ request('tahun_ajaran_id')  || $selectedTahunAjaran->id == $tahun->id ? 'selected' : '' }}>
                                     {{ $tahun->nama }}
                                 </option>
                             @endforeach

@@ -44,6 +44,6 @@ class WaliSantriController extends Controller
             'alamat' => $data['alamat'],
         ]);
 
-        return redirect()->route('wali_santri.index')->with('success', 'Data wali santri berhasil diperbarui.');
+        return redirect()->route('wali.index')->with('success', 'Data wali santri berhasil diperbarui.');
     }
 }

@@ -65,12 +65,21 @@
                                         <td class="text-center">{{ $santri->nama }}</td>
                                         <td class="text-center">{{ $santri->nis }}</td>
                                         <td class="text-center">
-                                            {{ $santri->hitungRataRata($selectedKelas->id, $selectedTahunAjaran->id) }}
+                                            @php
+                                                $rataRata = $santri->hitungRataRata(
+                                                    $selectedKelas->id,
+                                                    $selectedTahunAjaran->id,
+                                                );
+                                            @endphp
+                                            {{ $rataRata }}
                                         </td>
                                         <td class="text-center">
                                             @php
                                                 $badge = '';
-                                                if ($peringkat == 1) {
+                                                if ($rataRata == 0) {
+                                                    $badge =
+                                                        '<span class="badge bg-secondary">Belum Ada Peringkat</span>';
+                                                } elseif ($peringkat == 1) {
                                                     $badge = '<span class="badge bg-info">🏆 Juara 1</span>';
                                                 } elseif ($peringkat == 2) {
                                                     $badge = '<span class="badge bg-primary">🥈 Juara 2</span>';
@@ -82,6 +91,7 @@
                                             @endphp
                                             {!! $badge !!}
                                         </td>
+
                                         <td>
                                             <form action="{{ route('nilai.detail', $santri->id) }}" method="GET">
                                                 <input type="hidden" name="kelas_id" value="{{ $selectedKelas->id }}">

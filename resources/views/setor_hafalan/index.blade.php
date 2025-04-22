@@ -39,15 +39,17 @@
 
                 @if ($selectedKelas)
                     <h5 class="mt-3">Nama Hafalan: {{ $selectedKelas->hafalan->nama }} </h5>
-                    <h5 class="mt-3">Target : {{ $selectedKelas->hafalan->target }} </h5>
+                    <h5 class="mt-3">Target : {{ $selectedKelas->hafalan->target }} Juz</h5>
+
                     <form method="POST" action="{{ route('setor.store') }}">
                         @csrf
                         <input type="hidden" name="kelas_id" value="{{ $selectedKelas->id }}">
                         <input type="hidden" name="hafalan_id" value="{{ $selectedKelas->hafalan->id }}">
                         <input type="hidden" name="tahun_ajaran_id" value="{{ $selectedTahunAjaran->id }}">
                         <input type="hidden" name="nama_hafalan" value="{{ $selectedKelas->hafalan->nama }}">
+
                         <div class="table-responsive mt-3">
-                            <table class="table table-bordered table-striped" id="dataTable">
+                            <table class="table table-bordered table-striped">
                                 <thead>
                                     <tr>
                                         <th>Nama Santri</th>
@@ -59,25 +61,25 @@
                                 </thead>
                                 <tbody>
                                     @foreach ($santris as $santri)
-                                    @php
-                                        $setoranHariIni = $santri->hafalan->first();
-                                    @endphp
-                                    <tr>
-                                        <td>{{ $santri->nama }}</td>
-                                        <td>{{ $santri->nis }}</td>
-                                        <td><input type="number" name="mulai[{{ $santri->id }}]" class="form-control mulai"
-                                                value="{{ $setoranHariIni ? $setoranHariIni->mulai : '' }}" style="width:100%;"></td>
-                                        <td><input type="number" name="selesai[{{ $santri->id }}]" class="form-control selesai"
-                                                value="{{ $setoranHariIni ? $setoranHariIni->selesai : '' }}" style="width:100%;"></td>
-                                        <td><input type="text" class="form-control total" name="total[{{ $santri->id }}]" style="width:100%;"
-                                                value="{{ $setoranHariIni ? $setoranHariIni->total : '' }}" readonly></td>
-                                    </tr>
-                                @endforeach
-                                
+                                        @php
+                                            $lastSetoran = $santri->hafalan->sortByDesc('tanggal_setor')->first();
+                                            $mulai = $lastSetoran ? $lastSetoran->selesai : 0; // Mulai dari selesai sebelumnya
+                                        @endphp
+                                        <tr>
+                                            <td>{{ $santri->nama }}</td>
+                                            <td>{{ $santri->nis }}</td>
+                                            <td><input type="number" name="mulai[{{ $santri->id }}]" class="form-control mulai"
+                                                    value="{{ $mulai }}" style="width:100%;" readonly></td>
+                                            <td><input type="number" name="selesai[{{ $santri->id }}]" class="form-control selesai"
+                                                    value="" style="width:100%;" required></td>
+                                            <td><input type="text" class="form-control total" name="total[{{ $santri->id }}]" style="width:100%;"
+                                                    value="" readonly></td>
+                                        </tr>
+                                    @endforeach
                                 </tbody>
                             </table>
-
                         </div>
+
                         <div class="mt-3">
                             <button type="submit" class="btn btn-primary">Simpan Data</button>
                         </div>
@@ -87,6 +89,7 @@
         </div>
     </div>
 @endsection
+
 @section('scripts')
     <script>
         $(document).ready(function() {

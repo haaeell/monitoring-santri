@@ -19,8 +19,8 @@ class SetorHafalanController extends Controller
         $kelas = Kelas::where('wali_kelas_id', Auth::user()->guru->id)->get();
         
         $tahunAjaran = TahunAjaran::where('status', 'Aktif')->get();
-        $kelasId = $request->kelas_id;
-        $tahunAjaranId = $request->tahun_ajaran_id;
+        $kelasId = $request->kelas_id ?? $kelas->first()->id;
+        $tahunAjaranId = $request->tahun_ajaran_id ?? $tahunAjaran->first()->id;
         $selectedKelas = $kelasId ? Kelas::find($kelasId) : null;
         $selectedTahunAjaran = $tahunAjaranId ? TahunAjaran::find($tahunAjaranId) : null;
 
@@ -82,8 +82,8 @@ class SetorHafalanController extends Controller
         $kelas = Kelas::where('wali_kelas_id', Auth::user()->guru->id)->get();
         $tahunAjaran = TahunAjaran::where('status', 'Aktif')->get();
 
-        $kelasId = $request->kelas_id;
-        $tahunAjaranId = $request->tahun_ajaran_id;
+        $kelasId = $request->kelas_id ?? $kelas->first()->id;
+        $tahunAjaranId = $request->tahun_ajaran_id ?? $tahunAjaran->first()->id;
         $selectedKelas = $kelasId ? Kelas::find($kelasId) : null;
         $selectedTahunAjaran = $tahunAjaranId ? TahunAjaran::find($tahunAjaranId) : null;
 

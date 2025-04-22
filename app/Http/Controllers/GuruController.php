@@ -138,7 +138,7 @@ class GuruController extends Controller
             $user->update([
                 'name' => $data['nama'],
                 'email' => $request->input('email', $user->email),
-                'password' => Hash::make($request->input('password', $user->password) ?: 'password'),
+                // 'password' => Hash::make('password'),
                 'foto' => $fotoPath,
             ]);
 
@@ -159,8 +159,6 @@ class GuruController extends Controller
             return redirect()->route('guru.edit', $id)->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
     }
-
-
 
     public function destroy($id)
     {

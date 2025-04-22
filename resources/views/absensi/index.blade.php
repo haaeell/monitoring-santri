@@ -102,7 +102,6 @@
                                 <tbody>
                                     @foreach ($santris as $santri)
                                         @php
-
                                             $nilai_absensi = ($santri->total_h / 12) * 100;
                                             $nilai_absensi_persen = $nilai_absensi * 0.4;
                                             $nilai_uts =
@@ -110,14 +109,20 @@
                                                     ->where('tahun_ajaran_id', $selectedTahunAjaran->id)
                                                     ->where('kelas_id', $selectedKelas->id)
                                                     ->where('mapel_id', Auth::user()->guru->mapel->id)
-                                                    ->first()->nilai_uts ?? 0;
+                                                    ->first()->nilai_uts ?? null;
                                             $nilai_uas =
                                                 $santri->nilai
                                                     ->where('tahun_ajaran_id', $selectedTahunAjaran->id)
                                                     ->where('kelas_id', $selectedKelas->id)
                                                     ->where('mapel_id', Auth::user()->guru->mapel->id)
-                                                    ->first()->nilai_uas ?? 0;
-                                            $nilai_akhir = $nilai_absensi * 0.4 + $nilai_uts * 0.3 + $nilai_uas * 0.3;
+                                                    ->first()->nilai_uas ?? null;
+                                            $totalAbsen = $santri->total_h + $santri->total_i + $santri->total_s + $santri->total_a;
+                                            if ($totalAbsen < 12 || $nilai_uts == 0 || $nilai_uas == 0) {
+                                                $nilai_akhir = 'Nilai belum lengkap';
+                                            } else {
+                                                $nilai_akhir =
+                                                    $nilai_absensi * 0.4 + $nilai_uts * 0.3 + $nilai_uas * 0.3;
+                                            }
                                         @endphp
                                         <tr>
                                             <td>{{ $santri->nama }}</td>
@@ -173,22 +178,29 @@
 
                                             {{-- Nilai Akhir --}}
                                             <td>
-                                                {{ number_format($nilai_akhir, 2) }}
+                                                @if (is_numeric($nilai_akhir))
+                                                    {{ number_format($nilai_akhir, 2) }}
+                                                @else
+                                                    {{ $nilai_akhir }}
+                                                @endif
                                             </td>
 
                                             {{-- Nilai Mutu --}}
                                             <td>
                                                 @php
-                                                    if ($nilai_akhir >= 85) {
-                                                        $nilai_mutu = 'A';
-                                                    } elseif ($nilai_akhir >= 75) {
-                                                        $nilai_mutu = 'B';
-                                                    } elseif ($nilai_akhir >= 60) {
-                                                        $nilai_mutu = 'C';
-                                                    } elseif ($nilai_akhir >= 50) {
-                                                        $nilai_mutu = 'D';
-                                                    } else {
-                                                        $nilai_mutu = 'E';
+                                                    $nilai_mutu = 'Nilai belum lengkap';
+                                                    if (is_numeric($nilai_akhir)) {
+                                                        if ($nilai_akhir >= 85) {
+                                                            $nilai_mutu = 'A';
+                                                        } elseif ($nilai_akhir >= 75) {
+                                                            $nilai_mutu = 'B';
+                                                        } elseif ($nilai_akhir >= 60) {
+                                                            $nilai_mutu = 'C';
+                                                        } elseif ($nilai_akhir >= 50) {
+                                                            $nilai_mutu = 'D';
+                                                        } else {
+                                                            $nilai_mutu = 'E';
+                                                        }
                                                     }
                                                 @endphp
                                                 {{ $nilai_mutu }}
@@ -209,15 +221,15 @@
             </div>
         </div>
     </div>
+@endsection
 
-    {{-- Bootstrap 5 Script --}}
+@section('scripts')
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             var firstTab = new bootstrap.Tab(document.querySelector("#tab-1"));
             firstTab.show();
         });
 
-        // Mengubah warna tab yang aktif
         document.querySelectorAll('.nav-link').forEach(tab => {
             tab.addEventListener('click', function() {
                 document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('bg-light',
