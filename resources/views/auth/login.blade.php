@@ -46,7 +46,7 @@
                         <div class="auth-form-light text-left py-3 px-4 px-sm-5" style="border-radius: 16px;">
                             <div class="brand-logo text-center">
                                 <img src="{{ asset('/logo.jpg') }}" class="text-center" alt="">
-                                <h3 class="fw-bold text-center">Login Monitoring Santri</h3>
+                                <h3 class="fw-bold text-center">Login Monitoring Andalusia Hibbana</h3>
                             </div>
                             <form class="pt-3" action="{{ route('login') }}" method="POST">
                                 @csrf

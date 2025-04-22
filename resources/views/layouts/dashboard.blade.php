@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>Monitoring Pondok Pesantren</title>
+    <title>Monitoring Andalusia Hibbana</title>
     <link rel="stylesheet" href="{{ asset('assets') }}/vendors/feather/feather.css">
     <link rel="stylesheet" href="{{ asset('assets') }}/vendors/ti-icons/css/themify-icons.css">
     <link rel="stylesheet" href="{{ asset('assets') }}/vendors/css/vendor.bundle.base.css">
@@ -25,7 +25,7 @@
         <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
             <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
                 <a class="navbar-brand brand-logo me-5 text-dark fs-6" href="index.html"><img src="{{asset('logo.jpg')}}"
-                        class="me-2" alt="logo" />Nama Pesantren</a>
+                        class="me-2" alt="logo" />Andalusia Hibbana</a>
             </div>
             <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
                 <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
@@ -158,7 +158,7 @@
                             </a>
                         </li>
                     @endif
-            
+
                     @if (Auth::user()->role == 'guru')
                         <li class="nav-item">
                             <a class="nav-link" href="/setor">
@@ -172,7 +172,7 @@
                                 <span class="menu-title">Absensi dan Nilai</span>
                             </a>
                         </li>
-                      
+
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('rekap.index') }}">
                                 <i class="bi bi-book menu-icon"></i>
@@ -187,9 +187,9 @@
                                 <span class="menu-title">Laporan</span>
                             </a>
                         </li>
-                        
-                    @endif   
-            
+
+                    @endif
+
                     @if (Auth::user()->role == 'wali_santri')
                         <li class="nav-item">
                             <a class="nav-link" href="/santri-nilai">
@@ -197,10 +197,10 @@
                                 <span class="menu-title">Nilai Santri</span>
                             </a>
                         </li>
-                    @endif   
+                    @endif
                 </ul>
             </nav>
-            
+
             <!-- partial -->
             <div class="main-panel">
                 <div class="content-wrapper">
