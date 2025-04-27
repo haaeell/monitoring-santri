@@ -54,19 +54,6 @@
                                                             </button>
                                                         </div>
                                                     @endif
-                                                    <div class="d-flex gap-1">
-                                                        <a href="/guru/{{ $item->id }}/edit"
-                                                            class="btn btn-info text-white btn-sm fw-bold"
-                                                            data-bs-toggle="tooltip" data-bs-placement="top" title="Edit">
-                                                            <i class="ti-file btn-icon-append"></i>
-                                                        </a>
-                                                        <button type="button"
-                                                            class="btn btn-danger btn-sm text-white fw-bold"
-                                                            data-bs-toggle="modal"
-                                                            data-bs-target="#deleteModal{{ $item->id }}">
-                                                            <i class="ti-trash btn-icon-append"></i>
-                                                        </button>
-                                                    </div>
                                                 </td>
                                             </tr>
 
