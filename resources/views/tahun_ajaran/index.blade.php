@@ -4,7 +4,10 @@
     <div class="card">
         <div class="card-body">
             <h3 class="mb-4">Tahun Ajaran</h3>
-            <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addModal">Tambah Tahun Ajaran</button>
+            @if (Auth::user()->role == 'admin')
+                <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addModal">Tambah Tahun
+                    Ajaran</button>
+            @endif
 
             <table class="table display expandable-table" id="dataTable">
                 <thead>
@@ -24,15 +27,18 @@
                             <td>{{ $tahun->tanggal_selesai }}</td>
                             <td>{{ ucfirst($tahun->status) }}</td>
                             <td>
-                                <button class="btn btn-warning btn-sm" data-bs-toggle="modal"
-                                    data-bs-target="#editModal{{ $tahun->id }}">Edit</button>
-                                <form action="{{ route('tahun-ajaran.destroy', $tahun->id) }}" method="POST"
-                                    style="display: inline;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger btn-sm"
-                                        onclick="return confirm('Yakin ingin menghapus?')">Hapus</button>
-                                </form>
+                                @if (Auth::user()->role == 'admin')
+                                    <button class="btn btn-warning btn-sm" data-bs-toggle="modal"
+                                        data-bs-target="#editModal{{ $tahun->id }}">Edit</button>
+                                    <form action="{{ route('tahun-ajaran.destroy', $tahun->id) }}" method="POST"
+                                        style="display: inline;">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-danger btn-sm"
+                                            onclick="return confirm('Yakin ingin menghapus?')">Hapus</button>
+                                    </form>
+                                @endif
+
                             </td>
                         </tr>
 

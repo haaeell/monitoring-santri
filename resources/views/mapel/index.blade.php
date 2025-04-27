@@ -6,8 +6,10 @@
             <div class="card">
                 <div class="card-body">
                     <p class="card-title">Data Mata Pelajaran</p>
-                    <a href="/mapel/create" class="btn btn-primary btn-rounded btn-sm mb-3"><i
-                            class="ti-plus fw-bold fs-7"></i></a>
+                    @if (Auth::user()->role == 'admin')
+                        <a href="/mapel/create" class="btn btn-primary btn-rounded btn-sm mb-3"><i
+                                class="ti-plus fw-bold fs-7"></i></a>
+                    @endif
                     <div class="row">
                         <div class="col-12">
 
@@ -23,21 +25,25 @@
                                     <tbody>
                                         @foreach ($mapel as $item)
                                             <tr>
-                                                <td>{{ $item->nama_mapel}}</td>
-                                                <td>{{ $item->jenis_kelamin  }}{{ $item->guru->user->name ?? ''}}</td>
+                                                <td>{{ $item->nama_mapel }}</td>
+                                                <td>{{ $item->jenis_kelamin }}{{ $item->guru->user->name ?? '' }}</td>
                                                 <td>
                                                     <div class="d-flex gap-1">
-                                                        <a href="/mapel/{{ $item->id }}/edit"
-                                                            class="btn btn-info text-white btn-sm fw-bold"
-                                                            data-bs-toggle="tooltip" data-bs-placement="top" title="Edit">
-                                                            <i class="ti-file btn-icon-append"></i>
-                                                        </a>
-                                                        <button type="button"
-                                                            class="btn btn-danger btn-sm text-white fw-bold"
-                                                            data-bs-toggle="modal"
-                                                            data-bs-target="#deleteModal{{ $item->id }}">
-                                                            <i class="ti-trash btn-icon-append"></i>
-                                                        </button>
+                                                        @if (Auth::user()->role == 'admin')
+                                                            <a href="/mapel/{{ $item->id }}/edit"
+                                                                class="btn btn-info text-white btn-sm fw-bold"
+                                                                data-bs-toggle="tooltip" data-bs-placement="top"
+                                                                title="Edit">
+                                                                <i class="ti-file btn-icon-append"></i>
+                                                            </a>
+                                                            <button type="button"
+                                                                class="btn btn-danger btn-sm text-white fw-bold"
+                                                                data-bs-toggle="modal"
+                                                                data-bs-target="#deleteModal{{ $item->id }}">
+                                                                <i class="ti-trash btn-icon-append"></i>
+                                                            </button>
+                                                        @endif
+
                                                     </div>
                                                 </td>
                                             </tr>
@@ -53,21 +59,22 @@
                                                                 aria-label="Close"></button>
                                                         </div>
                                                         <div class="modal-body">
-                                                            <div class="fw-semibold my-4 fs-5 uppercase">Apakah Anda yakin ingin menghapus data mapel
+                                                            <div class="fw-semibold my-4 fs-5 uppercase">Apakah Anda yakin
+                                                                ingin menghapus data mapel
                                                                 <strong>{{ $item->nama }} </strong>?
                                                             </div>
                                                             <form id="delete-form" method="POST"
                                                                 action="{{ route('mapel.destroy', $item->id) }}">
                                                                 @csrf
                                                                 @method('DELETE')
-                                                            </div>
-                                                            <div class="card-footer text-end my-2">
-                                                                <button type="submit"
-                                                                    class="btn btn-danger fw-bold btn-rounded text-white btn-sm">Hapus</button>
-                                                                <button type="button"
-                                                                    class="btn btn-secondary fw-bold btn-rounded text-white btn-sm"
-                                                                    data-bs-dismiss="modal">Batal</button>
-                                                            </div>
+                                                        </div>
+                                                        <div class="card-footer text-end my-2">
+                                                            <button type="submit"
+                                                                class="btn btn-danger fw-bold btn-rounded text-white btn-sm">Hapus</button>
+                                                            <button type="button"
+                                                                class="btn btn-secondary fw-bold btn-rounded text-white btn-sm"
+                                                                data-bs-dismiss="modal">Batal</button>
+                                                        </div>
                                                         </form>
                                                     </div>
                                                 </div>
