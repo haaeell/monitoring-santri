@@ -17,10 +17,12 @@ class NilaiController extends Controller
     public function index(Request $request)
     {
         $user = auth()->user();
-        $guru = Guru::where('user_id', $user->id)->first();
-        $kelas = Kelas::whereHas('mapels', function ($query) use ($guru) {
-            $query->where('guru_id', $guru->id);
-        })->get();
+        if ($user->role == 'guru') {
+            $guru = Guru::where('user_id', $user->id)->first();
+            $kelas = Kelas::where('guru_id', $guru->id)->with(['santris'])->get();
+        } else {
+            $kelas = Kelas::with(['santris'])->get();
+        }
         $tahunAjaran = TahunAjaran::all();
 
         $kelasId = $request->kelas_id;

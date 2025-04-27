@@ -79,7 +79,11 @@ class SetorHafalanController extends Controller
     }
     public function rekap(Request $request)
     {
-        $kelas = Kelas::where('wali_kelas_id', Auth::user()->guru->id)->get();
+        if (Auth::user()->role == 'guru') {
+            $kelas = Kelas::where('wali_kelas_id', Auth::user()->guru->id)->get();
+        } else {
+            $kelas = Kelas::all();
+        }
         $tahunAjaran = TahunAjaran::where('status', 'Aktif')->get();
 
         $kelasId = $request->kelas_id ?? $kelas->first()->id;

@@ -28,13 +28,17 @@
                                                 <td>{{ $item->santri->nama_ibu }}</td>
                                                 <td>{{ $item->user->email }}</td>
                                                 <td>
-                                                    <div class="d-flex gap-1">
-                                                        <a href="/wali/{{ $item->santri->id }}/edit"
-                                                            class="btn btn-info text-white btn-sm fw-bold"
-                                                            data-bs-toggle="tooltip" data-bs-placement="top" title="Edit">
-                                                            <i class="ti-file btn-icon-append"></i>
-                                                        </a>
-                                                    </div>
+                                                    @if (Auth::user()->role == 'admin')
+                                                        <div class="d-flex gap-1">
+                                                            <a href="/wali/{{ $item->santri->id }}/edit"
+                                                                class="btn btn-info text-white btn-sm fw-bold"
+                                                                data-bs-toggle="tooltip" data-bs-placement="top"
+                                                                title="Edit">
+                                                                <i class="ti-file btn-icon-append"></i>
+                                                            </a>
+                                                        </div>
+                                                    @endif
+
                                                 </td>
                                             </tr>
                                         @endforeach

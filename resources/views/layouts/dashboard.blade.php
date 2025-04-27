@@ -80,7 +80,8 @@
                         <span class="mx-2">{{ Auth::user()->name }}</span>
                         <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown"
                             id="profileDropdown">
-                            <img src="{{ Auth::user()->foto ? asset('storage/' . Auth::user()->foto) : 'https://ui-avatars.com/api/?name=' . Auth::user()->nama }}" alt="profile" />
+                            <img src="{{ Auth::user()->foto ? asset('storage/' . Auth::user()->foto) : 'https://ui-avatars.com/api/?name=' . Auth::user()->nama }}"
+                                alt="profile" />
                         </a>
                         <div class="dropdown-menu dropdown-menu-right navbar-dropdown"
                             aria-labelledby="profileDropdown">
@@ -121,12 +122,14 @@
                                 <span class="menu-title">Guru</span>
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/kepala_pondok">
-                                <i class="bi bi-person-gear menu-icon"></i>
-                                <span class="menu-title">Kepala Pondok</span>
-                            </a>
-                        </li>
+                        @if (Auth::user()->role == 'admin')
+                            <li class="nav-item">
+                                <a class="nav-link" href="/kepala_pondok">
+                                    <i class="bi bi-person-gear menu-icon"></i>
+                                    <span class="menu-title">Kepala Pondok</span>
+                                </a>
+                            </li>
+                        @endif
                         <li class="nav-item">
                             <a class="nav-link" href="/wali">
                                 <i class="bi bi-people menu-icon"></i>
@@ -159,13 +162,15 @@
                         </li>
                     @endif
 
-                    @if (Auth::user()->role == 'guru')
-                        <li class="nav-item">
-                            <a class="nav-link" href="/setor">
-                                <i class="bi bi-upload menu-icon"></i>
-                                <span class="menu-title">Setor Hafalan</span>
-                            </a>
-                        </li>
+                    @if (Auth::user()->role == 'guru' || Auth::user()->role == 'kepala_pondok')
+                        @if (Auth::user()->role == 'guru')
+                            <li class="nav-item">
+                                <a class="nav-link" href="/setor">
+                                    <i class="bi bi-upload menu-icon"></i>
+                                    <span class="menu-title">Setor Hafalan</span>
+                                </a>
+                            </li>
+                        @endif
                         <li class="nav-item">
                             <a class="nav-link" href="/absensi">
                                 <i class="bi bi-bar-chart menu-icon"></i>
