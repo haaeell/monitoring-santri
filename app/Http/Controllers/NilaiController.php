@@ -19,7 +19,11 @@ class NilaiController extends Controller
         $user = auth()->user();
         if ($user->role == 'guru') {
             $guru = Guru::where('user_id', $user->id)->first();
-            $kelas = Kelas::where('guru_id', $guru->id)->with(['santris'])->get();
+            
+            $kelas = Kelas::whereHas('mapels', function ($query) use ($guru) {
+                $query->where('guru_id', $guru->id);
+            })->get();
+            
         } else {
             $kelas = Kelas::with(['santris'])->get();
         }

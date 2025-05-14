@@ -22,7 +22,7 @@ class AbsensiController extends Controller
     {
         $user = auth()->user();
 
-        if($user->role == 'guru') {
+        if ($user->role == 'guru') {
             $guru = Guru::where('user_id', $user->id)->first();
             $mapelId = Auth::user()->guru->mapel->id;
         } else {
@@ -33,9 +33,11 @@ class AbsensiController extends Controller
 
         $kelasId = $request->kelas_id;
         $tahunAjaranId = $request->tahun_ajaran_id;
-        
-        if($user->role == 'guru') {
-            $kelas = Kelas::where('guru_id', $guru->id)->with(['santris'])->get();
+
+        if ($user->role == 'guru') {
+            $kelas = Kelas::whereHas('mapels', function ($query) use ($guru) {
+                $query->where('guru_id', $guru->id);
+            })->get();
         } else {
             $kelas = Kelas::with(['santris'])->get();
         }

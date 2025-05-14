@@ -16,7 +16,7 @@
                             <option value="">-- Pilih Kelas --</option>
                             @foreach ($kelas as $kelasItem)
                                 <option value="{{ $kelasItem->id }}"
-                                    {{ request('kelas_id') == $kelasItem->id ? 'selected' : '' }}>
+                                    {{ request('kelas_id') == $kelasItem->id || $selectedKelas  ? 'selected' : '' }}>
                                     {{ $kelasItem->nama_kelas }}
                                 </option>
                             @endforeach
@@ -29,7 +29,7 @@
                             <option value="">-- Pilih Tahun Ajaran --</option>
                             @foreach ($tahunAjaran as $tahun)
                                 <option value="{{ $tahun->id }}"
-                                    {{ request('tahun_ajaran_id') == $tahun->id ? 'selected' : '' }}>
+                                    {{ request('tahun_ajaran_id') == $tahun->id || $selectedTahunAjaran ? 'selected' : '' }}>
                                     {{ $tahun->nama }}
                                 </option>
                             @endforeach
@@ -39,7 +39,15 @@
 
                 @if ($selectedKelas)
                     <h5 class="mt-3">Nama Hafalan: {{ $selectedKelas->hafalan->nama }} </h5>
-                    <h5 class="mt-3">Target : {{ $selectedKelas->hafalan->target }} Juz</h5>
+                    <h5 class="mt-3">Target : {{ $selectedKelas->hafalan->target }}</h5>
+
+                    <div class="mt-3">
+                        <a href="{{ route('setor.riwayat', ['kelas_id' => $selectedKelas->id, 'tahun_ajaran_id' => $selectedTahunAjaran->id]) }}"
+                            class="btn btn-success text-white fw-bold">
+                            Lihat Riwayat Mingguan
+                        </a>
+                    </div>
+
 
                     <form method="POST" action="{{ route('setor.store') }}">
                         @csrf
@@ -63,17 +71,30 @@
                                     @foreach ($santris as $santri)
                                         @php
                                             $lastSetoran = $santri->hafalan->sortByDesc('tanggal_setor')->first();
-                                            $mulai = $lastSetoran ? $lastSetoran->selesai : 0; // Mulai dari selesai sebelumnya
+                                            $mulai = $lastSetoran ? $lastSetoran->selesai : 0;
                                         @endphp
                                         <tr>
                                             <td>{{ $santri->nama }}</td>
                                             <td>{{ $santri->nis }}</td>
-                                            <td><input type="number" name="mulai[{{ $santri->id }}]" class="form-control mulai"
-                                                    value="{{ $mulai }}" style="width:100%;" readonly></td>
-                                            <td><input type="number" name="selesai[{{ $santri->id }}]" class="form-control selesai"
-                                                    value="" style="width:100%;" required></td>
-                                            <td><input type="text" class="form-control total" name="total[{{ $santri->id }}]" style="width:100%;"
-                                                    value="" readonly></td>
+
+                                            <td>
+                                                {{ $mulai }}
+                                                <input type="hidden" name="mulai[{{ $santri->id }}]"
+                                                    class="form-control mulai" value="{{ $mulai }}" readonly>
+                                            </td>
+
+                                            <td>
+                                                <input type="number" name="selesai[{{ $santri->id }}]"
+                                                    class="form-control selesai" value="" style="width:100%;"
+                                                    required>
+                                            </td>
+
+                                            <td>
+                                                <span class="total" style="width:100%;">0</span>
+                                                <input type="hidden" class="form-control total_hidden"
+                                                    name="total[{{ $santri->id }}]" value="0" readonly>
+                                            </td>
+
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -91,16 +112,29 @@
 @endsection
 
 @section('scripts')
-    <script>
-        $(document).ready(function() {
-            $('.mulai, .selesai').on('input', function() {
-                var row = $(this).closest('tr');
-                var mulai = parseInt(row.find('.mulai').val()) || 0;
-                var selesai = parseInt(row.find('.selesai').val()) || 0;
-                var total = selesai - mulai;
+<script>
+    $(document).ready(function() {
+        $('.selesai').on('input', function() {
+            var row = $(this).closest('tr');
+            var mulai = parseInt(row.find('.mulai').val()) || 0;
+            var selesai = parseInt(row.find('.selesai').val()) || 0;
 
-                row.find('.total').val(total >= 0 ? total : 0); // Pastikan tidak negatif
-            });
+            var errorMessage = row.find('.invalid-feedback');
+
+            if (selesai <= mulai) {
+                if (errorMessage.length === 0) {
+                    row.find('.selesai').addClass('is-invalid');
+                    row.find('.selesai').after('<div class="invalid-feedback">Jumlah selesai harus lebih besar dari mulai</div>');
+                }
+                row.find('.total').text('Error');
+                row.find('.total_hidden').val('');
+            } else {
+                row.find('.selesai').removeClass('is-invalid');
+                row.find('.total').text(selesai - mulai);
+                row.find('.total_hidden').val(selesai - mulai);
+                errorMessage.remove();
+            }
         });
-    </script>
+    });
+</script>
 @endsection

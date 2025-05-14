@@ -20,5 +20,11 @@ class SetorHafalan extends Model
         'tanggal_setor',
         'keterangan',
         'tahun_ajaran_id',
+        'kelas_id',
     ];
+
+    public function santri()
+    {
+        return $this->belongsTo(Santri::class);
+    }
 }

@@ -48,7 +48,7 @@ class Santri extends Model
 
     public function hafalan()
     {
-        return $this->hasMany(SetorHafalan::class);
+        return $this->hasMany(SetorHafalan::class, 'santri_id');
     }
     public function absensi()
     {

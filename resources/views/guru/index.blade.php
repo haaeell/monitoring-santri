@@ -44,7 +44,7 @@
                                                                 class="btn btn-info text-white btn-sm fw-bold"
                                                                 data-bs-toggle="tooltip" data-bs-placement="top"
                                                                 title="Edit">
-                                                                <i class="ti-file btn-icon-append"></i>
+                                                                <i class="ti-pencil btn-icon-append"></i>
                                                             </a>
                                                             <button type="button"
                                                                 class="btn btn-danger btn-sm text-white fw-bold"

@@ -1,38 +1,31 @@
 @extends('layouts.dashboard')
 
 @section('content')
-    @if (Auth::user()->role == 'admin')
-        <div class="row mb-3">
-            <div class="col-md-12">
-                <div class="card">
-                    <div class="card-body">
-                        <a href="{{ route('download-template') }}" class="btn btn-danger fw-bold text-white mb-3">Download
-                            Template</a>
+    <div class="row mb-3">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <a href="{{ route('download-template') }}" class="btn btn-danger fw-bold text-white mb-3">Download
+                        Template</a>
 
-                        <form action="{{ route('santri.import') }}" method="POST" enctype="multipart/form-data">
-                            @csrf
-                            <input type="file" name="file" class="form-control" required>
-                            <button type="submit" class="btn btn-danger text-white fw-bold mt-3 text-end">Import
-                                Excel</button>
-                        </form>
-                    </div>
+                    <form action="{{ route('santri.import') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <input type="file" name="file" class="form-control" required>
+                        <button type="submit" class="btn btn-danger text-white fw-bold mt-3 text-end">Import Excel</button>
+                    </form>
                 </div>
             </div>
         </div>
-    @endif
-
+    </div>
     <div class="row">
         <div class="col-md-12 grid-margin stretch-card">
             <div class="card">
                 <div class="card-body">
                     <p class="card-title">Data Santri</p>
-                    @if (Auth::user()->role == 'admin')
-                        <div class="d-flex justify-content-between">
-                            <a href="/santri/create" class="btn btn-primary btn-rounded btn-sm mb-3"><i
-                                    class="ti-plus fw-bold fs-7"></i></a>
-                        </div>
-                    @endif
-
+                    <div class="d-flex justify-content-between">
+                        <a href="/santri/create" class="btn btn-primary btn-rounded btn-sm mb-3"><i
+                                class="ti-plus fw-bold fs-7"></i></a>
+                    </div>
 
                     <div class="row">
                         <div class="col-12">
@@ -41,82 +34,85 @@
                                 <table id="dataTable" class="display expandable-table" style="width:100%">
                                     <thead>
                                         <tr class="text-center">
-                                            <th>Nama</th>
-                                            <th>Foto</th>
                                             <th>NIS</th>
-                                            <th>Jenis Kelamin</th>
+                                            <th>Nama</th>
                                             <th>Kamar</th>
-                                            <th>Nama Orangtua</th>
+                                            <th>Jenis Kelamin</th>
+                                            <th>Alamat</th>
+                                            <th>Telp</th>
+                                            <th>Tanggal Lahir</th>
+                                            <th>Foto</th>
+                                            <th>Nama Ayah</th>
+                                            <th>Nama Ibu</th>
+                                            <th>Kelas</th>
                                             <th>Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @foreach ($santri as $item)
                                             <tr>
-                                                <td class="text-nowrap">{{ $item->nama }}</td>
-                                                <td>
-                                                    <img src="{{ $item->foto ? asset('storage/' . $item->foto) : 'https://ui-avatars.com/api/?name=' . $item->nama }}"
-                                                        width="100px" height="100px" class="rounded"
-                                                        style="object-fit: cover" alt="{{ $item->foto }}">
-                                                </td>
                                                 <td>{{ $item->nis }}</td>
-                                                <td>{{ $item->jenis_kelamin }}</td>
+                                                <td class="text-nowrap">{{ $item->nama }}</td>
                                                 <td>{{ $item->kamar }}</td>
-                                                <td>{{ $item->nama_ayah }} / {{ $item->nama_ibu }}
-                                                </td>
+                                                <td>{{ $item->jenis_kelamin }}</td>
+                                                <td>{{ $item->alamat }}</td>
+                                                <td>{{ $item->telp }}</td>
+                                                <td>{{ \Carbon\Carbon::parse($item->tanggal_lahir)->format('d-m-Y') }}</td>
                                                 <td>
-                                                    @if (Auth::user()->role == 'admin')
-                                                        <div class="d-flex gap-1">
-                                                            <a href="/santri/{{ $item->id }}/edit"
-                                                                class="btn btn-info text-white btn-sm fw-bold"
-                                                                data-bs-toggle="tooltip" data-bs-placement="top"
-                                                                title="Edit">
-                                                                <i class="ti-file btn-icon-append"></i>
-                                                            </a>
-                                                            <button type="button"
-                                                                class="btn btn-danger btn-sm text-white fw-bold"
-                                                                data-bs-toggle="modal"
-                                                                data-bs-target="#deleteModal{{ $item->id }}">
-                                                                <i class="ti-trash btn-icon-append"></i>
-                                                            </button>
-                                                        </div>
-                                                    @endif
+                                                    <img src="{{ $item->foto ? asset('storage/' . $item->foto) : 'https://ui-avatars.com/api/?name=' . urlencode($item->nama) }}"
+                                                        width="80px" height="80px" class="rounded"
+                                                        style="object-fit: cover;" alt="{{ $item->nama }}">
+                                                </td>
+                                                <td>{{ $item->nama_ayah }}</td>
+                                                <td>{{ $item->nama_ibu }}</td>
+                                                <td>{{ $item->kelas->nama ?? '-' }}</td>
+                                                <td>
+                                                    <div class="d-flex gap-1">
+                                                        <a href="/santri/{{ $item->id }}/edit"
+                                                            class="btn btn-info text-white btn-sm fw-bold" title="Edit">
+                                                            <i class="ti-pencil btn-icon-append"></i>
+                                                        </a>
+                                                        <button type="button"
+                                                            class="btn btn-danger btn-sm text-white fw-bold"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#deleteModal{{ $item->id }}">
+                                                            <i class="ti-trash btn-icon-append"></i>
+                                                        </button>
+                                                    </div>
                                                 </td>
                                             </tr>
 
+                                            <!-- Modal delete -->
                                             <div class="modal fade" id="deleteModal{{ $item->id }}" tabindex="-1"
-                                                aria-labelledby="deleteModalLabel" aria-hidden="true">
+                                                aria-hidden="true">
                                                 <div class="modal-dialog modal-dialog-centered">
                                                     <div class="modal-content">
                                                         <div class="modal-header">
-                                                            <h5 class="modal-title" id="deleteModalLabel">Hapus Data Santri
-                                                            </h5>
-                                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                                aria-label="Close"></button>
+                                                            <h5 class="modal-title">Hapus Data Santri</h5>
+                                                            <button type="button" class="btn-close"
+                                                                data-bs-dismiss="modal"></button>
                                                         </div>
                                                         <div class="modal-body">
-                                                            <div class="fw-semibold my-4 fs-5 uppercase">Apakah Anda yakin
-                                                                ingin menghapus data santri
-                                                                <strong>{{ $item->nama }} </strong>?
-                                                            </div>
-                                                            <form id="delete-form" method="POST"
+                                                            <p class="fw-semibold">Yakin mau hapus
+                                                                <strong>{{ $item->nama }}</strong>?</p>
+                                                            <form method="POST"
                                                                 action="{{ route('santri.destroy', $item->id) }}">
                                                                 @csrf
                                                                 @method('DELETE')
+                                                                <div class="text-end">
+                                                                    <button type="submit"
+                                                                        class="btn btn-danger btn-sm fw-bold">Hapus</button>
+                                                                    <button type="button" class="btn btn-secondary btn-sm"
+                                                                        data-bs-dismiss="modal">Batal</button>
+                                                                </div>
+                                                            </form>
                                                         </div>
-                                                        <div class="card-footer text-end my-2">
-                                                            <button type="submit"
-                                                                class="btn btn-danger fw-bold btn-rounded text-white btn-sm">Hapus</button>
-                                                            <button type="button"
-                                                                class="btn btn-secondary fw-bold btn-rounded text-white btn-sm"
-                                                                data-bs-dismiss="modal">Batal</button>
-                                                        </div>
-                                                        </form>
                                                     </div>
                                                 </div>
                                             </div>
                                         @endforeach
                                     </tbody>
+
                                 </table>
                             </div>
                         </div>
@@ -125,4 +121,21 @@
             </div>
         </div>
     </div>
+@endsection
+
+@section('scripts')
+    <script>
+        $(document).ready(function() {
+            var table = $('#dataTable').DataTable({
+                scrollX: true,
+                fixedColumns: {
+                    leftColumns: 2
+                },
+                columnDefs: [{
+                    className: "text-nowrap",
+                    targets: "_all"
+                }]
+            });
+        });
+    </script>
 @endsection

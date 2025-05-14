@@ -39,16 +39,16 @@
                                         <td>{{ $mapel->guru->user->name ?? '-' }}</td>
                                         <td>
                                             <div class="d-flex gap-1">
-                                                <form action="{{ route('kelas.removeMapel', [$kelas->id, $mapel->id]) }}"
-                                                    method="POST" class="d-inline">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit"
+                                                <button type="button" 
                                                         class="btn btn-danger btn-sm text-white fw-bold"
-                                                        data-bs-toggle="tooltip" data-bs-placement="top" title="Hapus">
-                                                        <i class="ti-trash btn-icon-append"></i>
-                                                    </button>
-                                                </form>
+                                                        data-bs-toggle="modal" 
+                                                        data-bs-target="#deleteMapelModal"
+                                                        data-mapel-id="{{ $mapel->id }}"
+                                                        data-kelas-id="{{ $kelas->id }}"
+                                                        data-bs-placement="top" 
+                                                        title="Hapus">
+                                                    <i class="ti-trash btn-icon-append"></i>
+                                                </button>
                                             </div>
                                         </td>
                                     </tr>
@@ -60,4 +60,42 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="deleteMapelModal" tabindex="-1" aria-labelledby="deleteMapelModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteMapelModalLabel">Konfirmasi Hapus Mapel</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Apakah Anda yakin ingin menghapus mapel ini dari kelas?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <form id="deleteMapelForm" action="" method="POST">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-danger">Hapus</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+@endsection
+
+@section('scripts')
+<script>
+    var deleteMapelModal = document.getElementById('deleteMapelModal');
+    deleteMapelModal.addEventListener('show.bs.modal', function (event) {
+        var button = event.relatedTarget;
+        var mapelId = button.getAttribute('data-mapel-id');
+        var kelasId = button.getAttribute('data-kelas-id');
+        
+        var form = document.getElementById('deleteMapelForm');
+        form.action = '/kelas/' + kelasId + '/mapel/' + mapelId;
+    });
+</script>
 @endsection

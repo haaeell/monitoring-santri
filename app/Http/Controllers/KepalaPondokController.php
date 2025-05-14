@@ -29,8 +29,8 @@ class KepalaPondokController extends Controller
     public function edit($id)
     {
         $kepalaPondok = KepalaPondok::findOrFail($id);
-        $users = User::all(); 
-        return view('kepala_pondok.edit', compact('kepalaPondok', 'users'));
+        $user = $kepalaPondok->user;
+        return view('kepala_pondok.edit', compact('kepalaPondok', 'user'));
     }
 
     public function store(Request $request)

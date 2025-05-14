@@ -24,7 +24,7 @@
 <div class="row">
     <div class="col-md-12 grid-margin transparent">
         <div class="row">
-            <div class="col-md-6 mb-4 stretch-card transparent">
+            <div class="col-md-4 mb-4 stretch-card transparent">
                 <div class="card card-tale">
                     <div class="card-body">
                         <p class="mb-4">Total Santri</p>
@@ -32,7 +32,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-6 mb-4 stretch-card transparent">
+            <div class="col-md-4 mb-4 stretch-card transparent">
                 <div class="card card-dark-blue">
                     <div class="card-body">
                         <p class="mb-4">Total Kelas</p>
@@ -40,21 +40,11 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6 mb-4 mb-lg-0 stretch-card transparent">
+            <div class="col-md-4 mb-4 stretch-card transparent">
                 <div class="card card-light-blue">
                     <div class="card-body">
                         <p class="mb-4">Total Guru</p>
                         <p class="fs-30 mb-2">{{ $guruCount  }}</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 stretch-card transparent">
-                <div class="card card-light-danger">
-                    <div class="card-body">
-                        <p class="mb-4">Total Hafalan</p>
-                        <p class="fs-30 mb-2">{{ $hafalanCount }}</p>
                     </div>
                 </div>
             </div>

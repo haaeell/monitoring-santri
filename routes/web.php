@@ -34,6 +34,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/kelas/{kelas}/mapel', [KelasController::class, 'showMapel'])->name('kelas.mapel');
     Route::post('/kelas/{kelas}/mapel', [KelasController::class, 'addMapel'])->name('kelas.addMapel');
     Route::delete('/kelas/{kelas}/mapel/{mapel}', [KelasController::class, 'removeMapel'])->name('kelas.removeMapel');
+    Route::post('/kelas/import', [KelasController::class, 'import'])->name('kelas.import');
+    Route::get('/kelas-template', [KelasController::class, 'downloadTemplate'])->name('kelas-template');
     Route::resource('kepala_pondok', KepalaPondokController::class);
     Route::resource('wali', WaliSantriController::class);
 
@@ -42,6 +44,8 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('setor', [SetorHafalanController::class, 'index'])->name('setor.index');
     Route::post('setor/store', [SetorHafalanController::class, 'store'])->name('setor.store');
+    Route::get('/setor/riwayat', [SetorHafalanController::class, 'riwayat'])->name('setor.riwayat');
+
 
     Route::get('absensi', [AbsensiController::class, 'index'])->name('absensi.index');
     Route::post('absensi/store', [AbsensiController::class, 'store'])->name('absensi.store');

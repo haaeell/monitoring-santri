@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\TemplateKelasExport;
+use App\Imports\KelasImport;
 use App\Models\Kelas;
 use App\Models\Guru;
 use App\Models\Mapel;
 use App\Models\Santri;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class KelasController extends Controller
 {
@@ -39,11 +42,33 @@ class KelasController extends Controller
         return redirect()->route('kelas.index')->with('success', 'Kelas berhasil dibuat');
     }
 
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|file|mimes:xlsx,xls,csv'
+        ]);
+
+        Excel::import(new KelasImport, $request->file('file'));
+
+        return redirect()->route('kelas.index')->with('success', 'Data kelas berhasil diimport.');
+    }
+
     public function edit($id)
     {
         $kelas = Kelas::findOrFail($id);
         $gurus = Guru::all();
         return view('kelas.edit', compact('kelas', 'gurus'));
+    }
+    public function show($id)
+    {
+        // $kelas = Kelas::findOrFail($id);
+        // $gurus = Guru::all();
+        // return view('kelas.edit', compact('kelas', 'gurus'));
+    }
+
+    public function downloadTemplate()
+    {
+        return Excel::download(new TemplateKelasExport, 'template_kelas.xlsx');
     }
 
     public function update(Request $request, $id)
