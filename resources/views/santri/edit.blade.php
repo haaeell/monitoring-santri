@@ -96,6 +96,11 @@
                                             class="form-control form-control-sm" />
                                         <small class="form-text text-muted">Kosongkan jika tidak ingin mengganti
                                             foto.</small>
+                                            <div class="form-check mt-2">
+    <input type="checkbox" name="remove_foto" value="1" class="form-check-input" id="removeFoto">
+    <label class="form-check-label" for="removeFoto">Hapus Foto</label>
+</div>
+
                                     </div>
                                 </div>
                                 <div class="form-group row align-items-center">

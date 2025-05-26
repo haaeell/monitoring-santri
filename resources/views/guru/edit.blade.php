@@ -97,7 +97,7 @@
                                     <label class="col-sm-3 col-form-label">Pendidikan Terakhir <span class="text-danger">*</span> <span
                                             style="float: right">:</span></label>
                                     <div class="col-sm-9">
-                                        <input type="text" name="pendidikan_terakhir" class="form-control form-control-sm" 
+                                        <input type="text" name="pendidikan_terakhir" class="form-control form-control-sm"
                                             value="{{ old('pendidikan_terakhir', $guru->pendidikan_terakhir) }}" required>
                                         @error('pendidikan_terakhir')
                                             <small class="text-danger">{{ $message }}</small>

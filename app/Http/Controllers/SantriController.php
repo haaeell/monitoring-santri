@@ -127,15 +127,21 @@ class SantriController extends Controller
 
         $santri = Santri::findOrFail($id);
 
-        if ($request->hasFile('foto')) {
-            if ($santri->foto && Storage::exists('public/' . $santri->foto)) {
-                Storage::delete('public/' . $santri->foto);
-            }
-
-            $fotoPath = $request->file('foto')->store('santri_photos', 'public');
-        } else {
-            $fotoPath = $santri->foto;
+        if ($request->has('remove_foto') && $santri->foto) {
+        if (Storage::exists('public/' . $santri->foto)) {
+            Storage::delete('public/' . $santri->foto);
         }
+        $santri->foto = null;
+    }
+
+        if ($request->hasFile('foto')) {
+        if ($santri->foto && Storage::exists('public/' . $santri->foto)) {
+            Storage::delete('public/' . $santri->foto);
+        }
+
+        $fotoPath = $request->file('foto')->store('santri_photos', 'public');
+        $santri->foto = $fotoPath;
+    }
 
         $santri->update([
             'nama' => $data['nama'],
@@ -145,7 +151,7 @@ class SantriController extends Controller
             'kamar' => $data['kamar'],
             'telp' => $data['telp'] ?? null,
             'alamat' => $data['alamat'],
-            'foto' => $fotoPath,
+            'foto' => $santri->foto,
         ]);
 
         return redirect()->route('santri.index')->with('success', 'Data santri berhasil diperbarui.');
@@ -202,7 +208,7 @@ class SantriController extends Controller
         //     return $nilai->mapel;
         // });
         $mapels = $santri->kelas->mapels;
-        
+
         $absensiData = Absensi::with('santri', 'mapel')
             ->where('kelas_id', $santri->kelas_id)
             ->where('tahun_ajaran_id', $selectedTahunAjaran->id)

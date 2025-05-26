@@ -40,7 +40,7 @@
                                                 <td>
                                                     @if (Auth::user()->role == 'admin')
                                                         <div class="d-flex gap-1">
-                                                            <a href="/santri/{{ $item->id }}/edit"
+                                                            <a href="/guru/{{ $item->id }}/edit"
                                                                 class="btn btn-info text-white btn-sm fw-bold"
                                                                 data-bs-toggle="tooltip" data-bs-placement="top"
                                                                 title="Edit">

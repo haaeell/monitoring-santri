@@ -65,7 +65,7 @@
                                                 </td>
                                                 <td>{{ $item->nama_ayah }}</td>
                                                 <td>{{ $item->nama_ibu }}</td>
-                                                <td>{{ $item->kelas->nama ?? '-' }}</td>
+                                                <td>{{ $item->kelas->nama_kelas ?? '-' }}</td>
                                                 <td>
                                                     <div class="d-flex gap-1">
                                                         <a href="/santri/{{ $item->id }}/edit"

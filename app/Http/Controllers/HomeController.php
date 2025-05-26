@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Guru;
 use App\Models\Hafalan;
 use App\Models\Kelas;
+use App\Models\Mapel;
 use App\Models\Santri;
 use Illuminate\Http\Request;
 
@@ -21,7 +22,8 @@ class HomeController extends Controller
         $kelasCount = Kelas::count();
         $guruCount = Guru::count();
         $hafalanCount = Hafalan::count();
+        $mapelCount = Mapel::count();
 
-        return view('home', compact('santriCount', 'kelasCount', 'guruCount', 'hafalanCount'));
+        return view('home', compact('santriCount', 'kelasCount', 'guruCount', 'hafalanCount','mapelCount'));
     }
 }

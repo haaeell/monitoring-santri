@@ -86,7 +86,7 @@
                                             <td>
                                                 <input type="number" name="selesai[{{ $santri->id }}]"
                                                     class="form-control selesai" value="" style="width:100%;"
-                                                    required>
+                                                    >
                                             </td>
 
                                             <td>

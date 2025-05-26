@@ -156,7 +156,7 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="/tahun-ajaran">
-                                <i class="bi bi-journal-text menu-icon"></i>
+                                <i class="bi bi-calendar3 menu-icon"></i>
                                 <span class="menu-title">Tahun Ajaran</span>
                             </a>
                         </li>
@@ -170,20 +170,25 @@
                                     <span class="menu-title">Setor Hafalan</span>
                                 </a>
                             </li>
-                        @endif
+
                         <li class="nav-item">
                             <a class="nav-link" href="/absensi">
-                                <i class="bi bi-bar-chart menu-icon"></i>
+                                        <i class="bi bi-calendar-check menu-icon"></i>
+
                                 <span class="menu-title">Absensi dan Nilai</span>
                             </a>
                         </li>
 
+                        @endif
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('rekap.index') }}">
                                 <i class="bi bi-book menu-icon"></i>
                                 <span class="menu-title">Rekap Hafalan</span>
                             </a>
                         </li>
+
+
+
 
 
                         <li class="nav-item">

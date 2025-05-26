@@ -75,15 +75,15 @@
                         </tr>
                         <tr>
                             <td><strong>Total Hafalan</strong></td>
-                            <td>: {{ $totalHafalan }} Juz</td>
+                            <td>: {{ $totalHafalan }} Bait </td>
                         </tr>
                         <tr>
                             <td><strong>Target Hafalan</strong></td>
-                            <td>: {{ $santri->kelas->hafalan->target ?? '-' }} Juz</td>
+                            <td>: {{ $santri->kelas->hafalan->target ?? '-' }} Bait </td>
                         </tr>
                         <tr>
                             <td><strong>Status Hafalan</strong></td>
-                            <td>: 
+                            <td>:
                                 <span class="badge {{ $totalHafalan >= ($santri->kelas->hafalan->target ?? 0) ? 'bg-success' : 'bg-warning' }}">
                                     {{ $totalHafalan >= ($santri->kelas->hafalan->target ?? 0) ? 'Lulus' : 'Belum Lulus' }}
                                 </span>

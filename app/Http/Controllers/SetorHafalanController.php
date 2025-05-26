@@ -42,16 +42,6 @@ class SetorHafalanController extends Controller
             'total' => 'required|array',
         ]);
 
-        foreach ($request->mulai as $santriId => $mulai) {
-            $selesai = $request->selesai[$santriId] ?? 0;
-
-            if ($selesai <= $mulai) {
-                return redirect()->back()->withErrors([
-                    'selesai.' . $santriId => 'Jumlah selesai harus lebih besar dari mulai untuk Santri ID ' . $santriId,
-                ]);
-            }
-        }
-
         $today = Carbon::today()->toDateString();
 
         foreach ($request->mulai as $santriId => $mulai) {
@@ -76,6 +66,7 @@ class SetorHafalanController extends Controller
                     'total' => $request->total[$santriId],
                     'tanggal_setor' => now(),
                     'tahun_ajaran_id' => $request->tahun_ajaran_id,
+                    'kelas_id' => $request->kelas_id
                 ]);
             }
         }

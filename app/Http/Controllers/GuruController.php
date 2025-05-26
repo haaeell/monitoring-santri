@@ -26,7 +26,7 @@ class GuruController extends Controller
     }
     public function edit($id)
     {
-        $guru = Guru::find($id);
+        $guru = guru::find($id);
         return view('guru.edit', compact('guru'));
     }
     public function store(Request $request)
