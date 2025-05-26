@@ -16,7 +16,7 @@
                             <option value="">-- Pilih Kelas --</option>
                             @foreach ($kelas as $kelasItem)
                                 <option value="{{ $kelasItem->id }}"
-                                    {{ request('kelas_id') == $kelasItem->id || $selectedKelas  ? 'selected' : '' }}>
+                                    {{ request('kelas_id') == $kelasItem->id || $selectedKelas ? 'selected' : '' }}>
                                     {{ $kelasItem->nama_kelas }}
                                 </option>
                             @endforeach
@@ -85,8 +85,7 @@
 
                                             <td>
                                                 <input type="number" name="selesai[{{ $santri->id }}]"
-                                                    class="form-control selesai" value="" style="width:100%;"
-                                                    >
+                                                    class="form-control selesai" value="0" style="width:100%;">
                                             </td>
 
                                             <td>
@@ -112,29 +111,31 @@
 @endsection
 
 @section('scripts')
-<script>
-    $(document).ready(function() {
-        $('.selesai').on('input', function() {
-            var row = $(this).closest('tr');
-            var mulai = parseInt(row.find('.mulai').val()) || 0;
-            var selesai = parseInt(row.find('.selesai').val()) || 0;
+    <script>
+        $(document).ready(function() {
+            $('.selesai').on('input', function() {
+                var row = $(this).closest('tr');
+                var mulai = parseInt(row.find('.mulai').val()) || 0;
+                var selesai = parseInt(row.find('.selesai').val()) || 0;
 
-            var errorMessage = row.find('.invalid-feedback');
+                var errorMessage = row.find('.invalid-feedback');
 
-            if (selesai <= mulai) {
-                if (errorMessage.length === 0) {
-                    row.find('.selesai').addClass('is-invalid');
-                    row.find('.selesai').after('<div class="invalid-feedback">Jumlah selesai harus lebih besar dari mulai</div>');
+                if (selesai <= mulai) {
+                    if (errorMessage.length === 0) {
+                        row.find('.selesai').addClass('is-invalid');
+                        row.find('.selesai').after(
+                            '<div class="invalid-feedback">Jumlah selesai harus lebih besar dari mulai</div>'
+                            );
+                    }
+                    row.find('.total').text('Error');
+                    row.find('.total_hidden').val('');
+                } else {
+                    row.find('.selesai').removeClass('is-invalid');
+                    row.find('.total').text(selesai - mulai);
+                    row.find('.total_hidden').val(selesai - mulai);
+                    errorMessage.remove();
                 }
-                row.find('.total').text('Error');
-                row.find('.total_hidden').val('');
-            } else {
-                row.find('.selesai').removeClass('is-invalid');
-                row.find('.total').text(selesai - mulai);
-                row.find('.total_hidden').val(selesai - mulai);
-                errorMessage.remove();
-            }
+            });
         });
-    });
-</script>
+    </script>
 @endsection
