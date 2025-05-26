@@ -78,9 +78,8 @@
                                             <td>{{ $santri->nis }}</td>
 
                                             <td>
-                                                {{ $mulai }}
-                                                <input type="hidden" name="mulai[{{ $santri->id }}]"
-                                                    class="form-control mulai" value="{{ $mulai }}" readonly>
+                                                <input type="number" name="mulai[{{ $santri->id }}]"
+                                                    class="form-control mulai" value="{{ $mulai }}">
                                             </td>
 
                                             <td>
@@ -125,7 +124,7 @@
                         row.find('.selesai').addClass('is-invalid');
                         row.find('.selesai').after(
                             '<div class="invalid-feedback">Jumlah selesai harus lebih besar dari mulai</div>'
-                            );
+                        );
                     }
                     row.find('.total').text('Error');
                     row.find('.total_hidden').val('');
