@@ -71,7 +71,9 @@
                                     @foreach ($santris as $santri)
                                         @php
                                             $lastSetoran = $santri->hafalan->sortByDesc('tanggal_setor')->first();
-                                            $mulai = $lastSetoran ? $lastSetoran->selesai : 0;
+                                            $mulai = $lastSetoran ? $lastSetoran->mulai : 0;
+                                            $total = $lastSetoran ? $lastSetoran->total : 0;
+                                            $selesai = $lastSetoran ? $lastSetoran->selesai : 0;
                                         @endphp
                                         <tr>
                                             <td>{{ $santri->nama }}</td>
@@ -84,13 +86,15 @@
 
                                             <td>
                                                 <input type="number" name="selesai[{{ $santri->id }}]"
-                                                    class="form-control selesai" value="0" style="width:100%;">
+                                                    class="form-control selesai" value="{{ $selesai }}"
+                                                    style="width:100%;">
                                             </td>
 
                                             <td>
-                                                <span class="total" style="width:100%;">0</span>
+                                                <span class="total" style="width:100%;">{{ $total }}</span>
                                                 <input type="hidden" class="form-control total_hidden"
-                                                    name="total[{{ $santri->id }}]" value="0" readonly>
+                                                    name="total[{{ $santri->id }}]" value="{{ $total }}"
+                                                    readonly>
                                             </td>
 
                                         </tr>
