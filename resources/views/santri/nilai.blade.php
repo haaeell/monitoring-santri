@@ -39,9 +39,12 @@
                             <tr>
                                 <td class="fw-bold">Tanggal Lahir</td>
                                 <td>:</td>
-                                <td colspan="4">
+                                <td>
                                     {{ $santri->tanggal_lahir ? \Carbon\Carbon::parse($santri->tanggal_lahir)->format('d M Y') : 'Tanggal lahir belum tersedia' }}
                                 </td>
+                                <td class="fw-bold">Kelas</td>
+                                <td>:</td>
+                                <td>{{ $santri->kelas->nama_kelas ?? '-' }}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -49,60 +52,61 @@
             </div>
         </div>
 
-       <!-- Hafalan Santri -->
-<div class="col-md-12 mt-3">
-    <div class="card shadow-sm">
-        <div class="card-header bg-primary p-3 text-white text-center">
-            <h4 class="mb-0"><i class="bi bi-journal-text"></i> Hafalan Santri</h4>
-        </div>
-        <div class="card-body">
-            <div class="row">
-                <!-- Bagian Teks (Kiri) -->
-                <div class="col-md-6">
-                    @php
-                        $totalHafalan = $santri->hafalan->sum('total');
-                        $lastSetor = $santri->hafalan->sortByDesc('tanggal_setor')->first();
-                    @endphp
-
-                    <table class="table table-borderless">
-                        <tr>
-                            <td><strong>Nama Hafalan</strong></td>
-                            <td>: {{ $santri->kelas->hafalan->nama ?? '-' }}</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Setoran Terakhir</strong></td>
-                            <td>: {{ $lastSetor->tanggal_setor ?? 'Belum pernah setor' }}</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Total Hafalan</strong></td>
-                            <td>: {{ $totalHafalan }} Bait </td>
-                        </tr>
-                        <tr>
-                            <td><strong>Target Hafalan</strong></td>
-                            <td>: {{ $santri->kelas->hafalan->target ?? '-' }} Bait </td>
-                        </tr>
-                        <tr>
-                            <td><strong>Status Hafalan</strong></td>
-                            <td>:
-                                <span class="badge {{ $totalHafalan >= ($santri->kelas->hafalan->target ?? 0) ? 'bg-success' : 'bg-warning' }}">
-                                    {{ $totalHafalan >= ($santri->kelas->hafalan->target ?? 0) ? 'Lulus' : 'Belum Lulus' }}
-                                </span>
-                            </td>
-                        </tr>
-                    </table>
+        <!-- Hafalan Santri -->
+        <div class="col-md-12 mt-3">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary p-3 text-white text-center">
+                    <h4 class="mb-0"><i class="bi bi-journal-text"></i> Hafalan Santri</h4>
                 </div>
+                <div class="card-body">
+                    <div class="row">
+                        <!-- Bagian Teks (Kiri) -->
+                        <div class="col-md-6">
+                            @php
+                                $totalHafalan = $santri->hafalan->sum('total');
+                                $lastSetor = $santri->hafalan->sortByDesc('tanggal_setor')->first();
+                            @endphp
 
-                <!-- Bagian Grafik (Kanan) -->
-                <div class="col-md-6">
-                    <p>Riwayat Setoran Hafalan</p>
-                   <div>
-                    <canvas id="hafalanChart"></canvas>
-                   </div>
+                            <table class="table table-borderless">
+                                <tr>
+                                    <td><strong>Nama Hafalan</strong></td>
+                                    <td>: {{ $santri->kelas->hafalan->nama ?? '-' }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Setoran Terakhir</strong></td>
+                                    <td>: {{ $lastSetor->tanggal_setor ?? 'Belum pernah setor' }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Total Hafalan</strong></td>
+                                    <td>: {{ $totalHafalan }} Bait </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Target Hafalan</strong></td>
+                                    <td>: {{ $santri->kelas->hafalan->target ?? '-' }} Bait </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Status Hafalan</strong></td>
+                                    <td>:
+                                        <span
+                                            class="badge {{ $totalHafalan >= ($santri->kelas->hafalan->target ?? 0) ? 'bg-success' : 'bg-warning' }}">
+                                            {{ $totalHafalan >= ($santri->kelas->hafalan->target ?? 0) ? 'Lulus' : 'Belum Lulus' }}
+                                        </span>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <!-- Bagian Grafik (Kanan) -->
+                        <div class="col-md-6">
+                            <p>Riwayat Setoran Hafalan</p>
+                            <div>
+                                <canvas id="hafalanChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
 
         <!-- Nilai Akademik -->
         <div class="table-responsive mt-3">
@@ -377,35 +381,35 @@
 @section('scripts')
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<!-- Script Chart.js -->
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const ctx = document.getElementById('hafalanChart').getContext('2d');
+    <!-- Script Chart.js -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const ctx = document.getElementById('hafalanChart').getContext('2d');
 
-        const hafalanData = {
-            labels: {!! json_encode($santri->hafalan->pluck('tanggal_setor')) !!}, // Tanggal setor
-            datasets: [{
-                label: 'Jumlah Hafalan',
-                data: {!! json_encode($santri->hafalan->pluck('total')) !!}, // Total hafalan
-                backgroundColor: 'rgba(54, 162, 235, 0.5)',
-                borderColor: 'rgba(54, 162, 235, 1)',
-                borderWidth: 1
-            }]
-        };
+            const hafalanData = {
+                labels: {!! json_encode($santri->hafalan->pluck('tanggal_setor')) !!}, // Tanggal setor
+                datasets: [{
+                    label: 'Jumlah Hafalan',
+                    data: {!! json_encode($santri->hafalan->pluck('total')) !!}, // Total hafalan
+                    backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            };
 
-        new Chart(ctx, {
-            type: 'bar',
-            data: hafalanData,
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    y: {
-                        beginAtZero: true
+            new Chart(ctx, {
+                type: 'bar',
+                data: hafalanData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
                     }
                 }
-            }
+            });
         });
-    });
-</script>
+    </script>
 @endsection

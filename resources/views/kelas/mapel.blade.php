@@ -8,18 +8,20 @@
                     <h4 class="card-title">Mapel di Kelas {{ $kelas->nama_kelas }}</h4>
                     <a href="{{ route('kelas.index') }}" class="btn btn-outline-secondary mb-3">Kembali ke Kelas</a>
 
-                    <h5>Pilih Mapel untuk Kelas Ini</h5>
-                    <form action="{{ route('kelas.addMapel', $kelas->id) }}" method="POST">
-                        @csrf
-                        <div class="form-group">
-                            <select class="form-select select2" name="mapel_id[]" multiple>
-                                @foreach ($allMapels as $item)
-                                    <option value="{{ $item->id }}">{{ $item->nama_mapel }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Tambahkan Mapel ke Kelas</button>
-                    </form>
+                    @if (Auth::user()->role == 'admin')
+                        <h5>Pilih Mapel untuk Kelas Ini</h5>
+                        <form action="{{ route('kelas.addMapel', $kelas->id) }}" method="POST">
+                            @csrf
+                            <div class="form-group">
+                                <select class="form-select select2" name="mapel_id[]" multiple>
+                                    @foreach ($allMapels as $item)
+                                        <option value="{{ $item->id }}">{{ $item->nama_mapel }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Tambahkan Mapel ke Kelas</button>
+                        </form>
+                    @endif
 
                     <hr>
 
@@ -29,7 +31,9 @@
                                 <tr class="text-center">
                                     <th>Nama Mapel</th>
                                     <th>Nama Guru</th>
-                                    <th>Aksi</th>
+                                    @if (Auth::user()->role == 'admin')
+                                        <th>Aksi</th>
+                                    @endif
                                 </tr>
                             </thead>
                             <tbody>
@@ -37,25 +41,24 @@
                                     <tr>
                                         <td>{{ $mapel->nama_mapel }}</td>
                                         <td>{{ $mapel->guru->user->name ?? '-' }}</td>
-                                        <td>
-                                            <div class="d-flex gap-1">
-                                                <button type="button" 
-                                                        class="btn btn-danger btn-sm text-white fw-bold"
-                                                        data-bs-toggle="modal" 
-                                                        data-bs-target="#deleteMapelModal"
+                                        @if (Auth::user()->role == 'admin')
+                                            <td>
+                                                <div class="d-flex gap-1">
+                                                    <button type="button" class="btn btn-danger btn-sm text-white fw-bold"
+                                                        data-bs-toggle="modal" data-bs-target="#deleteMapelModal"
                                                         data-mapel-id="{{ $mapel->id }}"
-                                                        data-kelas-id="{{ $kelas->id }}"
-                                                        data-bs-placement="top" 
+                                                        data-kelas-id="{{ $kelas->id }}" data-bs-placement="top"
                                                         title="Hapus">
-                                                    <i class="ti-trash btn-icon-append"></i>
-                                                </button>
-                                            </div>
-                                        </td>
+                                                        <i class="ti-trash btn-icon-append"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        @endif
                                     </tr>
                                 @endforeach
                             </tbody>
                         </table>
-                    </div> 
+                    </div>
                 </div>
             </div>
         </div>
@@ -83,19 +86,18 @@
             </div>
         </div>
     </div>
-
 @endsection
 
 @section('scripts')
-<script>
-    var deleteMapelModal = document.getElementById('deleteMapelModal');
-    deleteMapelModal.addEventListener('show.bs.modal', function (event) {
-        var button = event.relatedTarget;
-        var mapelId = button.getAttribute('data-mapel-id');
-        var kelasId = button.getAttribute('data-kelas-id');
-        
-        var form = document.getElementById('deleteMapelForm');
-        form.action = '/kelas/' + kelasId + '/mapel/' + mapelId;
-    });
-</script>
+    <script>
+        var deleteMapelModal = document.getElementById('deleteMapelModal');
+        deleteMapelModal.addEventListener('show.bs.modal', function(event) {
+            var button = event.relatedTarget;
+            var mapelId = button.getAttribute('data-mapel-id');
+            var kelasId = button.getAttribute('data-kelas-id');
+
+            var form = document.getElementById('deleteMapelForm');
+            form.action = '/kelas/' + kelasId + '/mapel/' + mapelId;
+        });
+    </script>
 @endsection

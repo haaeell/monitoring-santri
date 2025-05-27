@@ -1,30 +1,35 @@
 @extends('layouts.dashboard')
 
 @section('content')
-    <div class="row mb-3">
-        <div class="col-md-12">
-            <div class="card">
-                <div class="card-body">
-                    <a href="{{ route('download-template') }}" class="btn btn-danger fw-bold text-white mb-3">Download
-                        Template</a>
+    @if (Auth::user()->role == 'admin')
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <a href="{{ route('download-template') }}" class="btn btn-danger fw-bold text-white mb-3">Download
+                            Template</a>
 
-                    <form action="{{ route('santri.import') }}" method="POST" enctype="multipart/form-data">
-                        @csrf
-                        <input type="file" name="file" class="form-control" required>
-                        <button type="submit" class="btn btn-danger text-white fw-bold mt-3 text-end">Import Excel</button>
-                    </form>
+                        <form action="{{ route('santri.import') }}" method="POST" enctype="multipart/form-data">
+                            @csrf
+                            <input type="file" name="file" class="form-control" required>
+                            <button type="submit" class="btn btn-danger text-white fw-bold mt-3 text-end">Import
+                                Excel</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    @endif
     <div class="row">
         <div class="col-md-12 grid-margin stretch-card">
             <div class="card">
                 <div class="card-body">
                     <p class="card-title">Data Santri</p>
                     <div class="d-flex justify-content-between">
-                        <a href="/santri/create" class="btn btn-primary btn-rounded btn-sm mb-3"><i
-                                class="ti-plus fw-bold fs-7"></i></a>
+                        @if (Auth::user()->role == 'admin')
+                            <a href="/santri/create" class="btn btn-primary btn-rounded btn-sm mb-3"><i
+                                    class="ti-plus fw-bold fs-7"></i></a>
+                        @endif
                     </div>
 
                     <div class="row">
@@ -45,7 +50,9 @@
                                             <th>Nama Ayah</th>
                                             <th>Nama Ibu</th>
                                             <th>Kelas</th>
-                                            <th>Aksi</th>
+                                            @if (Auth::user()->role == 'admin')
+                                                <th>Aksi</th>
+                                            @endif
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -66,20 +73,23 @@
                                                 <td>{{ $item->nama_ayah }}</td>
                                                 <td>{{ $item->nama_ibu }}</td>
                                                 <td>{{ $item->kelas->nama_kelas ?? '-' }}</td>
-                                                <td>
-                                                    <div class="d-flex gap-1">
-                                                        <a href="/santri/{{ $item->id }}/edit"
-                                                            class="btn btn-info text-white btn-sm fw-bold" title="Edit">
-                                                            <i class="ti-pencil btn-icon-append"></i>
-                                                        </a>
-                                                        <button type="button"
-                                                            class="btn btn-danger btn-sm text-white fw-bold"
-                                                            data-bs-toggle="modal"
-                                                            data-bs-target="#deleteModal{{ $item->id }}">
-                                                            <i class="ti-trash btn-icon-append"></i>
-                                                        </button>
-                                                    </div>
-                                                </td>
+                                                @if (Auth::user()->role == 'admin')
+                                                    <td>
+                                                        <div class="d-flex gap-1">
+                                                            <a href="/santri/{{ $item->id }}/edit"
+                                                                class="btn btn-info text-white btn-sm fw-bold"
+                                                                title="Edit">
+                                                                <i class="ti-pencil btn-icon-append"></i>
+                                                            </a>
+                                                            <button type="button"
+                                                                class="btn btn-danger btn-sm text-white fw-bold"
+                                                                data-bs-toggle="modal"
+                                                                data-bs-target="#deleteModal{{ $item->id }}">
+                                                                <i class="ti-trash btn-icon-append"></i>
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                @endif
                                             </tr>
 
                                             <!-- Modal delete -->
@@ -94,7 +104,8 @@
                                                         </div>
                                                         <div class="modal-body">
                                                             <p class="fw-semibold">Yakin mau hapus
-                                                                <strong>{{ $item->nama }}</strong>?</p>
+                                                                <strong>{{ $item->nama }}</strong>?
+                                                            </p>
                                                             <form method="POST"
                                                                 action="{{ route('santri.destroy', $item->id) }}">
                                                                 @csrf

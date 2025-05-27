@@ -22,7 +22,9 @@
                                             <th>Foto</th>
                                             <th>NIP</th>
                                             <th>Jenis Kelamin</th>
-                                            <th>Aksi</th>
+                                            @if (Auth::user()->role == 'admin')
+                                                <th>Aksi</th>
+                                            @endif
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -37,8 +39,8 @@
                                                 </td>
                                                 <td>{{ $item->nip }}</td>
                                                 <td>{{ $item->jenis_kelamin }}</td>
-                                                <td>
-                                                    @if (Auth::user()->role == 'admin')
+                                                @if (Auth::user()->role == 'admin')
+                                                    <td>
                                                         <div class="d-flex gap-1">
                                                             <a href="/guru/{{ $item->id }}/edit"
                                                                 class="btn btn-info text-white btn-sm fw-bold"
@@ -53,8 +55,8 @@
                                                                 <i class="ti-trash btn-icon-append"></i>
                                                             </button>
                                                         </div>
-                                                    @endif
-                                                </td>
+                                                    </td>
+                                                @endif
                                             </tr>
 
                                             <div class="modal fade" id="deleteModal{{ $item->id }}" tabindex="-1"
