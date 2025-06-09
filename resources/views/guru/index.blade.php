@@ -9,6 +9,10 @@
                     @if (Auth::user()->role == 'admin')
                         <a href="/guru/create" class="btn btn-primary btn-rounded btn-sm mb-3"><i
                                 class="ti-plus fw-bold fs-7"></i></a>
+                        <button class="btn btn-success btn-sm fw-bold mb-3 text-white " data-bs-toggle="modal"
+                            data-bs-target="#importModal">
+                            Import Excel
+                        </button>
                     @endif
                     <div class="row">
                         <div class="col-12">
@@ -98,6 +102,35 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+    <!-- Modal Import -->
+    <div class="modal fade" id="importModal" tabindex="-1" aria-labelledby="importModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <form action="{{ route('guru.import') }}" method="POST" enctype="multipart/form-data" class="modal-content">
+                @csrf
+                <div class="modal-header">
+                    <h5 class="modal-title" id="importModalLabel">Import Data guru</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="file" class="form-label fw-bold">Upload File Excel</label>
+                        <input type="file" name="file" class="form-control" required accept=".xlsx,.xls,.csv">
+                    </div>
+                    <div class="alert alert-warning">
+                        <strong>Catatan:</strong> Pastikan file Excel sesuai format template.
+                        <br>
+                        <a href="{{ route('guru-template') }}" class="btn btn-sm btn-info mt-2 text-white">
+                            Download Template
+                        </a>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success">Import</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                </div>
+            </form>
         </div>
     </div>
 @endsection

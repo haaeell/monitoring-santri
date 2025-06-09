@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\TemplateGuruExport;
+use App\Imports\GuruImport;
 use App\Models\Guru;
 use App\Models\User;
 use Exception;
@@ -9,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Maatwebsite\Excel\Facades\Excel;
 
 class GuruController extends Controller
 {
@@ -173,5 +176,21 @@ class GuruController extends Controller
         $user->delete();
 
         return redirect()->route('guru.index')->with('success', 'guru has been deleted successfully!');
+    }
+
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|file|mimes:xlsx,xls,csv'
+        ]);
+
+        Excel::import(new GuruImport, $request->file('file'));
+
+        return redirect()->route('guru.index')->with('success', 'Data guru berhasil diimport.');
+    }
+
+    public function downloadTemplate()
+    {
+        return Excel::download(new TemplateGuruExport, 'template_guru.xlsx');
     }
 }

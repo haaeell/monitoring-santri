@@ -26,6 +26,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/home', [HomeController::class, 'index'])->name('home');
     Route::resource('santri', SantriController::class);
     Route::resource('guru', GuruController::class);
+    Route::post('/guru/import', [GuruController::class, 'import'])->name('guru.import');
+    Route::get('/guru-template', [GuruController::class, 'downloadTemplate'])->name('guru-template');
+
     Route::resource('kelas', KelasController::class);
     Route::get('/kelas/{kelas}/santri', [KelasController::class, 'showSantri'])->name('kelas.santri');
     Route::post('/kelas/{kelas}/santri', [KelasController::class, 'addSantri'])->name('kelas.addSantri');
@@ -60,8 +63,4 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/santri/import', [SantriController::class, 'importExcel'])->name('santri.import');
     Route::get('/download-template', [SantriController::class, 'downloadTemplate'])->name('download-template');
     Route::get('/santri-nilai', [SantriController::class, 'santriNilai'])->name('santri-nilai');
-
-
-
-
 });

@@ -4,6 +4,7 @@ namespace App\Imports;
 
 use App\Models\Guru;
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
@@ -12,29 +13,27 @@ class GuruImport implements ToModel, WithHeadingRow
 {
     public function model(array $row)
     {
-        // Cari user berdasarkan nama
-        $user = User::where('name', $row['nama_user'])->first();
+        $user = User::firstOrCreate(
+            ['name' => $row['nama']],
+            [
+                'email' => $row['email'] ?? strtolower(str_replace(' ', '', $row['nama'])) . '@example.com',
+                'password' => Hash::make('password'),
+                'role' => 'guru',
+            ]
+        );
 
-        if (!$user) {
+        if (Guru::where('user_id', $user->id)->exists()) {
             throw ValidationException::withMessages([
-                'nama_user' => 'User dengan nama ' . $row['nama_user'] . ' belum terdaftar di tabel users. Silakan buat terlebih dahulu.',
-            ]);
-        }
-
-        // Cek apakah NIP sudah ada
-        if (Guru::where('nip', $row['nip'])->exists()) {
-            throw ValidationException::withMessages([
-                'nip' => 'NIP ' . $row['nip'] . ' sudah terdaftar. NIP harus unik.',
+                'guru' => 'Guru dengan nama ' . $row['nama'] . ' sudah ada.',
             ]);
         }
 
         return new Guru([
             'user_id' => $user->id,
-            'nip' => $row['nip'],
+            'nip' => $row['nip'] ?? null,
             'alamat' => $row['alamat'] ?? null,
             'no_telepon' => $row['no_telepon'] ?? null,
             'pendidikan_terakhir' => $row['pendidikan_terakhir'] ?? null,
-            'jabatan' => $row['jabatan'] ?? null,
             'jenis_kelamin' => $row['jenis_kelamin'] ?? null,
         ]);
     }
