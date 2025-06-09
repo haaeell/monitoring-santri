@@ -60,10 +60,10 @@ class SetorHafalanController extends Controller
             } else {
                 SetorHafalan::create([
                     'santri_id' => $santriId,
-                    'nama_hafalan' => $request->nama_hafalan,
-                    'mulai' => $mulai,
-                    'selesai' => $request->selesai[$santriId],
-                    'total' => $request->total[$santriId],
+                    'nama_hafalan' => $request->nama_hafalan ?? 0,
+                    'mulai' => $mulai ?? 0,
+                    'selesai' => $request->selesai[$santriId] ?? 0,
+                    'total' => $request->total[$santriId] ?? 0,
                     'tanggal_setor' => now(),
                     'tahun_ajaran_id' => $request->tahun_ajaran_id,
                     'kelas_id' => $request->kelas_id

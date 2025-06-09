@@ -10,7 +10,7 @@ use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithValidation;
 
-class SantriImport implements ToModel, WithHeadingRow, WithValidation
+class SantriImport implements ToModel, WithHeadingRow
 {
     public function model(array $row)
     {
@@ -44,18 +44,4 @@ class SantriImport implements ToModel, WithHeadingRow, WithValidation
         return $santri;
     }
 
-    public function rules(): array
-    {
-        return [
-            '*.nama' => 'nullable|string|max:255',
-            '*.nis' => 'nullable|unique:santri,nis|numeric',
-            '*.jenis_kelamin' => 'nullable',
-            '*.tanggal_lahir' => 'nullable|date',
-            '*.kamar' => 'nullable|string|max:255',
-            '*.telp' => 'nullable|string|max:15',
-            '*.alamat' => 'nullable|string',
-            '*.nama_ayah' => 'nullable|string|max:255',
-            '*.nama_ibu' => 'nullable|string|max:255',
-        ];
-    }
 }

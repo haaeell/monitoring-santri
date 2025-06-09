@@ -39,6 +39,7 @@
                                 <table id="dataTable" class="display expandable-table" style="width:100%">
                                     <thead>
                                         <tr class="text-center">
+                                            <th>No</th>
                                             <th>NIS</th>
                                             <th>Nama</th>
                                             <th>Kamar</th>
@@ -58,6 +59,7 @@
                                     <tbody>
                                         @foreach ($santri as $item)
                                             <tr>
+                                                <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $item->nis }}</td>
                                                 <td class="text-nowrap">{{ $item->nama }}</td>
                                                 <td>{{ $item->kamar }}</td>
