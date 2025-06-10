@@ -24,8 +24,8 @@
     <div class="container-scroller">
         <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
             <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
-                <a class="navbar-brand brand-logo me-5 text-dark fs-6" href="index.html"><img src="{{asset('logo.jpg')}}"
-                        class="me-2" alt="logo"> Andalusia Hibbana</a>
+                <a class="navbar-brand brand-logo me-5 text-dark fs-6" href="index.html"><img
+                        src="{{ asset('logo.jpg') }}" class="me-2" alt="logo"> Andalusia Hibbana</a>
             </div>
             <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
                 <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
@@ -80,8 +80,8 @@
                         <span class="mx-2">{{ Auth::user()->name }}</span>
                         <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown"
                             id="profileDropdown">
-                            <!-- <img src="{{ Auth::user()->foto ? asset('storage/' . Auth::user()->foto) : 'https://ui-avatars.com/api/?name=' . Auth::user()->nama }}"
-                                alt="profile" /> -->
+                            <img src="{{ Auth::user()->foto ? asset('storage/' . Auth::user()->foto) : 'https://ui-avatars.com/api/?name=' . Auth::user()->nama }}"
+                                alt="profile" />
                         </a>
                         <div class="dropdown-menu dropdown-menu-right navbar-dropdown"
                             aria-labelledby="profileDropdown">
@@ -171,14 +171,13 @@
                                 </a>
                             </li>
 
-                        <li class="nav-item">
-                            <a class="nav-link" href="/absensi">
-                                        <i class="bi bi-calendar-check menu-icon"></i>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/absensi">
+                                    <i class="bi bi-calendar-check menu-icon"></i>
 
-                                <span class="menu-title">Absensi dan Nilai</span>
-                            </a>
-                        </li>
-
+                                    <span class="menu-title">Absensi dan Nilai</span>
+                                </a>
+                            </li>
                         @endif
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('rekap.index') }}">
