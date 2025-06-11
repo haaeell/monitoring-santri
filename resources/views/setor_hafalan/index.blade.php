@@ -37,9 +37,12 @@
                     </div>
                 </form>
 
-                @if ($selectedKelas)
-                    <h5 class="mt-3">Nama Hafalan: {{ $selectedKelas->hafalan->nama }} </h5>
-                    <h5 class="mt-3">Target : {{ $selectedKelas->hafalan->target }}</h5>
+                @if ($selectedKelas && $selectedKelas->hafalan)
+    <h5 class="mt-3">Nama Hafalan: {{ $selectedKelas->hafalan->nama }}</h5>
+    <h5 class="mt-3">Target : {{ $selectedKelas->hafalan->target }}</h5>
+@else
+    <h5 class="mt-3 text-danger">Hafalan belum tersedia.</h5>
+@endif
 
                     <div class="mt-3">
                         <a href="{{ route('setor.riwayat', ['kelas_id' => $selectedKelas->id, 'tahun_ajaran_id' => $selectedTahunAjaran->id]) }}"
