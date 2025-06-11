@@ -38,79 +38,75 @@
                 </form>
 
                 @if ($selectedKelas && $selectedKelas->hafalan)
-    <h5 class="mt-3">Nama Hafalan: {{ $selectedKelas->hafalan->nama }}</h5>
-    <h5 class="mt-3">Target : {{ $selectedKelas->hafalan->target }}</h5>
-@else
-    <h5 class="mt-3 text-danger">Hafalan belum tersedia.</h5>
-@endif
+                    <h5 class="mt-3">Nama Hafalan: {{ $selectedKelas->hafalan->nama }}</h5>
+                    <h5 class="mt-3">Target : {{ $selectedKelas->hafalan->target }}</h5>
+                @else
+                    <h5 class="mt-3 text-danger">Hafalan belum tersedia.</h5>
+                @endif
 
-                    <div class="mt-3">
-                        <a href="{{ route('setor.riwayat', ['kelas_id' => $selectedKelas->id, 'tahun_ajaran_id' => $selectedTahunAjaran->id]) }}"
-                            class="btn btn-success text-white fw-bold">
-                            Lihat Riwayat Mingguan
-                        </a>
+                <div class="mt-3">
+                    <a href="{{ route('setor.riwayat', ['kelas_id' => $selectedKelas->id, 'tahun_ajaran_id' => $selectedTahunAjaran->id]) }}"
+                        class="btn btn-success text-white fw-bold">
+                        Lihat Riwayat Mingguan
+                    </a>
+                </div>
+
+
+                <form method="POST" action="{{ route('setor.store') }}">
+                    @csrf
+                    <input type="hidden" name="kelas_id" value="{{ $selectedKelas->id }}">
+                    <input type="hidden" name="hafalan_id" value="{{ $selectedKelas->hafalan->id }}">
+                    <input type="hidden" name="tahun_ajaran_id" value="{{ $selectedTahunAjaran->id }}">
+                    <input type="hidden" name="nama_hafalan" value="{{ $selectedKelas->hafalan->nama }}">
+
+                    <div class="table-responsive mt-3">
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th style="width: 25%">Nama Santri</th>
+                                    <th style="width: 10%">NIS</th>
+                                    <th style="width: 15%">Mulai</th>
+                                    <th style="width: 15%">Selesai</th>
+                                    <th style="width: 10%">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($santris as $santri)
+                                    @php
+                                        $lastSetoran = $santri->hafalan->sortByDesc('tanggal_setor')->first();
+                                        $mulai = $lastSetoran ? $lastSetoran->mulai : 0;
+                                        $total = $lastSetoran ? $lastSetoran->total : 0;
+                                        $selesai = $lastSetoran ? $lastSetoran->selesai : 0;
+                                    @endphp
+                                    <tr>
+                                        <td>{{ $santri->nama }}</td>
+                                        <td>{{ $santri->nis }}</td>
+                                        <td>
+                                            <input type="number" name="mulai[{{ $santri->id }}]"
+                                                class="form-control mulai form-control-sm" value="{{ $mulai }}"
+                                                style="max-width: 100px;">
+                                        </td>
+                                        <td>
+                                            <input type="number" name="selesai[{{ $santri->id }}]"
+                                                class="form-control selesai form-control-sm" value="{{ $selesai }}"
+                                                style="max-width: 100px;">
+                                        </td>
+                                        <td>
+                                            <span class="total">{{ $total }}</span>
+                                            <input type="hidden" class="form-control total_hidden"
+                                                name="total[{{ $santri->id }}]" value="{{ $total }}" readonly>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+
                     </div>
 
-
-                    <form method="POST" action="{{ route('setor.store') }}">
-                        @csrf
-                        <input type="hidden" name="kelas_id" value="{{ $selectedKelas->id }}">
-                        <input type="hidden" name="hafalan_id" value="{{ $selectedKelas->hafalan->id }}">
-                        <input type="hidden" name="tahun_ajaran_id" value="{{ $selectedTahunAjaran->id }}">
-                        <input type="hidden" name="nama_hafalan" value="{{ $selectedKelas->hafalan->nama }}">
-
-                        <div class="table-responsive mt-3">
-                            <table class="table table-bordered table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>Nama Santri</th>
-                                        <th>NIS</th>
-                                        <th>Mulai</th>
-                                        <th>Selesai</th>
-                                        <th>Total</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($santris as $santri)
-                                        @php
-                                            $lastSetoran = $santri->hafalan->sortByDesc('tanggal_setor')->first();
-                                            $mulai = $lastSetoran ? $lastSetoran->mulai : 0;
-                                            $total = $lastSetoran ? $lastSetoran->total : 0;
-                                            $selesai = $lastSetoran ? $lastSetoran->selesai : 0;
-                                        @endphp
-                                        <tr>
-                                            <td>{{ $santri->nama }}</td>
-                                            <td>{{ $santri->nis }}</td>
-
-                                            <td>
-                                                <input type="number" name="mulai[{{ $santri->id }}]"
-                                                    class="form-control mulai" value="{{ $mulai }}">
-                                            </td>
-
-                                            <td>
-                                                <input type="number" name="selesai[{{ $santri->id }}]"
-                                                    class="form-control selesai" value="{{ $selesai }}"
-                                                    style="width:100%;">
-                                            </td>
-
-                                            <td>
-                                                <span class="total" style="width:100%;">{{ $total }}</span>
-                                                <input type="hidden" class="form-control total_hidden"
-                                                    name="total[{{ $santri->id }}]" value="{{ $total }}"
-                                                    readonly>
-                                            </td>
-
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <div class="mt-3">
-                            <button type="submit" class="btn btn-primary">Simpan Data</button>
-                        </div>
-                    </form>
-                @endif
+                    <div class="mt-3">
+                        <button type="submit" class="btn btn-primary">Simpan Data</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

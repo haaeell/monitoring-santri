@@ -6,6 +6,7 @@ use App\Exports\TemplateKelasExport;
 use App\Imports\KelasImport;
 use App\Models\Kelas;
 use App\Models\Guru;
+use App\Models\Hafalan;
 use App\Models\Mapel;
 use App\Models\Santri;
 use Illuminate\Http\Request;
@@ -32,11 +33,18 @@ class KelasController extends Controller
             'wali_kelas_id' => 'required|exists:guru,id',
         ]);
 
+        $hafalan = Hafalan::where('tingkatan', $request->tingkatan)->first();
+
+        if (!$hafalan) {
+            return back()->with('error', 'Data hafalan dengan tingkatan tersebut tidak ditemukan silakan buat terlebih dahulu di menu hafalan .');
+        }
+
         Kelas::create([
             'nama_kelas' => $request->nama_kelas,
             'wali_kelas_id' => $request->wali_kelas_id,
             'tingkatan' => $request->tingkatan,
-            'sub_kelas' => $request->sub_kelas
+            'sub_kelas' => $request->sub_kelas,
+            'hafalan_id' => $hafalan->id ?? null,
         ]);
 
         return redirect()->route('kelas.index')->with('success', 'Kelas berhasil dibuat');
@@ -79,11 +87,19 @@ class KelasController extends Controller
         ]);
 
         $kelas = Kelas::findOrFail($id);
+
+        $hafalan = Hafalan::where('tingkatan', $request->tingkatan)->first();
+
+        if (!$hafalan) {
+            return back()->with('error', 'Data hafalan dengan tingkatan tersebut tidak ditemukan silakan buat terlebih dahulu di menu hafalan .');
+        }
+
         $kelas->update([
             'nama_kelas' => $request->nama_kelas,
             'wali_kelas_id' => $request->wali_kelas_id,
             'tingkatan' => $request->tingkatan,
-            'sub_kelas' => $request->sub_kelas
+            'sub_kelas' => $request->sub_kelas,
+            'hafalan_id' => $hafalan->id
         ]);
 
         return redirect()->route('kelas.index')->with('success', 'Kelas berhasil diperbarui');

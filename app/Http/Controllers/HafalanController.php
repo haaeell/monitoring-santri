@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\Hafalan;
@@ -27,7 +28,12 @@ class HafalanController extends Controller
         ]);
 
         try {
-            Hafalan::create($request->all());
+            $hafalan = Hafalan::create($request->all());
+
+            Kelas::where('tingkatan', $hafalan->tingkatan)->update([
+                'hafalan_id' => $hafalan->id
+            ]);
+
             return redirect()->route('hafalan.index')->with('success', 'Hafalan berhasil ditambahkan.');
         } catch (\Exception $e) {
             return redirect()->route('hafalan.index')->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
@@ -46,16 +52,23 @@ class HafalanController extends Controller
         $request->validate([
             'nama' => 'required|string|max:255',
             'target' => 'required',
+            'tingkatan' => 'required|string|max:50',
         ]);
 
         try {
             $hafalan = Hafalan::findOrFail($id);
             $hafalan->update($request->all());
+
+            Kelas::where('tingkatan', $hafalan->tingkatan)->update([
+                'hafalan_id' => $hafalan->id
+            ]);
+
             return redirect()->route('hafalan.index')->with('success', 'Hafalan berhasil diperbarui.');
         } catch (\Exception $e) {
             return redirect()->route('hafalan.index')->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
     }
+
 
     public function destroy($id)
     {

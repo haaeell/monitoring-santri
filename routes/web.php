@@ -25,6 +25,7 @@ Auth::routes();
 Route::middleware(['auth'])->group(function () {
     Route::get('/home', [HomeController::class, 'index'])->name('home');
     Route::resource('santri', SantriController::class);
+    Route::get('/santri-data', [SantriController::class, 'getData'])->name('santriData');
     Route::resource('guru', GuruController::class);
     Route::post('/guru/import', [GuruController::class, 'import'])->name('guru.import');
     Route::get('/guru-template', [GuruController::class, 'downloadTemplate'])->name('guru-template');

@@ -4,6 +4,7 @@ namespace App\Imports;
 
 use App\Models\Kelas;
 use App\Models\Guru;
+use App\Models\Hafalan;
 use Illuminate\Validation\ValidationException;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
@@ -28,14 +29,20 @@ class KelasImport implements ToModel, WithHeadingRow
             ]);
         }
 
+        $hafalan = Hafalan::where('tingkatan', $row['tingkatan'])->first();
+
+        if (!$hafalan) {
+            throw ValidationException::withMessages([
+                'hafalan_id' => 'Hafalan dengan tingkatan ' . $row['tingkatan'] . ' tidak ditemukan.',
+            ]);
+        }
+
         return new Kelas([
             'nama_kelas' => $row['nama_kelas'],
             'wali_kelas_id' => $guru->id,
             'tingkatan' => $row['tingkatan'] ?? null,
             'sub_kelas' => $row['sub_kelas'] ?? null,
+            'hafalan_id' => $hafalan->id
         ]);
     }
 }
-
-
-

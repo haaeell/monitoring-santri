@@ -17,13 +17,50 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
+use Yajra\DataTables\Facades\DataTables;
 
 class SantriController extends Controller
 {
     public function index()
     {
-        $santri = Santri::all();
-        return view('santri.index', compact('santri'));
+        return view('santri.index');
+    }
+    public function show($id)
+    {
+        //
+    }
+
+    public function getData(Request $request)
+    {
+        $santri = Santri::with('kelas')->get();
+
+        return DataTables::of($santri)
+            ->addIndexColumn()
+            ->editColumn('tanggal_lahir', fn($row) => \Carbon\Carbon::parse($row->tanggal_lahir)->format('d-m-Y'))
+            ->editColumn('foto', function ($row) {
+                $src = $row->foto
+                    ? asset('storage/' . $row->foto)
+                    : 'https://ui-avatars.com/api/?name=' . urlencode($row->nama);
+                return '<img src="' . $src . '" width="80" height="80" class="rounded" style="object-fit: cover;">';
+            })
+            ->addColumn('aksi', function ($row) {
+                $edit = '<a href="/santri/' . $row->id . '/edit" class="btn btn-info text-white btn-sm fw-bold" title="Edit">
+                            <i class="ti-pencil btn-icon-append"></i>
+                        </a>';
+
+                $hapus = '<button type="button"
+                            class="btn btn-danger btn-sm text-white fw-bold"
+                            data-bs-toggle="modal"
+                            data-bs-target="#deleteModal' . $row->id . '">
+                            <i class="ti-trash btn-icon-append"></i>
+                        </button>';
+
+                $modal = view('santri.partials.modal-delete', ['item' => $row])->render();
+
+                return '<div class="d-flex gap-1">' . $edit . $hapus . '</div>' . $modal;
+            })
+            ->rawColumns(['foto', 'aksi'])
+            ->make(true);
     }
 
     public function create()
@@ -128,20 +165,20 @@ class SantriController extends Controller
         $santri = Santri::findOrFail($id);
 
         if ($request->has('remove_foto') && $santri->foto) {
-        if (Storage::exists('public/' . $santri->foto)) {
-            Storage::delete('public/' . $santri->foto);
+            if (Storage::exists('public/' . $santri->foto)) {
+                Storage::delete('public/' . $santri->foto);
+            }
+            $santri->foto = null;
         }
-        $santri->foto = null;
-    }
 
         if ($request->hasFile('foto')) {
-        if ($santri->foto && Storage::exists('public/' . $santri->foto)) {
-            Storage::delete('public/' . $santri->foto);
-        }
+            if ($santri->foto && Storage::exists('public/' . $santri->foto)) {
+                Storage::delete('public/' . $santri->foto);
+            }
 
-        $fotoPath = $request->file('foto')->store('santri_photos', 'public');
-        $santri->foto = $fotoPath;
-    }
+            $fotoPath = $request->file('foto')->store('santri_photos', 'public');
+            $santri->foto = $fotoPath;
+        }
 
         $santri->update([
             'nama' => $data['nama'],
