@@ -21,7 +21,7 @@ class SetorHafalanController extends Controller
         $tahunAjaran = TahunAjaran::where('status', 'Aktif')->get();
         $kelasId = $request->kelas_id ?? $kelas->first()->id;
         $tahunAjaranId = $request->tahun_ajaran_id ?? $tahunAjaran->first()->id;
-        $selectedKelas = $kelasId ? Kelas::find($kelasId) : null;
+        $selectedKelas = $kelasId ? Kelas::with('hafalan')->find($kelasId) : null;
         $selectedTahunAjaran = $tahunAjaranId ? TahunAjaran::find($tahunAjaranId) : null;
 
         $santris = [];

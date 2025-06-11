@@ -35,7 +35,7 @@
                     <div class="row">
                         <div class="col-12">
                             <div class="table-responsive">
-                                <table id="dataTable" class="table table-bordered w-100">
+                                <table id="dataTable" class="table table-bordered w-100 display expandable-table">
                                     <thead>
                                         <tr>
                                             <th>No</th>

@@ -164,12 +164,15 @@
 
                     @if (Auth::user()->role == 'guru' || Auth::user()->role == 'kepala_pondok')
                         @if (Auth::user()->role == 'guru')
+                            @if(Auth::user()->guru->waliKelas != null)
                             <li class="nav-item">
                                 <a class="nav-link" href="/setor">
                                     <i class="bi bi-upload menu-icon"></i>
                                     <span class="menu-title">Setor Hafalan</span>
                                 </a>
                             </li>
+                            @endif
+
 
                             <li class="nav-item">
                                 <a class="nav-link" href="/absensi">
@@ -179,12 +182,27 @@
                                 </a>
                             </li>
                         @endif
+
+                        @if (Auth::user()->role == 'guru')
+                         @if(Auth::user()->guru->waliKelas != null && Auth::user()->role == 'guru')
+
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('rekap.index') }}">
                                 <i class="bi bi-book menu-icon"></i>
                                 <span class="menu-title">Rekap Hafalan</span>
                             </a>
                         </li>
+                            @endif
+                            @endif
+                         @if(Auth::user()->role == 'kepala_pondok')
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('rekap.index') }}">
+                                <i class="bi bi-book menu-icon"></i>
+                                <span class="menu-title">Rekap Hafalan</span>
+                            </a>
+                        </li>
+                            @endif
 
 
 
