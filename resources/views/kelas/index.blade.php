@@ -38,7 +38,7 @@
                                         <br>
                                         <a href="{{ route('kelas-template') }}" class="btn btn-sm btn-info mt-2 text-white">
                                             Download Template
-                                        </a>                                        
+                                        </a>
                                     </div>
                                 </div>
                                 <div class="modal-footer">

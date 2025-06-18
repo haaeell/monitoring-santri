@@ -27,7 +27,7 @@ class MapelController extends Controller
         ]);
 
         try {
-            Mapel::create($request->all());
+            Mapel::insert($request->all());
             return redirect()->route('mapel.index')->with('success', 'mapel berhasil ditambahkan.');
         } catch (\Exception $e) {
             return redirect()->route('mapel.index')->with('error', 'Terjadi kesalahan: ' . $e->getMessage());

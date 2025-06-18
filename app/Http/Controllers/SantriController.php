@@ -244,13 +244,14 @@ class SantriController extends Controller
         // $mapels = $nilaiSantri->map(function ($nilai) {
         //     return $nilai->mapel;
         // });
-        $mapels = $santri->kelas->mapels;
 
         $absensiData = Absensi::with('santri', 'mapel')
             ->where('kelas_id', $santri->kelas_id)
             ->where('tahun_ajaran_id', $selectedTahunAjaran->id)
             ->where('santri_id', $santri->id)
             ->get();
+
+        $mapels = $absensiData->pluck('mapel')->unique('id')->values();
 
         return view('santri.nilai', compact('santri', 'tahunAjaran', 'selectedTahunAjaran', 'mapels', 'absensiData'));
     }
