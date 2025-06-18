@@ -224,35 +224,45 @@ class SantriController extends Controller
 
     public function santriNilai(Request $request)
     {
+        // Ambil tahun ajaran aktif
         $tahunAjaran = TahunAjaran::where('status', 'Aktif')->get();
         $selectedTahunAjaran = TahunAjaran::where('status', 'Aktif')->first();
 
+        // Ambil santri berdasarkan wali santri yang login
         $waliSantri = WaliSantri::where('user_id', auth()->user()->id)->first();
         $santri = $waliSantri->santri;
 
+        // Ambil daftar kelas unik dari tabel Nilai untuk santri ini
+        $kelasList = Nilai::where('santri_id', $santri->id)
+            ->select('kelas_id')
+            ->distinct()
+            ->with('kelas')
+            ->get()
+            ->pluck('kelas')
+            ->filter()
+            ->values();
+
+        // Ambil kelas yang dipilih dari request, default ke kelas pertama di kelasList atau kelas santri
+        $selectedKelasId = $request->input('kelas_id', $kelasList->first()->id ?? $santri->kelas_id);
+
+        // Ambil data nilai berdasarkan santri, tahun ajaran aktif, dan kelas yang dipilih
         $mapels = Nilai::where('santri_id', $santri->id)
             ->where('tahun_ajaran_id', $selectedTahunAjaran->id)
+            ->where('kelas_id', $selectedKelasId)
             ->join('mapel', 'nilai.mapel_id', '=', 'mapel.id')
             ->select('mapel.nama_mapel as nama', 'nilai.nilai_uts', 'nilai.nilai_uas')
             ->get();
 
-        $nilaiSantri = Nilai::where('santri_id', $santri->id)
-            ->where('kelas_id', $santri->kelas_id)
-            ->with('mapel')
-            ->get();
-
-        // $mapels = $nilaiSantri->map(function ($nilai) {
-        //     return $nilai->mapel;
-        // });
-
+        // Ambil data absensi berdasarkan kelas, tahun ajaran, dan santri
         $absensiData = Absensi::with('santri', 'mapel')
-            ->where('kelas_id', $santri->kelas_id)
+            ->where('kelas_id', $selectedKelasId)
             ->where('tahun_ajaran_id', $selectedTahunAjaran->id)
             ->where('santri_id', $santri->id)
             ->get();
 
+        // Ambil mapel unik dari absensi
         $mapels = $absensiData->pluck('mapel')->unique('id')->values();
 
-        return view('santri.nilai', compact('santri', 'tahunAjaran', 'selectedTahunAjaran', 'mapels', 'absensiData'));
+        return view('santri.nilai', compact('santri', 'tahunAjaran', 'kelasList', 'selectedKelasId', 'selectedTahunAjaran', 'mapels', 'absensiData'));
     }
 }

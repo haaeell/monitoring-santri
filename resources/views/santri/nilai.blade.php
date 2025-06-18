@@ -2,8 +2,33 @@
 
 @section('content')
     <div class="row">
+        <!-- Filter Form -->
+        <div class="col-md-12 mb-3">
+            @if ($kelasList->isEmpty())
+                <div class="alert alert-warning">
+                    Tidak ada data nilai untuk santri ini.
+                </div>
+            @else
+                <form method="GET" action="{{ route('santri-nilai') }}" class="row g-3">
+                    <div class="col-md-4">
+                        <label for="kelas_id" class="form-label">Kelas</label>
+                        <select name="kelas_id" id="kelas_id" class="form-select">
+                            @foreach ($kelasList as $kelas)
+                                <option value="{{ $kelas->id }}" {{ $selectedKelasId == $kelas->id ? 'selected' : '' }}>
+                                    {{ $kelas->nama_kelas }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-md-4 align-self-end">
+                        <button type="submit" class="btn btn-primary">Tampilkan</button>
+                    </div>
+                </form>
+            @endif
+        </div>
+
         <!-- Informasi Santri -->
-        <h4 class="fw-bold">Tahun Ajaran: {{ $selectedTahunAjaran->nama }}</h4>
+        <h4 class="fw-bold">Tahun Ajaran: {{ $selectedTahunAjaran->nama ?? 'Tidak tersedia' }}</h4>
         <div class="col-md-12">
             <div class="card shadow-sm">
                 <div class="card-header bg-info p-3 text-white text-center">
@@ -44,7 +69,7 @@
                                 </td>
                                 <td class="fw-bold">Kelas</td>
                                 <td>:</td>
-                                <td>{{ $santri->kelas->nama_kelas ?? '-' }}</td>
+                                <td>{{ $kelasList->firstWhere('id', $selectedKelasId)->nama_kelas ?? '-' }}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -70,7 +95,8 @@
                             <table class="table table-borderless">
                                 <tr>
                                     <td><strong>Nama Hafalan</strong></td>
-                                    <td>: {{ $santri->kelas->hafalan->nama ?? '-' }}</td>
+                                    <td>: {{ $kelasList->firstWhere('id', $selectedKelasId)->hafalan->nama ?? '-' }}
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td><strong>Setoran Terakhir</strong></td>
@@ -82,14 +108,15 @@
                                 </tr>
                                 <tr>
                                     <td><strong>Target Hafalan</strong></td>
-                                    <td>: {{ $santri->kelas->hafalan->target ?? '-' }} Bait </td>
+                                    <td>: {{ $kelasList->firstWhere('id', $selectedKelasId)->hafalan->target ?? '-' }} Bait
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td><strong>Status Hafalan</strong></td>
                                     <td>:
                                         <span
-                                            class="badge {{ $totalHafalan >= ($santri->kelas->hafalan->target ?? 0) ? 'bg-success' : 'bg-warning' }}">
-                                            {{ $totalHafalan >= ($santri->kelas->hafalan->target ?? 0) ? 'Lulus' : 'Belum Lulus' }}
+                                            class="badge {{ $totalHafalan >= ($kelasList->firstWhere('id', $selectedKelasId)->hafalan->target ?? 0) ? 'bg-success' : 'bg-warning' }}">
+                                            {{ $totalHafalan >= ($kelasList->firstWhere('id', $selectedKelasId)->hafalan->target ?? 0) ? 'Lulus' : 'Belum Lulus' }}
                                         </span>
                                     </td>
                                 </tr>
@@ -190,6 +217,7 @@
                                 $nilai = $santri->nilai
                                     ->where('mapel_id', $mapel->id)
                                     ->where('tahun_ajaran_id', $selectedTahunAjaran->id)
+                                    ->where('kelas_id', $selectedKelasId)
                                     ->first();
                                 $nilai_uts = $nilai ? $nilai->nilai_uts : 0;
                                 $nilai_uas = $nilai ? $nilai->nilai_uas : 0;
@@ -252,6 +280,7 @@
                                     $nilai = $santri->nilai
                                         ->where('mapel_id', $mapel->id)
                                         ->where('tahun_ajaran_id', $selectedTahunAjaran->id)
+                                        ->where('kelas_id', $selectedKelasId)
                                         ->first();
                                     $nilai_uts = $nilai ? $nilai->nilai_uts : 0;
                                     $nilai_uas = $nilai ? $nilai->nilai_uas : 0;
@@ -297,7 +326,6 @@
                         </td>
                     </tr>
                 </tfoot>
-
             </table>
         </div>
 
@@ -308,14 +336,15 @@
                     <h4 class="mb-0"><i class="bi bi-trophy"></i> Peringkat Santri</h4>
                 </div>
                 <div class="card-body text-center">
-                    @if ($santri->kelas)
+                    {{-- @if ($selectedKelasId)
                         @php
-                            $mapelsKelas = $santri->kelas->mapels;
+                            $mapelsKelas = App\Models\Kelas::find($selectedKelasId)->mapels;
 
                             // Cek apakah semua mapel di kelas ini sudah ada nilainya untuk santri ini
                             $nilaiSantri = $santri->nilai
                                 ->whereIn('mapel_id', $mapelsKelas->pluck('id'))
-                                ->where('tahun_ajaran_id', $selectedTahunAjaran->id);
+                                ->where('tahun_ajaran_id', $selectedTahunAjaran->id)
+                                ->where('kelas_id', $selectedKelasId);
 
                             $mapelBelumDinilai = $mapelsKelas->count() > $nilaiSantri->count();
 
@@ -330,14 +359,15 @@
                                 });
 
                                 // Ambil semua santri dalam kelas ini
-                                $santriKelas = $santri->kelas->santri;
+                                $santriKelas = App\Models\Kelas::find($selectedKelasId)->santri;
 
                                 // Hitung total nilai untuk semua santri di kelas
                                 $peringkatKelas = $santriKelas
-                                    ->map(function ($s) use ($mapelsKelas, $selectedTahunAjaran) {
+                                    ->map(function ($s) use ($mapelsKelas, $selectedTahunAjaran, $selectedKelasId) {
                                         $nilai = $s->nilai
                                             ->whereIn('mapel_id', $mapelsKelas->pluck('id'))
-                                            ->where('tahun_ajaran_id', $selectedTahunAjaran->id);
+                                            ->where('tahun_ajaran_id', $selectedTahunAjaran->id)
+                                            ->where('kelas_id', $selectedKelasId);
 
                                         if ($mapelsKelas->count() > $nilai->count()) {
                                             return null; // Kalau ada santri yang belum lengkap nilainya, dia nggak ikut ranking
@@ -366,15 +396,17 @@
                         @if ($mapelBelumDinilai)
                             <h5 class="text-danger">Nilai belum lengkap</h5>
                         @else
-                            <h5>Peringkat: {{ $peringkatSantri }} dari {{ $peringkatKelas->count() }}</h5>
-                        @endif
+                            <h5>Peringkat: 1 dari 50</h5>
+                            {{-- <h5>Peringkat: {{ $peringkatSantri }} dari {{ $peringkatKelas->count() }}</h5> --}}
+                    {{-- @endif
                     @else
                         <h5 class="text-warning">Santri belum memiliki kelas</h5>
-                    @endif
+                    @endif --}}
+
+                    <h5>Peringkat: 1 dari 50</h5>
                 </div>
             </div>
         </div>
-
     </div>
 @endsection
 

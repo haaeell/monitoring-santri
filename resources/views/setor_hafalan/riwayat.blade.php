@@ -15,7 +15,8 @@
                 <form action="{{ route('setor.riwayat') }}" method="GET" class="mb-3">
                     <div class="row">
                         <div class="col">
-                            <input type="date" name="start_date" class="form-control" value="{{ $startDate->toDateString() }}">
+                            <input type="date" name="start_date" class="form-control"
+                                value="{{ $startDate->toDateString() }}">
                         </div>
                         <div class="col">
                             <input type="date" name="end_date" class="form-control"
@@ -23,6 +24,7 @@
                         </div>
                         <div class="col">
                             <input type="hidden" name="tahun_ajaran_id" value="{{ request('tahun_ajaran_id') }}">
+                            <input type="hidden" name="kelas_id" value="{{ request('kelas_id') }}">
                             <button type="submit" class="btn btn-primary">Filter</button>
                         </div>
                     </div>
