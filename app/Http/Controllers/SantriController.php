@@ -25,9 +25,50 @@ class SantriController extends Controller
     {
         return view('santri.index');
     }
-    public function show($id)
+    public function show($id) {}
+
+    public function history($id)
     {
-        //
+        $santri = (object)[
+            'id' => $id,
+            'nama' => Santri::findOrFail($id)->nama,
+            'riwayatKelas' => collect()
+        ];
+
+        $tahunAjaran = ['2022/2023', '2023/2024', '2024/2025'];
+        $semester = [1, 2];
+        $mapelList = [
+            'Fiqh',
+            'Nahwu',
+            'Shorof',
+            'Balaghoh',
+            'Tajwid',
+            "Imla'",
+            'Tauhid',
+            'Akhlaq',
+            'B Arab',
+            'Mustholah'
+        ];
+
+        foreach ($tahunAjaran as $tahun) {
+            foreach ($semester as $sem) {
+                $jumlahMapel = rand(3, 6);
+                $mapelShuffle = collect($mapelList)->shuffle()->take($jumlahMapel);
+
+                foreach ($mapelShuffle as $namaMapel) {
+                    $santri->riwayatKelas->push((object)[
+                        'tahun_ajaran' => $tahun,
+                        'semester' => $sem,
+                        'nilai' => rand(65, 100),
+                        'mapel' => (object)[
+                            'nama_mapel' => $namaMapel
+                        ]
+                    ]);
+                }
+            }
+        }
+
+        return view('santri.history', compact('santri'));
     }
 
     public function getData(Request $request)
@@ -55,9 +96,13 @@ class SantriController extends Controller
                             <i class="ti-trash btn-icon-append"></i>
                         </button>';
 
+                $history = '<a href="/santri/' . $row->id . '/history" class="btn btn-warning btn-sm text-white fw-bold" title="History Kelas">
+                        <i class="ti-book btn-icon-append"></i>
+                    </a>';
+
                 $modal = view('santri.partials.modal-delete', ['item' => $row])->render();
 
-                return '<div class="d-flex gap-1">' . $edit . $hapus . '</div>' . $modal;
+                return '<div class="d-flex gap-1">' . $edit . $hapus . $history . '</div>' . $modal;
             })
             ->rawColumns(['foto', 'aksi'])
             ->make(true);

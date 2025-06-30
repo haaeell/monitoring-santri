@@ -64,4 +64,5 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/santri/import', [SantriController::class, 'importExcel'])->name('santri.import');
     Route::get('/download-template', [SantriController::class, 'downloadTemplate'])->name('download-template');
     Route::get('/santri-nilai', [SantriController::class, 'santriNilai'])->name('santri-nilai');
+    Route::get('/santri/{id}/history', [SantriController::class, 'history'])->name('santri.history');
 });
