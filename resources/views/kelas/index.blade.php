@@ -58,7 +58,6 @@
                                         <tr class="text-center">
                                             <th>Nama</th>
                                             <th>Wali Kelas</th>
-                                            <th>Tahun Ajaran</th>
                                             <th>Aksi</th>
                                         </tr>
                                     </thead>
@@ -67,7 +66,6 @@
                                             <tr>
                                                 <td>{{ $item->nama_kelas }}</td>
                                                 <td>{{ $item->walikelas?->user?->name }}</td>
-                                                <td>{{ $item->tahun_ajaran }}</td>
                                                 <td>
                                                     <div class="d-flex gap-1">
                                                         @if (Auth::user()->role == 'admin')

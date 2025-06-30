@@ -17,16 +17,8 @@ class KelasController extends Controller
     public function index()
     {
         $kelas = Kelas::with('waliKelas')->orderBy('tingkatan', 'desc')->get();
-
-        $tahunAjaranList = ['2021/2022', '2022/2023', '2023/2024', '2024/2025'];
-
-        foreach ($kelas as $index => $item) {
-            $item->tahun_ajaran = $tahunAjaranList[$index % count($tahunAjaranList)];
-        }
-
         return view('kelas.index', compact('kelas'));
     }
-
 
     public function create()
     {
